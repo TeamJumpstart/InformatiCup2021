@@ -7,9 +7,9 @@ class Policy(ABC):
         """Produce an action for a given game state
 
         Args:
-            cells: two dimensional ndarray
-            you: Player object of controlled player
-            opponents: List of other players
+            cells: binary ndarray of cell occupancies. 
+            you: Controlled player
+            opponents: List of other active players
 
         Returns:
             Selected action, one of `environments.spe_ed.directions`
