@@ -8,6 +8,9 @@ yapf = "*"
 flake8 = "*"
 
 [packages]
+numpy = "*"
+gym = "*"
+tqdm = "*"
 
 [requires]
 python_version = "3.8"
