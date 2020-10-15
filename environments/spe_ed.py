@@ -1,6 +1,7 @@
 import numpy as np
 import gym
 
+actions = ("turn_left", "turn_right", "slow_down", "speed_up", "change_nothing")
 directions = ("right", "up", "left", "down")
 direction_angle = {
     "right": 0,

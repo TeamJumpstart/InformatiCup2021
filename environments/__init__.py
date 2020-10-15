@@ -1,5 +1,4 @@
-from environments.spe_ed_env import Spe_edEnv
-
-__ALL__ = [
+from environments.spe_ed import Spe_edEnv
+__all__ = [
     "Spe_edEnv",
 ]
