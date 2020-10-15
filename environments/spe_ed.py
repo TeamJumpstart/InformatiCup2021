@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import numpy as np
 import gym
 
@@ -9,6 +10,18 @@ direction_angle = {
     "left": np.pi,
     "down": np.pi * 3 / 2,
 }
+
+
+@dataclass
+class Player:
+    """Player object."""
+    player_id: int
+    x: int
+    y: int
+    direction: str
+    speed: int
+    active: bool
+    name: str = None
 
 
 class Spe_edEnv(gym.Env):
@@ -64,15 +77,15 @@ class Spe_edEnv(gym.Env):
             geom.linewidth.stroke = 1.5
 
         for player in self.players:
-            if not player['active']:  # No direction for inactive players
+            if not player.active:  # No direction for inactive players
                 continue
             # Rotate and position arrow
             arrow = rendering.Compound(arrow_lines)
-            arrow.add_attr(rendering.Transform(rotation=direction_angle[player['direction']]))
+            arrow.add_attr(rendering.Transform(rotation=direction_angle[player.direction]))
             arrow.add_attr(rendering.Transform(translation=(0.5, 0.5)))
             arrow.add_attr(
                 rendering.Transform(
-                    translation=(xs[player['x']], ys[player['y']]),
+                    translation=(xs[player.x], ys[player.y]),
                     scale=(xs[1] - xs[0], ys[1] - ys[0]),
                 )
             )
