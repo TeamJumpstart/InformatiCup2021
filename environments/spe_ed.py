@@ -10,6 +10,12 @@ direction_angle = {
     "left": np.pi,
     "down": np.pi * 3 / 2,
 }
+cartesian_directions = {
+    "right": (1, 0),
+    "up": (0, 1),
+    "left": (-1, 0),
+    "down": (0, -1),
+}
 
 
 @dataclass
@@ -36,6 +42,8 @@ class Spe_edEnv(gym.Env):
         # Copy of game state
         self.cells = np.empty((self.width, self.height), dtype=np.int8)
         self.players = []
+        self.controlled_player = None
+        self.round = 1
 
         self.viewer = None
 
@@ -52,7 +60,7 @@ class Spe_edEnv(gym.Env):
 
         # Draw occupied cells
         player_colors = [
-            (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0), (255, 1.0, 0), (0.0, 1.0, 1.0), (1.0, 0.0, 1.0)
+            (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0), (1.0, 1.0, 0), (0.0, 1.0, 1.0), (1.0, 0.0, 1.0)
         ]
         collision_color = (0.0, 0.0, 0.0)
         xs = np.linspace(1, screen_width, self.cells.shape[0] + 1)  # Cell borders
@@ -99,3 +107,25 @@ class Spe_edEnv(gym.Env):
             self.viewer.draw_line(start=(xs[0], y), end=(xs[-1], y), color=color_grid)
 
         return self.viewer.render(return_rgb_array=mode == 'rgb_array')
+
+    def _validate_action(self, action):
+        """Change illegal actions to do nothing"""
+        controlled_player = self.players[0]
+        if controlled_player.speed >= 10 and action == "speed_up":
+            action = "change_nothing"
+        elif controlled_player.speed <= 1 and action == "slow_down":
+            action = "change_nothing"
+        return action
+
+    def _get_obs(self, player):
+        """Get obersation from the perspective of a specific player.
+
+        Returned values can be used as input for a policy.
+
+        Args:
+            player_id: Id of the player to get the observation for
+        """
+        occupancy = self.cells != 0
+        you = player
+        opponents = [p for p in self.players if p.active and p.player_id != player.player_id]
+        return occupancy, you, opponents, self.round
