@@ -90,11 +90,11 @@ class SimulatedSpe_edEnv(Spe_edEnv):
             player_id = i + 1
 
             # Choose startion position
-            x = self.rng.integers(0, self.width - 1)
-            y = self.rng.integers(0, self.height - 1)
+            x = self.rng.integers(0, self.width)
+            y = self.rng.integers(0, self.height)
             while self.cells[x, y] != 0:  # Ensure chosen location is empty
-                x = self.rng.integers(0, self.width - 1)
-                y = self.rng.integers(0, self.height - 1)
+                x = self.rng.integers(0, self.width)
+                y = self.rng.integers(0, self.height)
             self.cells[x, y] = player_id  # Occupy position of player
 
             self.players.append(
