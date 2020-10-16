@@ -11,6 +11,7 @@ flake8 = "*"
 numpy = "*"
 gym = "*"
 tqdm = "*"
+imageio-ffmpeg = "*"
 
 [requires]
 python_version = "3.8"
