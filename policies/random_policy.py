@@ -23,6 +23,14 @@ class RandomPolicy(Policy):
             raise ValueError(f"Number of probabilities {p} does mot match number of actions {actions}")
         self.p = p
 
-    def act(self, cells, you, opponents, round):
+    def act(self, cells, player, opponents, round):
         """Choose action randomly."""
-        return self.rng.choice(actions, p=self.p)
+        action = self.rng.choice(actions, p=self.p)
+
+        # Check for illegal actions
+        if player.speed >= 10 and action == "speed_up":
+            action = "change_nothing"
+        elif player.speed <= 1 and action == "slow_down":
+            action = "change_nothing"
+
+        return action
