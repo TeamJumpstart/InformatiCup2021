@@ -8,7 +8,7 @@ COPY ["Pipfile", "Pipfile.lock", "./"]
 RUN pipenv install --deploy
 
 # Copy code
-COPY ["main.py", "./"]
+COPY . ./
 
 # Entry point
-CMD [ "python", "./main.py" ]
+CMD ["pipenv", "run", "python", "./main.py" ]
