@@ -13,11 +13,11 @@ class Direction:
 
     def turn_left(self):
         """Rotates one turn to the left."""
-        return directions[(directions.index(self) + 1) % 4]
+        return directions[(directions.index(self) + 3) % 4]
 
     def turn_right(self):
         """Rotates one turn to the right."""
-        return directions[(directions.index(self) + 3) % 4]
+        return directions[(directions.index(self) + 1) % 4]
 
 
 directions = (
