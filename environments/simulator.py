@@ -1,5 +1,5 @@
 import numpy as np
-from environments.spe_ed import Player, directions, cartesian_directions, turn_left, turn_right
+from environments.spe_ed import Player, directions
 from environments.spe_ed_env import Spe_edEnv
 
 
@@ -12,9 +12,9 @@ class SimulatedSpe_edEnv(Spe_edEnv):
 
     def _perform_action(self, player, action):
         if action == 'turn_left':
-            player.direction = turn_left(player.direction)
+            player.direction = player.direction.turn_left()
         elif action == 'turn_right':
-            player.direction = turn_right(player.direction)
+            player.direction = player.direction.turn_right()
         elif action == 'slow_down':
             if player.speed <= 1:  # Check minimum speed
                 player.active = False
@@ -47,7 +47,7 @@ class SimulatedSpe_edEnv(Spe_edEnv):
                 continue
             pos = np.array([player.x, player.y])
             for i in range(player.speed):
-                pos += cartesian_directions[player.direction]
+                pos += player.direction.cartesian
                 if pos[0] < 0 or pos[1] < 0 or pos[0] >= self.width or pos[1] >= self.height:
                     # Player left bounds
                     player.active = False

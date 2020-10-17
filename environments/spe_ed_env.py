@@ -1,6 +1,6 @@
 import numpy as np
 import gym
-from environments.spe_ed import Map, direction_angle
+from environments.spe_ed import Map
 
 
 class Spe_edEnv(gym.Env):
@@ -62,7 +62,7 @@ class Spe_edEnv(gym.Env):
                 continue
             # Rotate and position arrow
             arrow = rendering.Compound(arrow_lines)
-            arrow.add_attr(rendering.Transform(rotation=direction_angle[player.direction]))
+            arrow.add_attr(rendering.Transform(rotation=player.direction.angle))
             arrow.add_attr(rendering.Transform(translation=(0.5, 0.5)))
             arrow.add_attr(
                 rendering.Transform(

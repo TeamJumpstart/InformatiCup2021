@@ -1,4 +1,3 @@
-from environments.spe_ed import cartesian_directions, turn_left, turn_right
 from policies.policy import Policy
 
 
@@ -9,13 +8,13 @@ class MazeWalkerPolicy(Policy):
     """
     def act(self, cells, player, opponents, round):
         # TODO Refactor and improve
-        if cells.is_free(player.position + cartesian_directions[player.direction]):
+        if cells.is_free(player.position + player.direction.cartesian):
             return "change_nothing"
 
-        if cells.is_free(player.position + cartesian_directions[turn_left(player.direction)]):
+        if cells.is_free(player.position + player.direction.turn_left().cartesian):
             return "turn_left"
 
-        if cells.is_free(player.position + cartesian_directions[turn_right(player.direction)]):
+        if cells.is_free(player.position + player.direction.turn_right().cartesian):
             return "turn_right"
 
         return "change_nothing"  # We're surrounded

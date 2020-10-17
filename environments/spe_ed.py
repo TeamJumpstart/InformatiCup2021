@@ -2,29 +2,30 @@ from dataclasses import dataclass
 import numpy as np
 
 actions = ("turn_left", "turn_right", "slow_down", "speed_up", "change_nothing")
-directions = ("right", "up", "left", "down")
-direction_angle = {
-    "right": 0,
-    "up": np.pi / 2,
-    "left": np.pi,
-    "down": np.pi * 3 / 2,
-}
-cartesian_directions = {
-    "right": np.array([1, 0]),
-    "up": np.array([0, 1]),
-    "left": np.array([-1, 0]),
-    "down": np.array([0, -1]),
-}
 
 
-def turn_left(direction):
-    """Rotate a direction one turn to the left."""
-    return directions[(directions.index(direction) + 1) % 4]
+@dataclass(frozen=True)
+class Direction:
+    """Common operations for directions"""
+    name: str
+    angle: float
+    cartesian: np.ndarray
+
+    def turn_left(self):
+        """Rotates one turn to the left."""
+        return directions[(directions.index(self) + 1) % 4]
+
+    def turn_right(self):
+        """Rotates one turn to the right."""
+        return directions[(directions.index(self) + 3) % 4]
 
 
-def turn_right(direction):
-    """Rotate a direction one turn to the right."""
-    return directions[(directions.index(direction) + 3) % 4]
+directions = (
+    Direction("right", 0, np.array([1, 0])),
+    Direction("up", np.pi / 2, np.array([0, 1])),
+    Direction("left", np.pi, np.array([-1, 0])),
+    Direction("down", np.pi * 3 / 2, np.array([0, -1])),
+)
 
 
 @dataclass
