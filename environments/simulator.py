@@ -1,5 +1,6 @@
 import numpy as np
-from environments.spe_ed import Spe_edEnv, Player, directions, cartesian_directions, turn_left, turn_right
+from environments.spe_ed import Player, directions, cartesian_directions, turn_left, turn_right
+from environments.spe_ed_env import Spe_edEnv
 
 
 class SimulatedSpe_edEnv(Spe_edEnv):
