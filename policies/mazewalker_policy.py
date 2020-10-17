@@ -2,7 +2,7 @@ from policies.policy import Policy
 
 
 class MazeWalkerPolicy(Policy):
-    """Policy goes straight forward until it hits a wall, then turns.
+    """Policy goes straight forward until it hits a wall, then follows the wall.
 
     Baseline strategy, smarter policies should be able to outperform this.
     
@@ -24,8 +24,6 @@ class MazeWalkerPolicy(Policy):
         forward = player.direction.cartesian
         left = player.direction.turn_left().cartesian
         right = player.direction.turn_right().cartesian
-        
-        # TODO Refactor and improve
 
         if self.hit_wall: # follow the wall
             if is_free(left):
@@ -33,7 +31,7 @@ class MazeWalkerPolicy(Policy):
             elif is_free(forward):
                 return "change_nothing"
             elif is_free(right):
-                return "turn right"
+                return "turn_right"
         else: # search for the wall
             if is_free(forward):
                 return "change_nothing"
