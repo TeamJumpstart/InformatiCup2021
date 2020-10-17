@@ -18,6 +18,16 @@ cartesian_directions = {
 }
 
 
+def turn_left(direction):
+    """Rotate a direction one turn to the left."""
+    return directions[(directions.index(direction) + 1) % 4]
+
+
+def turn_right(direction):
+    """Rotate a direction one turn to the right."""
+    return directions[(directions.index(direction) + 3) % 4]
+
+
 @dataclass
 class Player:
     """Player object."""

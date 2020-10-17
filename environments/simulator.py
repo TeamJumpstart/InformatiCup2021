@@ -1,5 +1,5 @@
 import numpy as np
-from environments.spe_ed import Spe_edEnv, Player, directions, cartesian_directions
+from environments.spe_ed import Spe_edEnv, Player, directions, cartesian_directions, turn_left, turn_right
 
 
 class SimulatedSpe_edEnv(Spe_edEnv):
@@ -11,9 +11,9 @@ class SimulatedSpe_edEnv(Spe_edEnv):
 
     def _perform_action(self, player, action):
         if action == 'turn_left':
-            player.direction = directions[(directions.index(player.direction) + 1) % 4]
+            player.direction = turn_left(player.direction)
         elif action == 'turn_right':
-            player.direction = directions[(directions.index(player.direction) + 3) % 4]
+            player.direction = turn_right(player.direction)
         elif action == 'slow_down':
             if player.speed <= 1:  # Check minimum speed
                 player.active = False
@@ -66,6 +66,7 @@ class SimulatedSpe_edEnv(Spe_edEnv):
                 else:
                     # No collision
                     self.cells[pos[0], pos[1]] = player.player_id
+                    newly_occupied[tuple(pos)] = player  # Remember this cell
             player.x = pos[0]
             player.y = pos[1]
 
