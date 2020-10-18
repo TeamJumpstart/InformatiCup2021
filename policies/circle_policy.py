@@ -21,7 +21,7 @@ class CirclePolicy(Policy):
             return "turn_right"
         elif is_free(forward):
             return "change_nothing"
-        if is_free(left):
+        elif is_free(left):
             return "turn_left"
 
         return "change_nothing"  # We're surrounded
