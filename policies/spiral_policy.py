@@ -31,17 +31,21 @@ class SpiralPolicy(Policy):
         if is_free(forward) & is_free(2*forward):
                 return "change_nothing"
 
-        if self.clockwise:            
+        if self.clockwise:
+            if is_free(right) & is_free(left) & (not is_free(forward)):
+                self.clockwise = False
+                return "turn_left"
             if is_free(right):
                 return "turn_right"
             elif is_free(left):
-                self.clockwise = False
                 return "turn_left"
         else:
+            if is_free(right) & is_free(left) & (not is_free(forward)):
+                self.clockwise = True
+                return "turn_right"
             if is_free(left):
                 return "turn_left"
             elif is_free(right):
-                self.clockwise = True
                 return "turn_right"
 
         return "change_nothing"  # We're surrounded
