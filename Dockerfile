@@ -10,5 +10,8 @@ RUN pipenv install --deploy
 # Copy code
 COPY . ./
 
+# Run unit tests
+RUN pipenv run python -m unittest discover -s './tests' -p '*_test.py'
+
 # Entry point
 CMD ["pipenv", "run", "python", "./main.py" ]

@@ -1,4 +1,3 @@
-import numpy as np
 from policies.policy import Policy
 
 
@@ -18,7 +17,7 @@ class ScriptedPolicy(Policy):
 
     def act(self, cells, player, opponents, rounds):
         """Choose action according to plan."""
-        if round < len(self.actions):
-            return self.actions[round]
+        if rounds - 1 < len(self.actions):
+            return self.actions[rounds - 1]
 
         return "change_nothing"
