@@ -45,28 +45,28 @@ class SimulatedSpe_edEnv(Spe_edEnv):
         for player in self.players:
             if not player.active:
                 continue
-            pos = np.array([player.x, player.y])
+            pos = player.position
             for i in range(player.speed):
                 pos += player.direction.cartesian
-                if pos[0] < 0 or pos[1] < 0 or pos[0] >= self.width or pos[1] >= self.height:
+                if pos[0] < 0 or pos[1] < 0 or pos[1] >= self.width or pos[0] >= self.height:
                     # Player left bounds
                     player.active = False
-                    break
+                    continue
 
                 # Check for jumps
                 if self.round % 6 == 0 and i > 0 and i < player.speed - 1:
                     continue
 
-                if self.cells[pos[0], pos[1]] != 0:
+                if self.cells[pos[1], pos[0]] != 0:
                     # Collision
                     player.active = False
-                    self.cells[pos[0], pos[1]] = -1
+                    self.cells[pos[1], pos[0]] = -1
 
                     if tuple(pos) in newly_occupied:  # Occupancy is from this round
                         newly_occupied[tuple(pos)].active = False  # Other player loses, too
                 else:
                     # No collision
-                    self.cells[pos[0], pos[1]] = player.player_id
+                    self.cells[pos[1], pos[0]] = player.player_id
                     newly_occupied[tuple(pos)] = player  # Remember this cell
             player.x = pos[0]
             player.y = pos[1]
@@ -94,10 +94,10 @@ class SimulatedSpe_edEnv(Spe_edEnv):
             # Choose startion position
             x = self.rng.integers(0, self.width)
             y = self.rng.integers(0, self.height)
-            while self.cells[x, y] != 0:  # Ensure chosen location is empty
+            while self.cells[y, x] != 0:  # Ensure chosen location is empty
                 x = self.rng.integers(0, self.width)
                 y = self.rng.integers(0, self.height)
-            self.cells[x, y] = player_id  # Occupy position of player
+            self.cells[y, x] = player_id  # Occupy position of player
 
             self.players.append(
                 Player(

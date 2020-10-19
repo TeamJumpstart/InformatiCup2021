@@ -19,12 +19,15 @@ class Direction:
         """Rotates one turn to the right."""
         return directions[(directions.index(self) + 1) % 4]
 
+    def __repr__(self):
+        return self.name
+
 
 directions = (
     Direction("right", 0, np.array([1, 0])),
-    Direction("up", np.pi / 2, np.array([0, 1])),
+    Direction("down", np.pi / 2, np.array([0, 1])),
     Direction("left", np.pi, np.array([-1, 0])),
-    Direction("down", np.pi * 3 / 2, np.array([0, -1])),
+    Direction("up", np.pi * 3 / 2, np.array([0, -1])),
 )
 
 
@@ -54,12 +57,12 @@ class Map:
         self.height = cells.shape[1]
 
     def __getitem__(self, key):
-        x, y = key
+        y, x = key
         # Check if index is inside bounds
         if 0 <= x < self.width and 0 <= y < self.height:
-            return self.cells[x, y]
+            return self.cells[y, x]
         return None  # Otherwise return None
 
     def is_free(self, pos):
         """Check if target location is not occupied"""
-        return self[pos[0], pos[1]] == 0
+        return self[pos[1], pos[0]] == 0

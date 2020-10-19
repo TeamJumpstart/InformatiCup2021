@@ -36,11 +36,11 @@ class Spe_edEnv(gym.Env):
             (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0), (1.0, 1.0, 0), (0.0, 1.0, 1.0), (1.0, 0.0, 1.0)
         ]
         collision_color = (0.0, 0.0, 0.0)
-        xs = np.linspace(1, screen_width, self.cells.shape[0] + 1)  # Cell borders
-        ys = np.linspace(1, screen_height, self.cells.shape[1] + 1)[::-1]
+        xs = np.linspace(1, screen_width, self.width + 1)  # Cell borders
+        ys = np.linspace(1, screen_height, self.height + 1)[::-1]
         for x in range(self.width):
             for y in range(self.height):
-                cell_state = self.cells[x, y]
+                cell_state = self.cells[y, x]
                 if cell_state != 0:
                     color = player_colors[(cell_state - 1) % len(player_colors)] if cell_state > 0 else collision_color
                     self.viewer.draw_polygon(  # Quad for current cell
