@@ -6,30 +6,25 @@ class SpiralPolicy(Policy):
 
     Baseline strategy, smarter policies should be able to outperform this.
     """
-
     def __init__(self):
-        """Initialize MazeWalkerPolicy.
-
-        """
+        """Initialize MazeWalkerPolicy."""
         self.clockwise = True
 
     def act(self, cells, player, opponents, round):
-        
-        """ directions - relative to player direction 
-        """
+
+        # directions - relative to player direction
         forward = player.direction.cartesian
         backward = -player.direction.cartesian
         left = player.direction.turn_left().cartesian
         right = player.direction.turn_right().cartesian
 
-        """ is_free - relative to player position 
-        """
-        def is_free(pos):            
+        def is_free(pos):
+            """is_free relative to player position."""
             return cells.is_free(player.position + pos)
 
-        # check if we can create a spiral loop 
-        if is_free(forward) & is_free(2*forward):
-                return "change_nothing"
+        # check if we can create a spiral loop
+        if is_free(forward) & is_free(2 * forward):
+            return "change_nothing"
 
         if self.clockwise:
             if is_free(right) & is_free(left) & (not is_free(forward)):
