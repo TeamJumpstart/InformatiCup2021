@@ -1,6 +1,6 @@
 import argparse
 from tqdm import tqdm
-from environments import SimulatedSpe_edEnv
+from environments import SimulatedSpe_edEnv, WebsocketEnv
 from policies import RandomPolicy
 
 
@@ -21,9 +21,14 @@ def simulate(env, pol):
             pbar.update()
             pbar.set_description(f"{pol} {wins/runs:.2f}")
 
+    # env = SimulatedSpe_edEnv(40, 40, [RandomPolicy() for _ in range(5)])
+    env = WebsocketEnv(40, 40, [RandomPolicy() for _ in range(5)])
+    pol = RandomPolicy()
+
 
 def show(env, pol, fps=1):
     obs = env.reset()
+    print(obs)
     done = False
 
     while not done:

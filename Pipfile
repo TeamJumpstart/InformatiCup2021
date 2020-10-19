@@ -12,6 +12,7 @@ numpy = "*"
 gym = "*"
 tqdm = "*"
 imageio-ffmpeg = "*"
+websockets = "*"
 
 [requires]
 python_version = "3.8"
