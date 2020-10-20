@@ -52,6 +52,29 @@ class Player:
         """Create a copy of this player."""
         return Player(self.player_id, self.x, self.y, self.direction, self.speed, self.active, self.name)
 
+    def perform(self, action):
+        """Let the player perform one action.
+
+        This does not actually move the player.
+        """
+        if not self.active:
+            return
+
+        if action == 'turn_left':
+            self.direction = self.direction.turn_left()
+        elif action == 'turn_right':
+            self.direction = self.direction.turn_right()
+        elif action == 'slow_down':
+            if self.speed <= 1:  # Check minimum speed
+                self.active = False
+            else:
+                self.speed -= 1
+        elif action == 'speed_up':
+            if self.speed >= 10:  # Check maximum speed
+                self.active = False
+            else:
+                self.speed += 1
+
     @classmethod
     def from_json(cls, player_id, data):
         """Create Player object from json data."""
