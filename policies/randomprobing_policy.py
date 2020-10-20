@@ -15,7 +15,7 @@ class RandomProbingPolicy(Policy):
 
     Baseline strategy, each smarter policy should be able to outperform this.
     """
-    def __init__(self, n_steps=10, n_probes=3, seed=None):
+    def __init__(self, n_steps=10, n_probes=100, seed=None):
         """Initialize RandomProbingPolicy.
 
         Args:
@@ -47,8 +47,8 @@ class RandomProbingPolicy(Policy):
 >>>>>>> bc49d37... RandomProbingPolicy: formating
             """Performs one recursive probe run with random actions and returns the number of steps survived."""
             pos = pos + direction.cartesian
-            if cells.is_free(pos) and (not np.any(steps == pos)) and (n_steps > 0):
-                steps = steps + [pos]
+            if cells.is_free(pos) and not (tuple(pos) in steps) and (n_steps > 0):
+                steps = steps + [tuple(pos)]
                 action = self.rng.choice(directions)
                 return 1 + perform_probe_run(pos, action, n_steps - 1, steps)
             else:
@@ -58,5 +58,6 @@ class RandomProbingPolicy(Policy):
         for _ in range(self.n_probes):
             for d, direction in enumerate(directions):
                 sum_actions[d] += perform_probe_run(player.position, direction, self.n_steps)
+        print(sum_actions)
 
         return actions[np.argmax(sum_actions)]
