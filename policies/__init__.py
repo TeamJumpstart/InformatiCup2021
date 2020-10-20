@@ -15,5 +15,5 @@ __all__ = [
     "SpiralPolicy",
     "CirclePolicy",
     "FutureStepsPolicy",
-    "RandomProbingPolicy"
+    "RandomProbingPolicy",
 ]
