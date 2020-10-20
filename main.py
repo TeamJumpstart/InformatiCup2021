@@ -28,7 +28,6 @@ def simulate(env, pol):
 
 def show(env, pol, fps=1):
     obs = env.reset()
-    print(obs)
     done = False
 
     while not done:
