@@ -29,6 +29,7 @@ directions = (
     Direction("left", np.pi, np.array([-1, 0])),
     Direction("up", np.pi * 3 / 2, np.array([0, -1])),
 )
+directions_by_name = {d.name: d for d in directions}
 
 
 @dataclass
@@ -46,6 +47,23 @@ class Player:
     def position(self):
         """Return current position as ndarray."""
         return np.array([self.x, self.y])
+
+    def copy(self):
+        """Create a copy of this player."""
+        return Player(self.player_id, self.x, self.y, self.direction, self.speed, self.active, self.name)
+
+    @classmethod
+    def from_json(cls, player_id, data):
+        """Create Player object from json data."""
+        return cls(
+            player_id=int(player_id),
+            x=data['x'],
+            y=data['y'],
+            direction=directions_by_name[data['direction']],
+            speed=data['speed'],
+            active=data['active'],
+            name=data.get('name'),
+        )
 
 
 class Map:

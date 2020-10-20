@@ -33,9 +33,7 @@ class WebsocketEnv(Spe_edEnv):
         state = json.loads(state_json)
         print("<", "state received")
 
-        self.players = [
-            Player(player_id=player_id, **player_data) for player_id, player_data in state["players"].items()
-        ]
+        self.players = [Player.from_json(player_id, player_data) for player_id, player_data in state["players"].items()]
         self.width = state["width"]
         self.height = state["height"]
         self.cells = np.array(state["cells"])
