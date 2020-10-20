@@ -58,6 +58,5 @@ class RandomProbingPolicy(Policy):
         for _ in range(self.n_probes):
             for d, direction in enumerate(directions):
                 sum_actions[d] += perform_probe_run(player.position, direction, self.n_steps)
-        print(sum_actions)
 
         return actions[np.argmax(sum_actions)]
