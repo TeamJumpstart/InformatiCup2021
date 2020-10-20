@@ -1,5 +1,6 @@
 import numpy as np
-from environments.spe_ed import Spe_edEnv, Player
+from environments.spe_ed import Player
+from environments.spe_ed_env import Spe_edEnv
 import asyncio
 import json
 import os
@@ -7,8 +8,8 @@ import websockets
 
 
 class WebsocketEnv(Spe_edEnv):
-    def __init__(self, width, height, opponent_policies, seed=None):
-        Spe_edEnv.__init__(self, width, height)
+    def __init__(self, opponent_policies, seed=None):
+        Spe_edEnv.__init__(self, 40, 40)
 
         self.opponent_policies = opponent_policies
         self.seed(seed)

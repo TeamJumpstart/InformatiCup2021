@@ -21,10 +21,6 @@ def simulate(env, pol):
             pbar.update()
             pbar.set_description(f"{pol} {wins/runs:.2f}")
 
-    # env = SimulatedSpe_edEnv(40, 40, [RandomPolicy() for _ in range(5)])
-    env = WebsocketEnv(40, 40, [RandomPolicy() for _ in range(5)])
-    pol = RandomPolicy()
-
 
 def show(env, pol, fps=1):
     obs = env.reset()
@@ -70,6 +66,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     env = SimulatedSpe_edEnv(40, 40, [RandomPolicy() for _ in range(5)])
+    # env = WebsocketEnv([RandomPolicy() for _ in range(5)])
     pol = RandomPolicy()
 
     if args.render is not None:
