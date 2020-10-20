@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 from numpy.testing import assert_array_equal
 from environments import SimulatedSpe_edEnv, Spe_edSimulator
-from environments.spe_ed import Player, directions
+from environments.spe_ed import Player, directions, SavedGame
 
 
 class TestSimulatorEnv(unittest.TestCase):
@@ -171,3 +171,19 @@ class TestSimulator(unittest.TestCase):
         self.assertFalse(sim.players[0].active)  # Player died
         self.assertEqual(sim.players[0].speed, 1)  # Speed does not change
         self.assertEqual(sim.players[0].direction.name, "right")  # Direction does not change
+
+    def test_replay(self):
+        # Initialize simulation
+        saved_game = SavedGame.load(r"tests\spe_ed-1603124417603.json")
+        sim = Spe_edSimulator(saved_game.cell_states[0], saved_game.player_states[0], 1)
+
+        for t in range(saved_game.rounds):
+            actions = saved_game.infer_actions(t)
+            sim = sim.step(actions)
+
+            # Compare cells
+            assert_array_equal(sim.cells, saved_game.cell_states[t + 1])
+            # Compare players
+            self.assertListEqual(sim.players, saved_game.player_states[t + 1])
+            # Compare rounds
+            self.assertEqual(sim.rounds, t + 2)

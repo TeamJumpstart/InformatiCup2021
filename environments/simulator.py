@@ -19,7 +19,7 @@ def simulate(cells, players, rounds, actions):
         pos = player.position
         for i in range(player.speed):
             pos += player.direction.cartesian
-            if pos[0] < 0 or pos[1] < 0 or pos[1] >= width or pos[0] >= height:
+            if pos[0] < 0 or pos[1] < 0 or pos[1] >= height or pos[0] >= width:
                 # Player left bounds
                 player.active = False
                 continue
