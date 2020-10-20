@@ -107,3 +107,26 @@ class SimulatedSpe_edEnv(Spe_edEnv):
         self.controlled_player = self.players[0]  # Control first player
 
         return self._get_obs(self.controlled_player)
+
+
+class Spe_edSimulator:
+    """State for the simulate function.
+
+    Keeps a history.
+    """
+    def __init__(self, cells, players, rounds, parent=None):
+        self.cells = cells
+        self.players = players
+        self.rounds = rounds
+        self.parent = parent
+
+    def step(self, actions):
+        """Perform one simulation step"""
+        return Spe_edSimulator(
+            *simulate(self.cells.copy(), [p.copy() for p in self.players], self.rounds, actions),
+            parent=self,
+        )
+
+    def undo(self):
+        """Undo the last simulation step"""
+        return self.parent
