@@ -7,14 +7,14 @@ class CirclePolicy(Policy):
     Baseline strategy, smarter policies should be able to outperform this.
     """
     def act(self, cells, player, opponents, round):
-        
+
         # directions - relative to player direction
         forward = player.direction.cartesian
         left = player.direction.turn_left().cartesian
         right = player.direction.turn_right().cartesian
-        
+
         # if_free - relative to player position
-        def is_free(pos):            
+        def is_free(pos):
             return cells.is_free(player.position + pos)
 
         if is_free(right):

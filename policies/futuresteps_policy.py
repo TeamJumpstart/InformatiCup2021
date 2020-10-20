@@ -13,8 +13,10 @@ class FutureStepsPolicy(Policy):
 
         Args:
             n_steps: Number of steps to predict into the future.
-            dynamic: If `True` considers the predicted steps into account for future moves, e.g. updates the cell state for the agent itself,
-                     if `False` does not update the cell state after a move and only considers the initial static board state for each prediction step.
+            dynamic: If `True` considers the predicted steps into account for future moves,
+            e.g. updates the cell state for the agent itself,
+                     if `False` does not update the cell state after a move and only considers
+                     the initial static board state for each prediction step.
             seed: Seed for the random number generator. Use a fixed seed for reproducibility,
                   or pass `None` for a random seed.
             p: Propability weights of each action. Pass `None` for uniform distribution.
