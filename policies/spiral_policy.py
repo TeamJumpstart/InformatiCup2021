@@ -14,7 +14,6 @@ class SpiralPolicy(Policy):
 
         # directions - relative to player direction
         forward = player.direction.cartesian
-        backward = -player.direction.cartesian
         left = player.direction.turn_left().cartesian
         right = player.direction.turn_right().cartesian
 

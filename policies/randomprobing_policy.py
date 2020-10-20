@@ -4,7 +4,7 @@ from policies.policy import Policy
 
 class RandomProbingPolicy(Policy):
     """Policy that performs {n_probe} random runs to check whether
-    the agent will survive for {n_steps} within the current cell state.    
+    the agent will survive for {n_steps} within the current cell state.
 
     TODO: extend by `probing_policy` argument, which defines the behaviour for the probe runs.
 
@@ -30,7 +30,7 @@ class RandomProbingPolicy(Policy):
         #    raise ValueError(f"Number of probabilities {p} does mot match number of actions {p_actions}")
         #self.p = p
 
-    def act(self, cells, player, opponents, rounds):        
+    def act(self, cells, player, opponents, rounds):
         """Choose action randomly."""
 
         actions = np.array(["change_nothing", "turn_left", "turn_right"])
@@ -38,7 +38,7 @@ class RandomProbingPolicy(Policy):
         sum_actions = np.zeros(actions.shape)
 
         def perform_probe_run(pos, direction, n_steps, steps=None):
-            """Performs one recursive probe run with random actions and returns the number of steps survived."""            
+            """Performs one recursive probe run with random actions and returns the number of steps survived."""
             pos = pos + direction.cartesian
             if cells.is_free(pos) & (not np.any(steps == pos)) & (n_steps > 0):
                 np.append(steps, pos, axis=0)
