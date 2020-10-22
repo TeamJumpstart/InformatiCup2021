@@ -13,10 +13,10 @@ class WebsocketEnv(Spe_edEnv):
 
         self.url = url
         self.key = key
-        self.states = []
 
     def reset(self):
         """Build connection, save state, and return observation"""
+        self.states = []
         self.websocket = asyncio.get_event_loop().run_until_complete(self.connect())
         asyncio.get_event_loop().run_until_complete(self.await_state())
         return self._get_obs(self.controlled_player)
