@@ -5,6 +5,7 @@ import asyncio
 import json
 import os
 import websockets
+from datetime import datetime
 
 
 class WebsocketEnv(Spe_edEnv):
@@ -15,6 +16,7 @@ class WebsocketEnv(Spe_edEnv):
         self.seed(seed)
         self.url = os.environ["URL"]
         self.key = os.environ["KEY"]
+        self.states = []
 
     def reset(self):
         """Build connection, save state, and return observation"""
@@ -30,6 +32,7 @@ class WebsocketEnv(Spe_edEnv):
     async def await_state(self):
         """Wait for received game state and save state in class attributes"""
         state_json = await self.websocket.recv()
+        self.states.append(state_json)
         state = json.loads(state_json)
         print("<", "state received")
 
@@ -48,6 +51,9 @@ class WebsocketEnv(Spe_edEnv):
 
         asyncio.get_event_loop().run_until_complete(self.await_state())
         reward = 1 if self.done and self.controlled_player.active else 0
+        if self.done:
+            with open("./logs/" + datetime.now().strftime("%Y_%m_%d_%H_%M_%S"), "w") as file:
+                json.dump(self.states, file)
         return self._get_obs(self.controlled_player), reward, self.done, {}
 
     async def send_action(self, action):
