@@ -2,6 +2,7 @@ import unittest
 from environments import WebsocketEnv
 import websockets
 import asyncio
+import json
 
 
 class TestWebsocketEnvironment(unittest.TestCase):
@@ -17,9 +18,21 @@ class TestWebsocketEnvironment(unittest.TestCase):
     def tearDown(self):
         asyncio.get_event_loop().stop()
 
+    def dummy_test(self):
+        pass
+
     def test_connection(self):
         env = WebsocketEnv(self.url, self.key)
+        obs = env.reset()
+        done = False
+        while not done:
+            action = "change_nothing"
+            obs, reward, done, _ = env.step(action)
 
     async def handler(self):
-        #send
-        data = await self.websocket_server.recv()
+        file = open("test/spe_ed-1603124417603.json", "r")
+        state_json = json.loads(file)
+        file.close()
+        await self.websocket_server.send(state_json)
+        message = await self.websocket_server.recv()
+        self.assertEqual(json.loads(message), "change_nothing")
