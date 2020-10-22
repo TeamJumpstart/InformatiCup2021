@@ -67,7 +67,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     env = SimulatedSpe_edEnv(40, 40, [RandomPolicy() for _ in range(5)])
-    # env = WebsocketEnv([RandomPolicy() for _ in range(5)], os.environ["URL"], os.environ["KEY"])
+    # env = WebsocketEnv(os.environ["URL"], os.environ["KEY"])
     pol = RandomPolicy()
 
     if args.render is not None:

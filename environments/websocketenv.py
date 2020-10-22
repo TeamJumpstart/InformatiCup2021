@@ -8,11 +8,9 @@ from datetime import datetime
 
 
 class WebsocketEnv(Spe_edEnv):
-    def __init__(self, opponent_policies, url, key, seed=None):
+    def __init__(self, url, key):
         Spe_edEnv.__init__(self, 40, 40)
 
-        self.opponent_policies = opponent_policies
-        self.seed(seed)
         self.url = url
         self.key = key
         self.states = []
