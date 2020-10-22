@@ -3,19 +3,18 @@ from environments.spe_ed import Player
 from environments.spe_ed_env import Spe_edEnv
 import asyncio
 import json
-import os
 import websockets
 from datetime import datetime
 
 
 class WebsocketEnv(Spe_edEnv):
-    def __init__(self, opponent_policies, seed=None):
+    def __init__(self, opponent_policies, url, key, seed=None):
         Spe_edEnv.__init__(self, 40, 40)
 
         self.opponent_policies = opponent_policies
         self.seed(seed)
-        self.url = os.environ["URL"]
-        self.key = os.environ["KEY"]
+        self.url = url
+        self.key = key
         self.states = []
 
     def reset(self):

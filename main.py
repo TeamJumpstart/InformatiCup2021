@@ -2,6 +2,7 @@ import argparse
 from tqdm import tqdm
 from environments import SimulatedSpe_edEnv, WebsocketEnv
 from policies import RandomPolicy
+import os
 
 
 def simulate(env, pol):
@@ -66,7 +67,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     env = SimulatedSpe_edEnv(40, 40, [RandomPolicy() for _ in range(5)])
-    # env = WebsocketEnv([RandomPolicy() for _ in range(5)])
+    # env = WebsocketEnv([RandomPolicy() for _ in range(5)], os.environ["URL"], os.environ["KEY"])
     pol = RandomPolicy()
 
     if args.render is not None:
