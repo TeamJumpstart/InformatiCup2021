@@ -174,7 +174,7 @@ class TestSimulator(unittest.TestCase):
 
     def test_replay(self):
         # Initialize simulation
-        saved_game = SavedGame.load(r"tests\spe_ed-1603124417603.json")
+        saved_game = SavedGame.load(r"tests/spe_ed-1603124417603.json")
         sim = Spe_edSimulator(saved_game.cell_states[0], saved_game.player_states[0], 1)
 
         for t in range(saved_game.rounds):
