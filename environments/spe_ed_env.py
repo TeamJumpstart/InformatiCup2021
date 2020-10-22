@@ -21,65 +21,32 @@ class Spe_edEnv(gym.Env):
         self.viewer = None
 
     def render(self, mode='human', screen_width=720, screen_height=720):
-        """Render the Spe_ed game state.
+        from visualization import Spe_edAx
+        import matplotlib.pyplot as plt
 
-        Uses the binding provided by Gym for now, although it's not terribly efficient.
-        """
-        from gym.envs.classic_control import rendering
-
-        # Create viewer if neccesary
         if self.viewer is None:
-            self.viewer = rendering.Viewer(screen_width, screen_height)
-
-        # Draw occupied cells
-        player_colors = [
-            (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0), (1.0, 1.0, 0), (0.0, 1.0, 1.0), (1.0, 0.0, 1.0)
-        ]
-        collision_color = (0.0, 0.0, 0.0)
-        xs = np.linspace(1, screen_width, self.width + 1)  # Cell borders
-        ys = np.linspace(1, screen_height, self.height + 1)[::-1]
-        for x in range(self.width):
-            for y in range(self.height):
-                cell_state = self.cells[y, x]
-                if cell_state != 0:
-                    color = player_colors[(cell_state - 1) % len(player_colors)] if cell_state > 0 else collision_color
-                    self.viewer.draw_polygon(  # Quad for current cell
-                        [(xs[x], ys[y + 1]), (xs[x + 1], ys[y + 1]), (xs[x + 1], ys[y]), (xs[x], ys[y])],
-                        color=color,
-                    )
-
-        # Draw player directions
-        arrow_lines = [  # Construct arrow
-            rendering.Line((-0.4, 0.0), (0.4, 0.0)),
-            rendering.Line((0.1, -0.3), (0.4, 0.0)),
-            rendering.Line((0.4, 0.0), (0.1, 0.3)),
-        ]
-        for geom in arrow_lines:  # Set arrow linewidth
-            geom.linewidth.stroke = 1.5
-
-        for player in self.players:
-            if not player.active:  # No direction for inactive players
-                continue
-            # Rotate and position arrow
-            arrow = rendering.Compound(arrow_lines)
-            arrow.add_attr(rendering.Transform(rotation=player.direction.angle))
-            arrow.add_attr(rendering.Transform(translation=(0.5, 0.5)))
-            arrow.add_attr(
-                rendering.Transform(
-                    translation=(xs[player.x], ys[player.y]),
-                    scale=(xs[1] - xs[0], ys[1] - ys[0]),
-                )
+            fig = plt.figure(
+                figsize=(screen_width / 100, screen_height / 100),
+                dpi=100,
+                tight_layout=True,
             )
-            self.viewer.add_onetime(arrow)
+            ax = plt.subplot(1, 1, 1)
+            self.viewer = Spe_edAx(fig, ax, self.cells, self.players)
 
-        # Draw grid
-        color_grid = (0.5, 0.5, 0.5)
-        for x in xs:
-            self.viewer.draw_line(start=(x, ys[0]), end=(x, ys[-1]), color=color_grid)
-        for y in ys:
-            self.viewer.draw_line(start=(xs[0], y), end=(xs[-1], y), color=color_grid)
+            if mode == 'human':
+                plt.show(block=False)
+        else:
+            self.viewer.update(self.cells, self.players)
 
-        return self.viewer.render(return_rgb_array=mode == 'rgb_array')
+        if mode == 'human':
+            plt.pause(1e-6)  # Let plot handlers resolve and update window
+            return not self.viewer.closed
+        elif mode == 'rgb_array':
+            # Redraw and fetch rgb-array from plot
+            fig = plt.gcf()
+            fig.canvas.draw()
+            width, height = fig.canvas.get_width_height()
+            return np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8).reshape(height, width, 3)
 
     def _validate_action(self, action):
         """Change illegal actions to do nothing"""

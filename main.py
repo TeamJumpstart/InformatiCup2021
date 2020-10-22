@@ -1,4 +1,6 @@
 import argparse
+import time
+import matplotlib.pyplot as plt
 from tqdm import tqdm
 from environments import SimulatedSpe_edEnv, WebsocketEnv
 from environments.logging import Spe_edLogger, CloudUploader
@@ -32,23 +34,29 @@ def simulate(env, pol):
             pbar.set_description(f"{pol} {wins/runs:.2f}")
 
 
-def show(env, pol, fps=1):
+def show(env, pol, fps=None, keep_open=True):
     obs = env.reset()
     done = False
 
-    while not done:
-        for _ in range(60 // fps):
+    start = time.time()
+    with tqdm() as pbar:
+        while not done:
+            if fps is None or (time.time() - start) * fps < env.rounds:  # Only render if there is time
+                if not env.render(screen_width=720, screen_height=720):
+                    return
+                if fps is not None and (time.time() - start) * fps < env.rounds:
+                    plt.pause(1 / fps)  # Sleep
+
+            action = pol.act(*obs)
+            obs, reward, done, _ = env.step(action)
+            pbar.update()
+
+    if keep_open:
+        # Show final state
+        while True:
             if not env.render(screen_width=720, screen_height=720):
                 return
-
-        action = pol.act(*obs)
-        obs, reward, done, _ = env.step(action)
-    print(f"Reward: {reward}")
-
-    # Show final state
-    while True:
-        if env.render(screen_width=720, screen_height=720):
-            return
+            plt.pause(0.01)  # Sleep
 
 
 def render(env, pol, output_file):
@@ -62,10 +70,12 @@ def render(env, pol, output_file):
     writer.send(None)  # seed the generator
     writer.send(env.render(mode="rgb_array", screen_width=720, screen_height=720).copy(order='C'))
 
-    while not done:
-        action = pol.act(*obs)
-        obs, _, done, _ = env.step(action)
-        writer.send(env.render(mode="rgb_array", screen_width=720, screen_height=720).copy(order='C'))
+    with tqdm() as pbar:
+        while not done:
+            action = pol.act(*obs)
+            obs, _, done, _ = env.step(action)
+            writer.send(env.render(mode="rgb_array", screen_width=720, screen_height=720).copy(order='C'))
+            pbar.update()
     writer.close()
 
 
@@ -76,6 +86,7 @@ if __name__ == "__main__":
     parser.add_argument('--sim', action='store_true', help='Use simulator.')
     parser.add_argument('--log_dir', type=str, default="logs/", help='Directory for logs.')
     parser.add_argument('--upload', action='store_true', help='Use simulator.')
+    parser.add_argument('--fps', type=int, default=None, help='FPS for showing.')
     args = parser.parse_args()
 
     if args.sim:
@@ -99,6 +110,6 @@ if __name__ == "__main__":
     if args.render is not None:
         render(env, pol, args.render)
     elif args.show:
-        show(env, pol)
+        show(env, pol, fps=args.fps)
     else:
         simulate(env, pol)
