@@ -5,7 +5,7 @@ WORKDIR /spe_ed
 # Install dependencies
 RUN pip install pipenv
 COPY ["Pipfile", "Pipfile.lock", "./"]
-RUN pipenv install --deploy
+RUN pipenv install --system --deploy --ignore-pipfile
 
 # Copy code
 COPY . ./
