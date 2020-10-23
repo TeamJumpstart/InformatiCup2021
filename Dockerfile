@@ -3,7 +3,10 @@ FROM python:3.8.6
 WORKDIR /spe_ed
 
 # Install dependencies
-RUN pip install pipenv
+ENV PIP_NO_CACHE_DIR=false
+RUN apt-get update && \
+    apt-get install -y gcc gfortran libopenblas-dev liblapack-dev && \
+    pip install -U pip pipenv Cython
 COPY ["Pipfile", "Pipfile.lock", "./"]
 RUN pipenv install --system --deploy --ignore-pipfile
 
@@ -11,7 +14,7 @@ RUN pipenv install --system --deploy --ignore-pipfile
 COPY . ./
 
 # Run unit tests
-RUN pipenv run python -m unittest discover -s './tests' -p '*_test.py'
+RUN python -m unittest discover -s './tests' -p '*_test.py'
 
 # Entry point
-CMD ["pipenv", "run", "python", "./main.py" ]
+ENTRYPOINT ["python", "./main.py" ]
