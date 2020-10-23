@@ -1,11 +1,11 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "92b137080ea6c1226ca2757134abca123f196df585c6754842a81185148cd7f5"
+            "sha256": "752f52f7d1fd00ea17c9ae082f81ea8420c7dce3d76e1eba0bba9adc2ba3a7c1"
         },
         "pipfile-spec": 6,
         "requires": {
-            "python_version": "3.8"
+            "python_version": "3.8.6"
         },
         "sources": [
             {
@@ -28,7 +28,7 @@
             "hashes": [
                 "sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d"
             ],
-            "markers": "python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "markers": "python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2'",
             "version": "==0.18.2"
         },
         "gym": {
