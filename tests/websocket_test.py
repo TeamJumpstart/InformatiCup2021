@@ -5,32 +5,68 @@ import asyncio
 import json
 
 
+class DummyServer:
+    def __init__(self, url, port):
+        self.url = url
+        self.port = port
+        self.step_counter = 0
+        file = open("tests/spe_ed-1603124417603.json", "r")
+        self.states = json.load(file)
+        file.close()
+        # Start new thread from current loop
+        self.__serving = asyncio.get_event_loop().run_in_executor(None, self.run)
+        self.__starting = asyncio.get_event_loop().create_future()
+        asyncio.get_event_loop().run_until_complete(self.__starting)
+
+    async def handler(self, websocket, path):
+        """Handler"""
+        print("Sending state")
+        await websocket.send(json.dumps(self.states[self.step_counter]))
+        message = await websocket.recv()
+        assert (json.loads(message)['action'] == "change_nothing")
+        self.step_counter += 1
+        if self.step_counter >= len(self.states):
+            self.stop()
+
+    async def serve(self):
+        """Run server until stopped.
+        Executed in loop of server thread.
+        """
+        async with websockets.serve(self.handler, self.url, self.port):
+            print("Server is up")
+            await self.__stop
+            print("Server is down")
+
+    def run(self):  # Executed in new thread
+        print("Server is starting")
+        loop = asyncio.new_event_loop()  # Create new loop
+        self.__stop = loop.create_future()  # Create stop signal
+
+        # Release __init__
+        self.__starting.get_loop().call_soon_threadsafe(self.__starting.set_result, None)
+
+        loop.run_until_complete(self.serve())  # Run serve in loop until stopped
+        loop.close()
+        print("Server stopped")
+
+    def stop(self):
+        # Send stop signal in server loop
+        self.__stop.get_loop().call_soon_threadsafe(self.__stop.set_result, None)
+
+        # Wait until server has actually stopped
+        asyncio.get_event_loop().run_until_complete(self.__serving)
+
+
 class TestWebsocketEnvironment(unittest.TestCase):
     def setUp(self):
         self.url = "127.0.0.1"
         self.port = 8000
         self.key = ""
-        self.step_counter = 0
-
-        async def handler(self, websocket, path):
-            file = open("tests/spe_ed-1603124417603.json", "r")
-            states = json.load(file)
-            file.close()
-            await self.websocket_server.send(states[self.step_counter])
-            message = await self.websocket_server.recv()
-            self.assertEqual(json.loads(message), "change_nothing")
-            self.step_counter += 1
-            if self.step_counter >= len(states) - 1:
-                self.new_loop.stop()
-
-        self.new_loop = asyncio.new_event_loop()
-        self.websocket_server = websockets.serve(handler, self.url, self.port, loop=self.new_loop)
-        self.new_loop.run_in_executor(None, self.websocket_server)
-
-        print("thread started")
+        self.server = DummyServer(self.url, self.port)
 
     def tearDown(self):
-        self.new_loop.stop()
+        print("Stop")
+        self.server.stop()
 
     def dummy_test(self):
         self.assertEqual(1, 1)
