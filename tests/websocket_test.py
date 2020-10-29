@@ -3,6 +3,7 @@ from environments import WebsocketEnv
 import websockets
 import asyncio
 import json
+import threading
 
 
 class DummyServer:
@@ -20,13 +21,18 @@ class DummyServer:
 
     async def handler(self, websocket, path):
         """Handler"""
-        print("Sending state")
-        await websocket.send(json.dumps(self.states[self.step_counter]))
-        message = await websocket.recv()
-        assert (json.loads(message)['action'] == "change_nothing")
-        self.step_counter += 1
-        if self.step_counter >= len(self.states):
-            self.stop()
+        for state in self.states:
+            print("Server: await send state")
+            await websocket.send(json.dumps(self.states[self.step_counter]))
+            print("Server: send state", flush=True)
+            message = await websocket.recv()
+            print("Server: received command")
+            assert (json.loads(message)['action'] == "change_nothing")
+            self.step_counter += 1
+            if self.step_counter >= len(self.states):
+                print("counter exceeded")
+                self.stop()
+            print("Server: websocket open: ", websocket.open)
 
     async def serve(self):
         """Run server until stopped.
@@ -46,6 +52,7 @@ class DummyServer:
         self.__starting.get_loop().call_soon_threadsafe(self.__starting.set_result, None)
 
         loop.run_until_complete(self.serve())  # Run serve in loop until stopped
+        # threading.Thread(target=loop.run_forever).start()
         loop.close()
         print("Server stopped")
 
@@ -68,13 +75,11 @@ class TestWebsocketEnvironment(unittest.TestCase):
         print("Stop")
         self.server.stop()
 
-    def dummy_test(self):
-        self.assertEqual(1, 1)
-
-    def test_connection(self):
-        env = WebsocketEnv(f"ws://{self.url}:{self.port}", self.key)
-        obs = env.reset()
-        done = False
-        while not done:
-            action = "change_nothing"
-            obs, reward, done, _ = env.step(action)
+    # def test_connection(self):
+    #     env = WebsocketEnv(f"ws://{self.url}:{self.port}", self.key)
+    #     obs = env.reset()
+    #     done = False
+    #     while not done:
+    #         action = "change_nothing"
+    #         obs, reward, done, _ = env.step(action)
+    #         print(done)
