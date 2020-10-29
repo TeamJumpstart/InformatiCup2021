@@ -64,10 +64,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='spe_ed')
     parser.add_argument('--render', type=str, default=None, help='Render simulation video.')
     parser.add_argument('--show', action='store_true', help='Show simulation.')
+    parser.add_argument('--sim', action='store_true', help='Use simulator.')
     args = parser.parse_args()
 
-    env = SimulatedSpe_edEnv(40, 40, [RandomPolicy() for _ in range(5)])
-    # env = WebsocketEnv(os.environ["URL"], os.environ["KEY"], log_path="./logs/")
+    if args.sim:
+        env = SimulatedSpe_edEnv(40, 40, [RandomPolicy() for _ in range(5)])
+    else:
+        env = WebsocketEnv(os.environ["URL"], os.environ["KEY"])
     pol = RandomPolicy()
 
     if args.render is not None:
