@@ -5,14 +5,17 @@ import asyncio
 import json
 import websockets
 from datetime import datetime
+from pathlib import Path
 
 
 class WebsocketEnv(Spe_edEnv):
-    def __init__(self, url, key):
+    def __init__(self, url, key, log_path="./logs/"):
         Spe_edEnv.__init__(self, 40, 40)
 
         self.url = url
         self.key = key
+        self.log_path = log_path
+        Path(log_path).mkdir(parents=True, exists_ok=True)
 
     def reset(self):
         """Build connection, save state, and return observation"""
@@ -31,7 +34,7 @@ class WebsocketEnv(Spe_edEnv):
         state_json = await self.websocket.recv()
         self.states.append(state_json)
         state = json.loads(state_json)
-        print("<", "state received")
+        print("<", "state received", flush=True)
 
         self.players = [Player.from_json(player_id, player_data) for player_id, player_data in state["players"].items()]
         self.width = state["width"]
@@ -49,12 +52,12 @@ class WebsocketEnv(Spe_edEnv):
         asyncio.get_event_loop().run_until_complete(self.await_state())
         reward = 1 if self.done and self.controlled_player.active else 0
         if self.done:
-            with open("./logs/" + datetime.now().strftime("%Y_%m_%d_%H_%M_%S"), "w") as file:
+            with open(self.log_path + datetime.now().strftime("%Y_%m_%d_%H_%M_%S"), "w") as file:
                 json.dump(self.states, file)
         return self._get_obs(self.controlled_player), reward, self.done, {}
 
     async def send_action(self, action):
         """Wait for send action"""
         action_json = json.dumps({"action": action})
-        print(">", action)
+        print(">", action, flush=True)
         await self.websocket.send(action_json)
