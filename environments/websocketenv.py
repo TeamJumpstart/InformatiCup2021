@@ -15,7 +15,7 @@ class WebsocketEnv(Spe_edEnv):
         self.url = url
         self.key = key
         self.log_path = log_path
-        Path(log_path).mkdir(parents=True, exists_ok=True)
+        Path(log_path).mkdir(parents=True, exist_ok=True)
 
     def reset(self):
         """Build connection, save state, and return observation"""
