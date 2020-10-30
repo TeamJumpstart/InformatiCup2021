@@ -41,8 +41,8 @@ class WebsocketEnv(Spe_edEnv):
     async def await_state(self):
         """Wait for received game state and save state in class attributes"""
         state_json = await self.websocket.recv()
-        self.states.append(state_json)
         state = json.loads(state_json)
+        self.states.append(state)
         logging.info("Client received state")
 
         self.players = [Player.from_json(player_id, player_data) for player_id, player_data in state["players"].items()]
