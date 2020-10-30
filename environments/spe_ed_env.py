@@ -46,7 +46,7 @@ class Spe_edEnv(gym.Env):
             fig = plt.gcf()
             fig.canvas.draw()
             width, height = fig.canvas.get_width_height()
-            return np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8).reshape(height, width, 3)
+            return np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8).reshape(height, width, 3)
 
     def _validate_action(self, action):
         """Change illegal actions to do nothing"""

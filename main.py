@@ -1,12 +1,15 @@
 import argparse
 import time
+import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 from environments import SimulatedSpe_edEnv, WebsocketEnv
 from environments.logging import Spe_edLogger, CloudUploader
+from environments.spe_ed import SavedGame
 from policies import RandomPolicy
 import os
 import logging
+from pathlib import Path
 
 # Set up logging
 logging.basicConfig(
@@ -79,15 +82,47 @@ def render(env, pol, output_file):
     writer.close()
 
 
+def render_logfile(log_file, fps=10):
+    """Render logfile to mp4"""
+    from visualization import Spe_edAx, render_video
+
+    game = SavedGame.load(log_file)
+
+    fig = plt.figure(
+        figsize=(720 / 100, 720 / 100),
+        dpi=100,
+        tight_layout=True,
+    )
+    ax = plt.subplot(1, 1, 1)
+    viewer = Spe_edAx(fig, ax, game.cell_states[0], game.player_states[0])
+
+    def frames():
+        """Draw all game states"""
+        for i in tqdm(range(len(game.cell_states)), desc="Rendering"):
+            viewer.update(game.cell_states[i], game.player_states[i])
+            fig.canvas.draw()
+
+            frame = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8).reshape(720, 720, 3)
+            yield frame
+
+    width, height = fig.canvas.get_width_height()
+    render_video(log_file.parent / (log_file.name[:-5] + ".mp4"), frames(), width, height, fps=20)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='spe_ed')
-    parser.add_argument('--render', type=str, default=None, help='Render simulation video.')
+    parser.add_argument('--render', type=str, default=None, help='Render simulation to video.')
+    parser.add_argument('--render-logfile', type=str, default=None, help='Render logfile to video.')
     parser.add_argument('--show', action='store_true', help='Show simulation.')
     parser.add_argument('--sim', action='store_true', help='Use simulator.')
     parser.add_argument('--log_dir', type=str, default="logs/", help='Directory for logs.')
     parser.add_argument('--upload', action='store_true', help='Use simulator.')
     parser.add_argument('--fps', type=int, default=None, help='FPS for showing.')
     args = parser.parse_args()
+
+    if args.render_logfile:
+        render_logfile(Path(args.render_logfile))
+        quit()
 
     if args.sim:
         env = SimulatedSpe_edEnv(40, 40, [RandomPolicy() for _ in range(5)])
