@@ -20,7 +20,7 @@ class Spe_edLogger():
         """
         log_file = self.log_dir / f"{datetime.now():%Y%m%d-%H%M%S}.json"
         with open(log_file, "w") as f:
-            json.dump(states, f)
+            json.dump(states, f, separators=(',', ':'))
 
         # Handle callbacks
         for callback in self.callbacks:
