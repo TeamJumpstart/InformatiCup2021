@@ -53,5 +53,4 @@ class RandomProbingPolicy(Policy):
             for a, action in enumerate(actions):
                 sum_actions[a] += perform_probe_run(action, self.n_steps)
 
-        print(sum_actions)
         return actions[np.argmax(sum_actions)]

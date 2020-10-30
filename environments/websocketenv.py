@@ -19,7 +19,7 @@ class WebsocketEnv(Spe_edEnv):
         """Build connection, save state, and return observation"""
         self.states = []
         self.websocket = asyncio.get_event_loop().run_until_complete(self.connect())
-        print("Waiting for initial state...", flush=True)
+        logging.info("Waiting for initial state...")
         asyncio.get_event_loop().run_until_complete(self.await_state())
         return self._get_obs(self.controlled_player)
 
@@ -43,7 +43,7 @@ class WebsocketEnv(Spe_edEnv):
         state_json = await self.websocket.recv()
         self.states.append(state_json)
         state = json.loads(state_json)
-        print("<", "state received", flush=True)
+        logging.info("Client received state")
 
         self.players = [Player.from_json(player_id, player_data) for player_id, player_data in state["players"].items()]
         self.width = state["width"]
@@ -67,5 +67,5 @@ class WebsocketEnv(Spe_edEnv):
     async def send_action(self, action):
         """Wait for send action"""
         action_json = json.dumps({"action": action})
-        print(">", action, flush=True)
         await self.websocket.send(action_json)
+        logging.info("Client sent action {action}")
