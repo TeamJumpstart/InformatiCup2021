@@ -1,8 +1,17 @@
 import argparse
 from tqdm import tqdm
 from environments import SimulatedSpe_edEnv, WebsocketEnv
+from environments.logging import Spe_edLogger, CloudUploader
 from policies import RandomPolicy
 import os
+import logging
+
+# Set up logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s %(levelname)s: %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+)
 
 
 def simulate(env, pol):
@@ -65,12 +74,26 @@ if __name__ == "__main__":
     parser.add_argument('--render', type=str, default=None, help='Render simulation video.')
     parser.add_argument('--show', action='store_true', help='Show simulation.')
     parser.add_argument('--sim', action='store_true', help='Use simulator.')
+    parser.add_argument('--log_dir', type=str, default="logs/", help='Directory for logs.')
+    parser.add_argument('--upload', action='store_true', help='Use simulator.')
     args = parser.parse_args()
 
     if args.sim:
         env = SimulatedSpe_edEnv(40, 40, [RandomPolicy() for _ in range(5)])
     else:
-        env = WebsocketEnv(os.environ["URL"], os.environ["KEY"])
+        logger_callbacks = []
+        if args.upload:
+            logger_callbacks.append(
+                CloudUploader(
+                    os.environ["CLOUD_URL"], os.environ["CLOUD_USER"], os.environ["CLOUD_PASSWORD"], remote_dir="logs/"
+                ).upload
+            )
+
+        env = WebsocketEnv(
+            os.environ["URL"],
+            os.environ["KEY"],
+            logger=Spe_edLogger(args.log_dir, logger_callbacks),
+        )
     pol = RandomPolicy()
 
     if args.render is not None:

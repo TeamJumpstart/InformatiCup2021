@@ -4,23 +4,15 @@ from environments.spe_ed_env import Spe_edEnv
 import asyncio
 import json
 import websockets
-from datetime import datetime
-from pathlib import Path
 
 
 class WebsocketEnv(Spe_edEnv):
-    def __init__(self, url, key, log_dir="logs/"):
+    def __init__(self, url, key, logger=None):
         Spe_edEnv.__init__(self, 40, 40)
 
         self.url = url
         self.key = key
-
-        # Logging
-        if log_dir:
-            self.log_dir = Path(log_dir)
-            self.log_dir.mkdir(parents=True, exist_ok=True)
-        else:
-            self.log_dir = None
+        self.logger = logger
 
     def reset(self):
         """Build connection, save state, and return observation"""
@@ -56,9 +48,8 @@ class WebsocketEnv(Spe_edEnv):
 
         asyncio.get_event_loop().run_until_complete(self.await_state())
         reward = 1 if self.done and self.controlled_player.active else 0
-        if self.done:
-            with open(self.log_path / f"{datetime.now():%Y%m%d-%H%M%S}.json", "w") as f:
-                json.dump(self.states, f)
+        if self.done and self.logger is not None:
+            self.logger.log(self.states)
         return self._get_obs(self.controlled_player), reward, self.done, {}
 
     async def send_action(self, action):

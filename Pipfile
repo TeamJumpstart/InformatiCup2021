@@ -13,6 +13,7 @@ gym = "*"
 tqdm = "*"
 imageio-ffmpeg = "*"
 websockets = "*"
+pyocclient = "*"
 
 [requires]
 python_version = "3.8.6"
