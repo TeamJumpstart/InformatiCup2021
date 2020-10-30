@@ -4,6 +4,7 @@ from environments.spe_ed_env import Spe_edEnv
 import asyncio
 import json
 import websockets
+import logging
 
 
 class WebsocketEnv(Spe_edEnv):
@@ -18,13 +19,24 @@ class WebsocketEnv(Spe_edEnv):
         """Build connection, save state, and return observation"""
         self.states = []
         self.websocket = asyncio.get_event_loop().run_until_complete(self.connect())
+        print("Waiting for initial state...", flush=True)
         asyncio.get_event_loop().run_until_complete(self.await_state())
         return self._get_obs(self.controlled_player)
 
     async def connect(self):
         """Build connection and return websocket connection"""
-        print("Waiting for initial state...", flush=True)
-        return await websockets.connect(f"{self.url}?key={self.key}")
+        logging.info("Client connecting")
+        try:
+            return await websockets.connect(f"{self.url}?key={self.key}")
+        except websockets.exceptions.InvalidStatusCode as e:
+            if e.status_code != 429:  # Server rejects us
+                logging.warn("Server rejected connection")
+
+                # Sleep and try again
+                await asyncio.sleep(10)
+                return await self.connect()
+            else:  # Other status code, not handled here
+                raise
 
     async def await_state(self):
         """Wait for received game state and save state in class attributes"""
