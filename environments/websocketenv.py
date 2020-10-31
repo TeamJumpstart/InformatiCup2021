@@ -27,13 +27,13 @@ class WebsocketEnv(Spe_edEnv):
         """Build connection and return websocket connection"""
         logging.info("Client connecting")
         try:
-            return await websockets.connect(f"{self.url}?key={self.key}")
+            return await websockets.connect(f"{self.url}?key={self.key}", max_queue=None)
         except websockets.exceptions.InvalidStatusCode as e:
-            if e.status_code != 429:  # Server rejects us
+            if e.status_code == 429:  # Server rejects us
                 logging.warn("Server rejected connection")
 
                 # Sleep and try again
-                await asyncio.sleep(10)
+                await asyncio.sleep(60)
                 return await self.connect()
             else:  # Other status code, not handled here
                 raise
@@ -43,7 +43,6 @@ class WebsocketEnv(Spe_edEnv):
         state_json = await self.websocket.recv()
         state = json.loads(state_json)
         self.states.append(state)
-        logging.info("Client received state")
 
         self.players = [Player.from_json(player_id, player_data) for player_id, player_data in state["players"].items()]
         self.width = state["width"]
@@ -51,6 +50,11 @@ class WebsocketEnv(Spe_edEnv):
         self.cells = np.array(state["cells"])
         self.controlled_player = [player for player in self.players if int(player.player_id) == state["you"]][0]
         self.done = not state["running"]
+
+        logging.info(f"Client received state (active={self.controlled_player.active}, running={state['running']})")
+
+        if self.done:  # Close connection if done
+            await self.websocket.close()
 
     def step(self, action):
         """Send action, save state and return observation"""
@@ -66,6 +70,5 @@ class WebsocketEnv(Spe_edEnv):
 
     async def send_action(self, action):
         """Wait for send action"""
-        action_json = json.dumps({"action": action})
-        await self.websocket.send(action_json)
-        logging.info("Client sent action {action}")
+        await self.websocket.send(json.dumps({"action": action}))
+        logging.info(f"Client sent action {action}")
