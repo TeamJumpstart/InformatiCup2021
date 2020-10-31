@@ -16,7 +16,7 @@ class Spe_edEnv(gym.Env):
         self.cells = np.empty((self.width, self.height), dtype=np.int8)
         self.players = []
         self.controlled_player = None
-        self.round = 1
+        self.rounds = 1
 
         self.viewer = None
 
@@ -68,4 +68,4 @@ class Spe_edEnv(gym.Env):
         occupancy = self.cells != 0
         you = player
         opponents = [p for p in self.players if p.active and p.player_id != player.player_id]
-        return Map(occupancy), you, opponents, self.round
+        return Map(occupancy), you, opponents, self.rounds
