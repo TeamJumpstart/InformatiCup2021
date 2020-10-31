@@ -6,7 +6,7 @@ from tqdm import tqdm
 from environments import SimulatedSpe_edEnv, WebsocketEnv
 from environments.logging import Spe_edLogger, CloudUploader
 from environments.spe_ed import SavedGame
-from policies import RandomPolicy
+from policies import RandomPolicy, RandomProbingPolicy
 import os
 import logging
 from pathlib import Path
@@ -140,7 +140,7 @@ if __name__ == "__main__":
             os.environ["KEY"],
             logger=Spe_edLogger(args.log_dir, logger_callbacks),
         )
-    pol = RandomPolicy()
+    pol = RandomProbingPolicy(20, 100, True)
 
     if args.render is not None:
         render(env, pol, args.render)
