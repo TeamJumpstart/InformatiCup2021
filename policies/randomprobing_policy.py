@@ -35,22 +35,42 @@ class RandomProbingPolicy(Policy):
             actions = np.array(["change_nothing", "turn_left", "turn_right", "speed_up", "slow_down"])
         else:
             actions = np.array(["change_nothing", "turn_left", "turn_right"])
-        sum_actions = np.zeros(actions.shape)
+        sum_actions = np.zeros(actions.shape, dtype=np.float32)
 
-        def perform_probe_run(action, n_steps):
-            """Performs one recursive probe run with random actions and returns the number of steps survived."""
-            env = Spe_edSimulator(cells.cells, [player], rounds).step([action])
+        def perform_probe_run(fixed_actions, random_steps):
+            """Performs one recursive probe run with random actions and returns the number of steps survived.
 
-            while env.players[0].active and (n_steps > 0):
-                n_steps -= 1
-                action = self.rng.choice(actions)
+            Args:
+                fixed_actions: Sequence of fixed actions taken at start.
+                random_steps: Number of random actions taken afterwards
+            """
+            env = Spe_edSimulator(cells.cells, [player], rounds)
+
+            for action in fixed_actions:
                 env = env.step([action])
+                if not env.players[0].active:
+                    return env.undo().rounds  # Last step was the last survived
 
-            return self.n_steps - n_steps
+            for _ in range(random_steps):
+                dead_end = True
+                for action in self.rng.permutation(actions):
+                    env = env.step([action])
+                    if env.players[0].active:
+                        # We survive, go to next step
+                        dead_end = False
+                        break
+
+                    # We die, try alternative action
+                    env = env.undo()
+                if dead_end:  # No way out
+                    break
+
+            return env.rounds  # Return number of survived steps
 
         # perform 3 or 5 * `n_probes` runs each with maximum of `n_steps`
         for _ in range(self.n_probes):
             for a, action in enumerate(actions):
-                sum_actions[a] += perform_probe_run(action, self.n_steps)
+                sum_actions[a] = max(perform_probe_run([action], self.n_steps), sum_actions[a])
+        sum_actions += self.rng.uniform(0, 0.1, size=sum_actions.shape)  # Add tie-breaker
 
         return actions[np.argmax(sum_actions)]
