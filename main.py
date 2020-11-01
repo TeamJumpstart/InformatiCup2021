@@ -62,6 +62,44 @@ def show(env, pol, fps=None, keep_open=True):
             plt.pause(0.01)  # Sleep
 
 
+def show_logfile(log_file):
+    """Render logfile to mp4"""
+    from visualization import Spe_edAx
+    from matplotlib.widgets import Slider
+
+    def format_state(t):
+        s = "Players:\n"
+        s += "\n".join(str(p) for p in game.player_states[t]) + "\n"
+
+        s += "\nActions:\n"
+        if t + 1 < len(game.data):
+            s += "\n".join(str(a) for a in game.infer_actions(t)) + "\n"
+        else:
+            s += "\n".join("win" if p.active else "inactive" for p in game.player_states[t]) + "\n"
+
+        return s
+
+    game = SavedGame.load(log_file)
+    game.move_controlled_player_to_front()
+
+    fig = plt.figure(figsize=(720 / 100, 720 / 100), dpi=100)
+    ax1 = plt.subplot(1, 1, 1)
+    viewer = Spe_edAx(fig, ax1, game.cell_states[0], game.player_states[0])
+
+    plt.tight_layout()
+    plt.subplots_adjust(bottom=0.1, right=0.6)
+    slider = Slider(plt.axes([0.1, 0.025, 0.8, 0.03]), 't', 0, len(game.data) - 1, valinit=0, valstep=1, valfmt="%d")
+    text_box = fig.text(0.61, 0.975, format_state(0), ha='left', va='top')
+
+    def change_t(val):
+        t = int(slider.val)
+        viewer.update(game.cell_states[t], game.player_states[t])
+        text_box.set_text(format_state(t))
+
+    slider.on_changed(change_t)
+    plt.show()
+
+
 def render(env, pol, output_file, fps=10):
     """Render the execution of a given pilicy in an environment."""
     from imageio_ffmpeg import write_frames
@@ -121,6 +159,7 @@ if __name__ == "__main__":
     ], default="play")
     parser.add_argument('--render', type=str, default=None, help='File to render to. Should end with .mp4')
     parser.add_argument('--sim', action='store_true', help='Use simulator.')
+    parser.add_argument('--log-file', type=str, default=None, help='Log file to load.')
     parser.add_argument('--log-dir', type=str, default="logs/", help='Directory for logs.')
     parser.add_argument('--upload', action='store_true', help='Upload generated log to cloud server.')
     parser.add_argument('--fps', type=int, default=10, help='FPS for showing or rendering.')
@@ -138,6 +177,8 @@ if __name__ == "__main__":
             if (log_dir / (log_file.name[:-5] + ".mp4")).exists():
                 continue
             render_logfile(log_file, fps=args.fps)
+    elif args.mode == 'show' and args.log_file is not None:
+        show_logfile(args.log_file)
     else:
         # Create environment
         if args.sim:

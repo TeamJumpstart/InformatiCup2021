@@ -87,6 +87,9 @@ class Player:
             )
         return False
 
+    def __str__(self):
+        return f"{self.player_id}: ({self.x}, {self.y}), {self.direction}, speed={self.speed}, active={self.active}"
+
     @classmethod
     def from_json(cls, player_id, data):
         """Create Player object from json data."""
@@ -123,6 +126,8 @@ class Map:
 
 def infer_action(player_before, player_after):
     """Reconstruct that action that leads to the next state."""
+    if not player_before.active:
+        return "inactive"
     if player_after.speed > player_before.speed:
         return "speed_up"
     if player_after.speed < player_before.speed:
