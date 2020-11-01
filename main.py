@@ -13,7 +13,7 @@ from pathlib import Path
 
 # Set up logging
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(asctime)s %(levelname)s: %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
 )
@@ -184,6 +184,8 @@ if __name__ == "__main__":
         if args.sim:
             env = SimulatedSpe_edEnv(40, 40, [RandomPolicy() for _ in range(5)])
         else:
+            logging.basicConfig(level=logging.DEBUG)  # Reduce loglevel
+
             logger_callbacks = []
             if args.upload:
                 logger_callbacks.append(
