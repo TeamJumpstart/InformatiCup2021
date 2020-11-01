@@ -87,7 +87,7 @@ def render_logfile(log_file, fps=10):
     from visualization import Spe_edAx, render_video
 
     game = SavedGame.load(log_file)
-    you = game.data[0]["you"]
+    game.move_controlled_player_to_front()
 
     fig = plt.figure(
         figsize=(720 / 100, 720 / 100),
@@ -100,21 +100,7 @@ def render_logfile(log_file, fps=10):
     def frames():
         """Draw all game states"""
         for i in tqdm(range(len(game.cell_states)), desc=f"Rendering {log_file.name}"):
-            cells = game.cell_states[i]
-            players = game.player_states[i]
-            if you != 1:  # Move you to player 1
-                # Swap cells
-                cells = cells.copy()
-                your_cells = cells == you
-                other_cells = cells == 1
-                cells[your_cells] = 1
-                cells[other_cells] = you
-
-                # Swap players
-                players = list(players)
-                players[0], players[you - 1] = players[you - 1], players[0]
-
-            viewer.update(cells, players)
+            viewer.update(game.cell_states[i], game.player_states[i])
             fig.canvas.draw()
 
             frame = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8).reshape(720, 720, 3)

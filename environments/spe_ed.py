@@ -176,6 +176,11 @@ class SavedGame:
         """Number of total rounds played."""
         return len(self.cell_states) - 1
 
+    @property
+    def you(self):
+        """Player_id of controlled player."""
+        return self.data[0]["you"]
+
     @classmethod
     def load(cls, file_name):
         """"Load a saved game.
@@ -199,3 +204,19 @@ class SavedGame:
         from environments.simulator import Spe_edSimulator
 
         return Spe_edSimulator(self.cell_states[t], self.player_states[t], t + 1)
+
+    def move_controlled_player_to_front(self):
+        """Changes cell and player states, as if controlled player was at first position."""
+        you = self.you
+        if you != 1:
+            for t in range(len(self.data)):
+                # Swap cells
+                cells = self.cell_states[t]
+                your_cells = cells == you
+                other_cells = cells == 1
+                cells[your_cells] = 1
+                cells[other_cells] = you
+
+                # Swap players
+                players = self.player_states[t]
+                players[0], players[you - 1] = players[you - 1], players[0]
