@@ -112,7 +112,7 @@ def render_logfile(log_file, fps=10):
 
                 # Swap players
                 players = list(players)
-                players[1], players[you] = players[you], players[1]
+                players[0], players[you - 1] = players[you - 1], players[0]
 
             viewer.update(cells, players)
             fig.canvas.draw()
