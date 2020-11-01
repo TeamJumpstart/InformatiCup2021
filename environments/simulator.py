@@ -22,7 +22,7 @@ def simulate(cells, players, rounds, actions):
             if pos[0] < 0 or pos[1] < 0 or pos[1] >= height or pos[0] >= width:
                 # Player left bounds
                 player.active = False
-                continue
+                break  # Position after leaving the bouds is not actual position, just the first outside the bounds
 
             # Check for jumps
             if rounds % 6 == 0 and i > 0 and i < player.speed - 1:

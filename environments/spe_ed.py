@@ -67,15 +67,17 @@ class Player:
         elif action == 'turn_right':
             self.direction = self.direction.turn_right()
         elif action == 'slow_down':
-            if self.speed <= 1:  # Check minimum speed
+            self.speed -= 1
+            if self.speed < 1:  # Check minimum speed
                 self.active = False
-            else:
-                self.speed -= 1
         elif action == 'speed_up':
-            if self.speed >= 10:  # Check maximum speed
+            self.speed += 1
+            if self.speed > 10:  # Check maximum speed
                 self.active = False
-            else:
-                self.speed += 1
+        elif action == 'change_nothing':
+            pass
+        else:  # Invalid
+            self.active = False
 
     def __eq__(self, other):
         if self.__class__ == other.__class__:
@@ -129,6 +131,8 @@ def infer_action(player_before, player_after):
         return "turn_left"
     if player_after.direction == player_before.direction.turn_right():
         return "turn_right"
+    if player_before.x == player_after.x and player_before.y == player_after.y and not player_after.active:
+        return "invalid"
     return "change_nothing"
 
 
@@ -189,3 +193,9 @@ class SavedGame:
             raise ValueError(f"Game not completed: {file_name}")
 
         return cls(data)
+
+    def create_simulator(self, t):
+        """Initialize a simulate with the gamestate at time `t`."""
+        from environments.simulator import Spe_edSimulator
+
+        return Spe_edSimulator(self.cell_states[t], self.player_states[t], t + 1)

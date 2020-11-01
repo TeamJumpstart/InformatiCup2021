@@ -3,6 +3,7 @@ import numpy as np
 from numpy.testing import assert_array_equal
 from environments import SimulatedSpe_edEnv, Spe_edSimulator
 from environments.spe_ed import Player, directions, SavedGame
+from pathlib import Path
 
 
 class TestSimulatorEnv(unittest.TestCase):
@@ -63,7 +64,7 @@ class TestSimulatorEnv(unittest.TestCase):
             ]
         )
         self.assertFalse(env.players[0].active)  # Player dies
-        self.assertEqual(env.players[0].speed, 1)  # Speed does not change
+        self.assertEqual(env.players[0].speed, 0)  # Speed goes down
         self.assertEqual(env.players[0].direction.name, "right")  # Direction does not change
 
     def test_step_turn_left(self):
@@ -173,17 +174,23 @@ class TestSimulator(unittest.TestCase):
         self.assertEqual(sim.players[0].direction.name, "right")  # Direction does not change
 
     def test_replay(self):
-        # Initialize simulation
-        saved_game = SavedGame.load(r"tests/spe_ed-1603124417603.json")
-        sim = Spe_edSimulator(saved_game.cell_states[0], saved_game.player_states[0], 1)
+        for log_file in [
+            r"tests/logs/20201019-182018.json",  # Initial log
+            r"tests/logs/20201030-180428.json",  # Disconnect
+            r"tests/logs/20201101-141529.json",  # Jumping outside the map
+        ]:
+            with self.subTest(msg=Path(log_file).name):
+                # Initialize simulation
+                saved_game = SavedGame.load(log_file)
+                sim = saved_game.create_simulator(0)
 
-        for t in range(saved_game.rounds):
-            actions = saved_game.infer_actions(t)
-            sim = sim.step(actions)
+                for t in range(saved_game.rounds):
+                    actions = saved_game.infer_actions(t)
+                    sim = sim.step(actions)
 
-            # Compare cells
-            assert_array_equal(sim.cells, saved_game.cell_states[t + 1])
-            # Compare players
-            self.assertListEqual(sim.players, saved_game.player_states[t + 1])
-            # Compare rounds
-            self.assertEqual(sim.rounds, t + 2)
+                    # Compare cells
+                    assert_array_equal(sim.cells, saved_game.cell_states[t + 1], f"t={t}")
+                    # Compare players
+                    self.assertListEqual(sim.players, saved_game.player_states[t + 1], f"t={t}")
+                    # Compare rounds
+                    self.assertEqual(sim.rounds, t + 2, f"t={t}")

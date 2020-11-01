@@ -6,4 +6,4 @@ Dockerfile
 LICENSE
 README.md
 setup.cfg
-logs/
+./logs/
