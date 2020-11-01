@@ -62,14 +62,14 @@ def show(env, pol, fps=None, keep_open=True):
             plt.pause(0.01)  # Sleep
 
 
-def render(env, pol, output_file):
+def render(env, pol, output_file, fps=10):
     """Render the execution of a given pilicy in an environment."""
     from imageio_ffmpeg import write_frames
 
     obs = env.reset()
     done = False
 
-    writer = write_frames(output_file, (720, 720), fps=1, codec="libx264", quality=8)
+    writer = write_frames(output_file, (720, 720), fps=fps, codec="libx264", quality=8)
     writer.send(None)  # seed the generator
     writer.send(env.render(mode="rgb_array", screen_width=720, screen_height=720).copy(order='C'))
 
@@ -121,46 +121,65 @@ def render_logfile(log_file, fps=10):
             yield frame
 
     width, height = fig.canvas.get_width_height()
-    render_video(log_file.parent / (log_file.name[:-5] + ".mp4"), frames(), width, height, fps=20)
+    render_video(log_file.parent / (log_file.name[:-5] + ".mp4"), frames(), width, height, fps=fps)
     plt.close(fig)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='spe_ed')
-    parser.add_argument('--render', type=str, default=None, help='Render simulation to video.')
-    parser.add_argument('--render-logfile', type=str, default=None, help='Render logfile to video.')
-    parser.add_argument('--show', action='store_true', help='Show simulation.')
+    parser.add_argument('mode', nargs='?', choices=[
+        'play',
+        'show',
+        'render',
+        'render_logdir',
+    ], default="play")
+    parser.add_argument('--render', type=str, default=None, help='File to render to. Should end with .mp4')
     parser.add_argument('--sim', action='store_true', help='Use simulator.')
-    parser.add_argument('--log_dir', type=str, default="logs/", help='Directory for logs.')
-    parser.add_argument('--upload', action='store_true', help='Use simulator.')
-    parser.add_argument('--fps', type=int, default=None, help='FPS for showing.')
+    parser.add_argument('--log-dir', type=str, default="logs/", help='Directory for logs.')
+    parser.add_argument('--upload', action='store_true', help='Upload generated log to cloud server.')
+    parser.add_argument('--fps', type=int, default=10, help='FPS for showing or rendering.')
     args = parser.parse_args()
 
-    if args.render_logfile:
-        render_logfile(Path(args.render_logfile))
-        quit()
+    if args.mode == 'render_logdir':
+        log_dir = Path(args.log_dir)
+        if not log_dir.is_dir():
+            logging.error(f"{log_dir} is not a directory")
+            quit(1)
 
-    if args.sim:
-        env = SimulatedSpe_edEnv(40, 40, [RandomPolicy() for _ in range(5)])
+        for log_file in log_dir.iterdir():
+            if not log_file.name.endswith(".json"):
+                continue
+            if (log_dir / (log_file.name[:-5] + ".mp4")).exists():
+                continue
+            render_logfile(log_file, fps=args.fps)
     else:
-        logger_callbacks = []
-        if args.upload:
-            logger_callbacks.append(
-                CloudUploader(
-                    os.environ["CLOUD_URL"], os.environ["CLOUD_USER"], os.environ["CLOUD_PASSWORD"], remote_dir="logs/"
-                ).upload
+        # Create environment
+        if args.sim:
+            env = SimulatedSpe_edEnv(40, 40, [RandomPolicy() for _ in range(5)])
+        else:
+            logger_callbacks = []
+            if args.upload:
+                logger_callbacks.append(
+                    CloudUploader(
+                        os.environ["CLOUD_URL"],
+                        os.environ["CLOUD_USER"],
+                        os.environ["CLOUD_PASSWORD"],
+                        remote_dir="logs/"
+                    ).upload
+                )
+
+            env = WebsocketEnv(
+                os.environ["URL"],
+                os.environ["KEY"],
+                logger=Spe_edLogger(args.log_dir, logger_callbacks),
             )
 
-        env = WebsocketEnv(
-            os.environ["URL"],
-            os.environ["KEY"],
-            logger=Spe_edLogger(args.log_dir, logger_callbacks),
-        )
-    pol = RandomProbingPolicy(20, 100, True)
+        # Create policy
+        pol = RandomProbingPolicy(20, 100, True)
 
-    if args.render is not None:
-        render(env, pol, args.render)
-    elif args.show:
-        show(env, pol, fps=args.fps)
-    else:
-        simulate(env, pol)
+        if args.mode == 'render':
+            render(env, pol, args.render, fps=args.fps)
+        elif args.mode == 'show':
+            show(env, pol, fps=args.fps)
+        else:
+            simulate(env, pol)
