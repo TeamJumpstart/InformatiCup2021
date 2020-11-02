@@ -2,6 +2,7 @@ import numpy as np
 from scipy import ndimage
 from policies.policy import Policy
 from environments.simulator import Spe_edSimulator
+from policies.rounds_boardstate import RoundsBoardState
 
 
 class RandomProbingPolicy(Policy):
@@ -10,7 +11,7 @@ class RandomProbingPolicy(Policy):
 
     Baseline strategy, each smarter policy should be able to outperform this.
     """
-    def __init__(self, n_steps=3, n_probes=10, full_action_set=False, seed=None):
+    def __init__(self, n_steps=3, n_probes=10, full_action_set=False, metric=RoundsBoardState(), seed=None):
         """Initialize RandomProbingPolicy.
 
         Args:
@@ -28,6 +29,7 @@ class RandomProbingPolicy(Policy):
         self.n_probes = n_probes
         self.full_action_set = full_action_set
         self.rng = np.random.default_rng(seed)
+        self.metric = metric
 
     def act(self, cells, player, opponents, rounds):
         """Chooses action based on random probe runs."""
@@ -50,7 +52,9 @@ class RandomProbingPolicy(Policy):
             for action in fixed_actions:
                 env = env.step([action])
                 if not env.players[0].active:
-                    return env.undo().rounds  # Last step was the last survived
+                    return self.metric.score(
+                        env.cells, env.players[0], opponents, env.rounds
+                    )  # fixed actions result in certain death
 
             for _ in range(random_steps):
                 dead_end = True
@@ -66,7 +70,8 @@ class RandomProbingPolicy(Policy):
                 if dead_end:  # No way out
                     break
 
-            return env.rounds  # Return number of survived steps
+            # return the board state score value
+            return self.metric.score(env.cells, env.players[0], opponents, env.rounds)
 
         def region_heuristic(action):
             """Compute the of the region we're in after taking action."""
