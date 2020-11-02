@@ -171,10 +171,12 @@ class SavedGame:
 
     @property
     def winner(self):
-        """Winner is the last surviving player."""
+        """Winner is the last surviving player.
+
+        Returns `None` on draw.
+        """
         active = [p for p in self.player_states[-1] if p.active]
-        assert len(active) == 1
-        return active[0]
+        return active[0] if len(active) > 0 else None
 
     @property
     def rounds(self):
