@@ -68,18 +68,18 @@ class RandomProbingPolicy(Policy):
 
             return env.rounds  # Return number of survived steps
 
-        def region_size(action):
+        def region_heuristic(action):
             """Compute the of the region we're in after taking action."""
             sim = Spe_edSimulator(cells.cells, [player], rounds).step([action])
             if not sim.players[0].active:
-                return 0
+                return 0, 0
 
             empty = sim.cells == 0
             empty[sim.players[0].y, sim.players[0].x] = True  # Clear cell we're in
             labelled, _ = ndimage.label(empty)
             region = labelled[sim.players[0].y, sim.players[0].x]  # Get the region we're in
             region_size = np.sum(labelled == region)
-            return region_size
+            return region_size, sim.players[0].position
 
         # perform 3 or 5 * `n_probes` runs each with maximum of `n_steps`
         for a, action in enumerate(actions):
@@ -88,9 +88,13 @@ class RandomProbingPolicy(Policy):
                 if sum_actions[a] > rounds + self.n_steps:
                     break  # Maximal path is found, no need in searching further
 
-            # Add region size
-            sum_actions[a] += region_size(action) / (cells.width * cells.height)  # Normalize region size
-
-        sum_actions += self.rng.uniform(0, 1 / (cells.width * cells.height), size=sum_actions.shape)  # Add tie-breaker
+            # Add region size as first tie breaker
+            region_size, pos = region_heuristic(action)
+            sum_actions[a] += region_size / (cells.width * cells.height)  # Normalize region size
+            # Add dist to close opponent as second tie breaker
+            # Add random as third tie breaker
+            min_opponent_dist = min(min(np.sum(np.abs((pos - p.position)))
+                                        for p in opponents), 16) + np.random.uniform()
+            sum_actions[a] += (min_opponent_dist / (cells.width + cells.height)) / (cells.width * cells.height)
 
         return actions[np.argmax(sum_actions)]
