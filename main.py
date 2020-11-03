@@ -19,42 +19,39 @@ logging.basicConfig(
 )
 
 
-def simulate(env, pol):
-    with tqdm() as pbar:
-        runs, wins = 0, 0
-        while True:
-            obs = env.reset()
-            done = False
-
-            while not done:
-                action = pol.act(*obs)
-                obs, reward, done, _ = env.step(action)
-
-            runs += 1
-            if reward > 0:
-                wins += 1
-            pbar.update()
-            pbar.set_description(f"{pol} {wins/runs:.2f}")
-
-
-def show(env, pol, fps=None, keep_open=True):
+def play(env, pol, show=False, render_file=None, fps=10, logger=None, silent=False):
     obs = env.reset()
+
+    if show and not env.render(screen_width=720, screen_height=720):
+        return
+    if render_file is not None:  # Initialize video writer
+        from imageio_ffmpeg import write_frames
+
+        writer = write_frames(render_file, (720, 720), fps=fps, codec="libx264", quality=8)
+        writer.send(None)  # seed the generator
+        writer.send(env.render(mode="rgb_array", screen_width=720, screen_height=720).copy(order='C'))
+    if logger is not None:  # Log initial state
+        states = [env.game_state()]
+
     done = False
-
-    start = time.time()
-    with tqdm() as pbar:
+    with tqdm(disable=not silent) as pbar:
         while not done:
-            if fps is None or (time.time() - start) * fps < env.rounds:  # Only render if there is time
-                if not env.render(screen_width=720, screen_height=720):
-                    return
-                if fps is not None and (time.time() - start) * fps < env.rounds:
-                    plt.pause(1 / fps)  # Sleep
-
             action = pol.act(*obs)
             obs, reward, done, _ = env.step(action)
+
+            if show and not env.render(screen_width=720, screen_height=720):
+                return
+            if render_file is not None:
+                writer.send(env.render(mode="rgb_array", screen_width=720, screen_height=720).copy(order='C'))
+            if logger is not None:
+                states.append(env.game_state())
             pbar.update()
 
-    if keep_open:
+    if logger is not None:
+        logger.log(states)
+    if render_file is not None:
+        writer.close()
+    if show:
         # Show final state
         while True:
             if not env.render(screen_width=720, screen_height=720):
@@ -100,26 +97,6 @@ def show_logfile(log_file):
     plt.show()
 
 
-def render(env, pol, output_file, fps=10):
-    """Render the execution of a given pilicy in an environment."""
-    from imageio_ffmpeg import write_frames
-
-    obs = env.reset()
-    done = False
-
-    writer = write_frames(output_file, (720, 720), fps=fps, codec="libx264", quality=8)
-    writer.send(None)  # seed the generator
-    writer.send(env.render(mode="rgb_array", screen_width=720, screen_height=720).copy(order='C'))
-
-    with tqdm() as pbar:
-        while not done:
-            action = pol.act(*obs)
-            obs, _, done, _ = env.step(action)
-            writer.send(env.render(mode="rgb_array", screen_width=720, screen_height=720).copy(order='C'))
-            pbar.update()
-    writer.close()
-
-
 def render_logfile(log_file, fps=10):
     """Render logfile to mp4"""
     from visualization import Spe_edAx, render_video
@@ -153,16 +130,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='spe_ed')
     parser.add_argument('mode', nargs='?', choices=[
         'play',
-        'show',
-        'render',
+        'replay',
         'render_logdir',
     ], default="play")
-    parser.add_argument('--render', type=str, default=None, help='File to render to. Should end with .mp4')
+    parser.add_argument('--show', action='store_true', help='Display game.')
+    parser.add_argument('--render-file', type=str, default=None, help='File to render to. Should end with .mp4')
     parser.add_argument('--sim', action='store_true', help='Use simulator.')
     parser.add_argument('--log-file', type=str, default=None, help='Log file to load.')
-    parser.add_argument('--log-dir', type=str, default="logs/", help='Directory for logs.')
+    parser.add_argument('--log-dir', type=str, default=None, help='Directory for logs.')
     parser.add_argument('--upload', action='store_true', help='Upload generated log to cloud server.')
-    parser.add_argument('--fps', type=int, default=10, help='FPS for showing or rendering.')
+    parser.add_argument('--fps', type=int, default=10, help='FPS for rendering.')
     args = parser.parse_args()
 
     if args.mode == 'render_logdir':
@@ -177,15 +154,11 @@ if __name__ == "__main__":
             if (log_dir / (log_file.name[:-5] + ".mp4")).exists():
                 continue
             render_logfile(log_file, fps=args.fps)
-    elif args.mode == 'show' and args.log_file is not None:
+    elif args.mode == 'replay':
         show_logfile(args.log_file)
     else:
-        # Create environment
-        if args.sim:
-            env = SimulatedSpe_edEnv(40, 40, [RandomPolicy() for _ in range(5)])
-        else:
-            logging.basicConfig(level=logging.DEBUG)  # Reduce loglevel
-
+        # Create logger
+        if args.log_dir is not None:
             logger_callbacks = []
             if args.upload:
                 logger_callbacks.append(
@@ -196,19 +169,22 @@ if __name__ == "__main__":
                         remote_dir="logs/"
                     ).upload
                 )
+            logger = Spe_edLogger(args.log_dir, logger_callbacks)
+        else:
+            logger = None
 
-            env = WebsocketEnv(
-                os.environ["URL"],
-                os.environ["KEY"],
-                logger=Spe_edLogger(args.log_dir, logger_callbacks),
-            )
+        # Create environment
+        if args.sim:
+            env = SimulatedSpe_edEnv(40, 40, [RandomPolicy() for _ in range(5)])
+        else:
+            env = WebsocketEnv(os.environ["URL"], os.environ["KEY"])
 
         # Create policy
         pol = RandomProbingPolicy(20, 100, True)
 
-        if args.mode == 'render':
-            render(env, pol, args.render, fps=args.fps)
-        elif args.mode == 'show':
-            show(env, pol, fps=args.fps)
-        else:
-            simulate(env, pol)
+        repeat = not args.show and args.render_file is None
+
+        while True:
+            play(env, pol, show=args.show, render_file=args.render_file, fps=args.fps, logger=logger, silent=not repeat)
+            if not repeat:
+                break

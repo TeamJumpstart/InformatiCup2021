@@ -69,3 +69,7 @@ class Spe_edEnv(gym.Env):
         you = player
         opponents = [p for p in self.players if p.active and p.player_id != player.player_id]
         return Map(occupancy), you, opponents, self.rounds
+
+    def game_state(self):
+        """Get current game state as dict."""
+        raise NotImplementedError

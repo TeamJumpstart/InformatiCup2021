@@ -107,6 +107,21 @@ class TestSimulatorEnv(unittest.TestCase):
         self.assertEqual(env.players[0].speed, 1)  # Speed does not change
         self.assertEqual(env.players[0].direction.name, "down")
 
+    def test_game_state(self):
+        game = SavedGame.load(r"tests/logs/20201019-182018.json")
+
+        for t in [0, 1, 10, 50, 92, 93]:
+            with self.subTest(msg=f"t={t}"):
+                # Load game state
+                env = SimulatedSpe_edEnv(game.width, game.height, [])
+                env.cells = game.cell_states[t]
+                env.players = game.player_states[t]
+                env.controlled_player = [p for p in game.player_states[t] if p.player_id == game.you][0]
+
+                if 'deadline' in game.data[t]:
+                    del game.data[t]['deadline']  # Simulation doesn't have deadlines
+                self.assertDictEqual(env.game_state(), game.data[t])
+
 
 class TestSimulator(unittest.TestCase):
     def test_step_change_nothing(self):

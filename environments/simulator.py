@@ -108,6 +108,17 @@ class SimulatedSpe_edEnv(Spe_edEnv):
 
         return self._get_obs(self.controlled_player)
 
+    def game_state(self):
+        """Get current game state as dict."""
+        return {
+            'width': self.width,
+            'height': self.height,
+            'cells': self.cells.tolist(),
+            'players': dict(p.to_dict() for p in self.players),
+            'you': self.controlled_player.player_id,
+            'running': sum(1 for p in self.players if p.active) > 1,
+        }
+
 
 class Spe_edSimulator:
     """State for the simulate function.

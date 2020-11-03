@@ -103,6 +103,20 @@ class Player:
             name=data.get('name'),
         )
 
+    def to_dict(self):
+        """Serialize Player object for JSON storage."""
+        d = {
+            'x': int(self.x),  # Cast to python int
+            'y': int(self.y),
+            'direction': self.direction.name,
+            'speed': self.speed,
+            'active': self.active,
+        }
+        if self.name is not None:  # Add name if present
+            d['name'] = self.name
+
+        return str(self.player_id), d
+
 
 class Map:
     """Cell state wrapper for common methods."""

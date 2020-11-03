@@ -8,16 +8,14 @@ import logging
 
 
 class WebsocketEnv(Spe_edEnv):
-    def __init__(self, url, key, logger=None):
+    def __init__(self, url, key):
         Spe_edEnv.__init__(self, 40, 40)
 
         self.url = url
         self.key = key
-        self.logger = logger
 
     def reset(self):
         """Build connection, save state, and return observation"""
-        self.states = []
         self.websocket = asyncio.get_event_loop().run_until_complete(self.connect())
         logging.info("Waiting for initial state...")
         asyncio.get_event_loop().run_until_complete(self.await_state())
@@ -40,9 +38,8 @@ class WebsocketEnv(Spe_edEnv):
 
     async def await_state(self):
         """Wait for received game state and save state in class attributes"""
-        state_json = await self.websocket.recv()
-        state = json.loads(state_json)
-        self.states.append(state)
+        state = json.loads(await self.websocket.recv())
+        self.__game_state = state
 
         self.players = [Player.from_json(player_id, player_data) for player_id, player_data in state["players"].items()]
         self.width = state["width"]
@@ -64,11 +61,13 @@ class WebsocketEnv(Spe_edEnv):
 
         asyncio.get_event_loop().run_until_complete(self.await_state())
         reward = 1 if self.done and self.controlled_player.active else 0
-        if self.done and self.logger is not None:
-            self.logger.log(self.states)
         return self._get_obs(self.controlled_player), reward, self.done, {}
 
     async def send_action(self, action):
         """Wait for send action"""
         await self.websocket.send(json.dumps({"action": action}))
         logging.info(f"Client sent action {action}")
+
+    def game_state(self):
+        """Get current game state as dict."""
+        return self.__game_state
