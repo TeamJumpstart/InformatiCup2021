@@ -1,13 +1,12 @@
-from metrics.metric import Metric
+from heuristics.heuristic import Heuristic
 from scipy import ndimage
 import numpy as np
 
 
-class RegionMetric(Metric):
-    """Returns a random number.
-    """
+class RegionHeuristic(Heuristic):
+    """Returns the size of the region we're in."""
     def __init__(self, cell_shape=None):
-        """Initialize RegionMetric."""
+        """Initialize RegionHeuristic."""
 
         if cell_shape is None:
             self.threshold = None
@@ -16,7 +15,7 @@ class RegionMetric(Metric):
         self.normalizedThreshold = 0.5
 
     def score(self, cells, player, opponents, rounds):
-        """Compute the of the region we're in after taking action."""
+        """Compute the size of the region we're in after taking action."""
         if not player.active:
             return 0
         empty = cells == 0

@@ -1,11 +1,11 @@
+from heuristics.heuristic import Heuristic
 import numpy as np
-from metrics.metric import Metric
 
 
-class GeodesicVoronoiMetric(Metric):
+class GeodesicVoronoiHeuristic(Heuristic):
     """Tries to maximize the area that can be reached by the agent before the opponents."""
     def __init__(self, max_distance=100):
-        """Initialize GeodesicVoronoiMetric.
+        """Initialize GeodesicVoronoiHeuristic.
 
         Args:
             max_distance: The maximal size for a voronoi cell taken into account given as geodesic distance from center.

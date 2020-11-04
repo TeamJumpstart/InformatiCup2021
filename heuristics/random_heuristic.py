@@ -1,10 +1,9 @@
-from metrics.metric import Metric
+from heuristics.heuristic import Heuristic
 import numpy as np
 
 
-class RandomMetric(Metric):
-    """Returns a random number.
-    """
+class RandomHeuristic(Heuristic):
+    """Returns a random number."""
     def __init__(self):
         """Initialize RandomMetric.
         """

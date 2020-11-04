@@ -1,13 +1,11 @@
-from metrics.metric import Metric
+from heuristics.heuristic import Heuristic
 import numpy as np
 
 
-class RandomMetric(Metric):
-    """Returns a random number.
-    """
+class OpponentDistanceHeuristic(Heuristic):
+    """Computes the distance sum to all players up to a threshold."""
     def __init__(self):
-        """Initialize RandomMetric.
-        """
+        """Initialize OpponentDistanceHeuristic."""
 
     def score(self, cells, player, opponents, rounds):
         """Computes the distance to all players."""

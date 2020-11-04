@@ -1,11 +1,11 @@
-from metrics.metric import Metric
+from heuristics.heuristic import Heuristic
 
 
-class RoundsMetric(Metric):
-    """Metric that return the number of rounds.
+class RoundsHeuristic(Heuristic):
+    """Heuristic that return the number of rounds.
     """
     def __init__(self, n_steps=None):
-        """Initialize RoundsMetric."""
+        """Initialize RoundsHeuristic."""
         self.threshold = n_steps
 
     def score(self, cells, player, opponents, rounds):
