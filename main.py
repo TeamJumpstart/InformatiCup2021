@@ -7,7 +7,7 @@ from environments import SimulatedSpe_edEnv, WebsocketEnv
 from environments.logging import Spe_edLogger, CloudUploader
 from environments.spe_ed import SavedGame
 from policies import RandomPolicy, RandomProbingPolicy, SpiralPolicy
-from policies.battleground_boardstate import BattlegroundBoardState
+from policies.rounds_boardstate import RoundsBoardState
 from policies.geodesicvoronoi_boardstate import GeodesicVoronoiBoardState
 import os
 import logging
@@ -178,15 +178,13 @@ if __name__ == "__main__":
         # Create environment
         if args.sim:
             env = SimulatedSpe_edEnv(
-                40, 40, [RandomProbingPolicy(n_probes=10, n_steps=100, full_action_set=False) for _ in range(5)]
+                40, 40, [RandomProbingPolicy(n_probes=[10], n_steps=[100], full_action_set=False) for _ in range(5)]
             )
         else:
             env = WebsocketEnv(os.environ["URL"], os.environ["KEY"])
 
         # Create policy
-        pol = RandomProbingPolicy(
-            n_probes=5, n_steps=3, full_action_set=False, metric=GeodesicVoronoiBoardState(max_distance=100)
-        )
+        pol = RandomProbingPolicy(n_probes=[10], n_steps=[100], full_action_set=False)
         # pol = RandomPolicy()
 
         repeat = not args.show and args.render_file is None
