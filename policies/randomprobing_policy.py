@@ -111,6 +111,6 @@ class RandomProbingPolicy(Policy):
                         break
 
         # apply weights to each heuristic score
-        sum_actions = self.weights.reshape((len(self.weights), 1)) * sum_actions
+        sum_actions = np.reshape(self.weights, (len(self.weights), 1)) * sum_actions
 
         return actions[np.argmax(np.sum(sum_actions, axis=0))]

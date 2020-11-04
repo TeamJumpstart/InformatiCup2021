@@ -13,7 +13,7 @@ class RoundsHeuristic(Heuristic):
         if player.active:
             return rounds
         else:
-            return rounds - 1
+            return 0
 
     def normalizedScore(self, cells, player, opponents, rounds):
         """Return current number of rounds as normalized score value."""
@@ -23,7 +23,7 @@ class RoundsHeuristic(Heuristic):
             if player.active:
                 return rounds / self.threshold
             else:
-                return (rounds - 1) / self.threshold
+                return 0
 
     def normalizedScoreAvailable(self):
         """Returns `True` iff `n_steps` was set to a value."""
