@@ -48,7 +48,7 @@ class RandomProbingPolicy(Policy):
             actions = np.array(["change_nothing", "turn_left", "turn_right"])
         sum_actions = np.zeros((len(self.metrics), ) + actions.shape, dtype=np.float32)
 
-        def perform_probe_run(fixed_actions, random_steps=self.n_steps[0], metric=self.metrics[0]):
+        def perform_probe_run(fixed_actions, random_steps, metric):
             """Performs one recursive probe run with random actions and returns the number of steps survived.
 
             Args:
@@ -60,9 +60,11 @@ class RandomProbingPolicy(Policy):
             for action in fixed_actions:
                 env = env.step([action])
                 if not env.players[0].active:
-                    return metric.score(
-                        env.cells.copy(), env.players[0], opponents, env.rounds
-                    )  # fixed actions result in certain death
+                    # fixed actions result in certain death
+                    if metric.normalizedScoreAvailable():
+                        return metric.normalizedScore(env.cells, env.players[0], opponents, env.rounds)
+                    else:
+                        return metric.score(env.cells, env.players[0], opponents, env.rounds)
 
             for _ in range(random_steps):
                 dead_end = True
@@ -79,7 +81,10 @@ class RandomProbingPolicy(Policy):
                     break
 
             # return the board state score value
-            return metric.score(env.cells.copy(), env.players[0], opponents, env.rounds)
+            if metric.normalizedScoreAvailable():
+                return metric.normalizedScore(env.cells, env.players[0], opponents, env.rounds)
+            else:
+                return metric.score(env.cells, env.players[0], opponents, env.rounds)
 
         def region_heuristic(action):
             """Compute the of the region we're in after taking action."""
@@ -96,12 +101,22 @@ class RandomProbingPolicy(Policy):
 
         # perform 3 or 5 * `n_probes` runs each with maximum of `n_steps`
         for num_metric in range(len(self.metrics)):
-            for a, action in enumerate(actions):
-                for _ in range(self.n_probes[num_metric]):
+            for _ in range(self.n_probes[num_metric]):
+                for a, action in enumerate(actions):
+                    metric = self.metrics[num_metric]
+
+                    # perform a single probe run and remember the biggest resulting score
                     sum_actions[num_metric, a] = max(
-                        perform_probe_run([action], self.n_steps[num_metric], metric=self.metrics[num_metric]),
-                        sum_actions[num_metric, a]
+                        perform_probe_run([action], self.n_steps[num_metric], metric), sum_actions[num_metric, a]
                     )
+
+                    # early out for the current action if our score is above a certain threshold defined by the metric
+                    if metric.normalizedScoreAvailable() \
+                            and sum_actions[num_metric, a] > metric.normalizedEarlyOutThreshold():
+                        break
+                    if not metric.normalizedScoreAvailable() \
+                            and sum_actions[num_metric, a] > metric.earlyOutThreshold():
+                        break
 
                 # Add region size as first tie breaker
                 region_size, pos = region_heuristic(action)
