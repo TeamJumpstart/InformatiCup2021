@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 
 
-class BoardState(ABC):
+class Metric(ABC):
+    """ Defines an abstract class to represent a board state metric.
+    """
     @abstractmethod
     def score(self, cells, player, opponents, rounds):
         """Compute a score value for a given game state

@@ -6,9 +6,7 @@ from tqdm import tqdm
 from environments import SimulatedSpe_edEnv, WebsocketEnv
 from environments.logging import Spe_edLogger, CloudUploader
 from environments.spe_ed import SavedGame
-from policies import RandomPolicy, RandomProbingPolicy, SpiralPolicy
-from policies.rounds_boardstate import RoundsBoardState
-from policies.geodesicvoronoi_boardstate import GeodesicVoronoiBoardState
+from policies import RandomProbingPolicy
 import os
 import logging
 from pathlib import Path

@@ -1,7 +1,7 @@
-from policies.boardstate import BoardState
+from metrics.metric import Metric
 
 
-class RoundsBoardState(BoardState):
+class RoundsMetric(Metric):
     """Metric that return the number of rounds.
     """
     def __init__(self):
