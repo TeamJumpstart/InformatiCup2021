@@ -53,7 +53,7 @@ class RandomProbingPolicy(Policy):
                 env = env.step([action])
                 if not env.players[0].active:
                     return self.metric.score(
-                        env.cells, env.players[0], opponents, env.rounds
+                        env.cells.copy(), env.players[0], opponents, env.rounds
                     )  # fixed actions result in certain death
 
             for _ in range(random_steps):
@@ -71,7 +71,7 @@ class RandomProbingPolicy(Policy):
                     break
 
             # return the board state score value
-            return self.metric.score(env.cells, env.players[0], opponents, env.rounds)
+            return self.metric.score(env.cells.copy(), env.players[0], opponents, env.rounds)
 
         def region_heuristic(action):
             """Compute the of the region we're in after taking action."""
@@ -90,8 +90,6 @@ class RandomProbingPolicy(Policy):
         for a, action in enumerate(actions):
             for _ in range(self.n_probes):
                 sum_actions[a] = max(perform_probe_run([action], self.n_steps), sum_actions[a])
-                if sum_actions[a] > rounds + self.n_steps:
-                    break  # Maximal path is found, no need in searching further
 
             # Add region size as first tie breaker
             region_size, pos = region_heuristic(action)

@@ -1,7 +1,5 @@
 import numpy as np
 from policies.boardstate import BoardState
-import matplotlib.pyplot as plt
-from matplotlib.colors import ListedColormap
 
 
 class BattlegroundBoardState(BoardState):
@@ -107,8 +105,7 @@ class BattlegroundBoardState(BoardState):
 
         unique, counts = np.unique(cells, return_counts=True)
         score = dict(zip(unique, counts))
-
-        _cmap = ListedColormap(
+        """_cmap = ListedColormap(
             [
                 (1.0, 1.0, 1.0, 1.0),  # Background - white
                 (0.0, 0.0, 0.0, 1.0),  # Collision - black
@@ -135,6 +132,6 @@ class BattlegroundBoardState(BoardState):
 
         plt.logging.getLogger('matplotlib.font_manager').disabled = True
         plt.imshow(cells, cmap=_cmap)
-        plt.show()
+        plt.show()"""
 
-        return score[1 + player.player_id]
+        return score[1 + player.player_id] / sum(score)
