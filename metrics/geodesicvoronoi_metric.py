@@ -5,7 +5,7 @@ from metrics.metric import Metric
 class GeodesicVoronoiMetric(Metric):
     """Tries to maximize the area that can be reached by the agent before the opponents.
     """
-    def __init__(self, max_distance=10, seed=None):
+    def __init__(self, max_distance=100, seed=None):
         """Initialize GeodesicVoronoiBoardState.
 
         Args:
