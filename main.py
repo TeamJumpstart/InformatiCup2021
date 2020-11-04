@@ -180,7 +180,7 @@ if __name__ == "__main__":
             env = WebsocketEnv(os.environ["URL"], os.environ["KEY"])
 
         # Create policy
-        pol = RandomProbingPolicy(20, 100, True)
+        pol = RandomProbingPolicy(n_steps=[20], n_probes=[100], full_action_set=True)
 
         repeat = not args.show and args.render_file is None
 
