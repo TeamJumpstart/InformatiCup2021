@@ -11,7 +11,9 @@ class RandomProbingPolicy(Policy):
 
     Baseline strategy, each smarter policy should be able to outperform this.
     """
-    def __init__(self, n_steps=3, n_probes=10, full_action_set=False, metric=RoundsBoardState(), seed=None):
+    def __init__(
+        self, n_steps=[3], n_probes=[10], full_action_set=False, metric=[RoundsBoardState()], weights=None, seed=None
+    ):
         """Initialize RandomProbingPolicy.
 
         Args:
@@ -30,6 +32,12 @@ class RandomProbingPolicy(Policy):
         self.full_action_set = full_action_set
         self.rng = np.random.default_rng(seed)
         self.metric = metric
+        if weights is not None and len(weights) != len(metric):
+            raise ValueError(f"Number of weights {weights} does mot match number of metrics {metric}")
+        if weights is None:
+            self.weights = np.ones(len(metric))
+        else:
+            self.weights = weights
 
     def act(self, cells, player, opponents, rounds):
         """Chooses action based on random probe runs."""
@@ -38,9 +46,9 @@ class RandomProbingPolicy(Policy):
             actions = np.array(["change_nothing", "turn_left", "turn_right", "speed_up", "slow_down"])
         else:
             actions = np.array(["change_nothing", "turn_left", "turn_right"])
-        sum_actions = np.zeros(actions.shape, dtype=np.float32)
+        sum_actions = np.zeros((len(self.metric), ) + actions.shape, dtype=np.float32)
 
-        def perform_probe_run(fixed_actions, random_steps):
+        def perform_probe_run(fixed_actions, random_steps=self.n_steps[0], metric=self.metric[0]):
             """Performs one recursive probe run with random actions and returns the number of steps survived.
 
             Args:
@@ -52,7 +60,7 @@ class RandomProbingPolicy(Policy):
             for action in fixed_actions:
                 env = env.step([action])
                 if not env.players[0].active:
-                    return self.metric.score(
+                    return metric.score(
                         env.cells.copy(), env.players[0], opponents, env.rounds
                     )  # fixed actions result in certain death
 
@@ -71,7 +79,7 @@ class RandomProbingPolicy(Policy):
                     break
 
             # return the board state score value
-            return self.metric.score(env.cells.copy(), env.players[0], opponents, env.rounds)
+            return metric.score(env.cells.copy(), env.players[0], opponents, env.rounds)
 
         def region_heuristic(action):
             """Compute the of the region we're in after taking action."""
@@ -87,17 +95,25 @@ class RandomProbingPolicy(Policy):
             return region_size, sim.players[0].position
 
         # perform 3 or 5 * `n_probes` runs each with maximum of `n_steps`
-        for a, action in enumerate(actions):
-            for _ in range(self.n_probes):
-                sum_actions[a] = max(perform_probe_run([action], self.n_steps), sum_actions[a])
+        for num_metric in range(len(self.metric)):
+            for a, action in enumerate(actions):
+                for _ in range(self.n_probes[num_metric]):
+                    sum_actions[num_metric, a] = max(
+                        perform_probe_run([action], self.n_steps[num_metric], metric=self.metric[num_metric]),
+                        sum_actions[num_metric, a]
+                    )
 
-            # Add region size as first tie breaker
-            region_size, pos = region_heuristic(action)
-            sum_actions[a] += region_size / (cells.width * cells.height)  # Normalize region size
-            # Add dist to close opponent as second tie breaker
-            # Add random as third tie breaker
-            min_opponent_dist = min(min(np.sum(np.abs((pos - p.position)))
-                                        for p in opponents), 16) + np.random.uniform()
-            sum_actions[a] += (min_opponent_dist / (cells.width + cells.height)) / (cells.width * cells.height)
+                # Add region size as first tie breaker
+                region_size, pos = region_heuristic(action)
+                sum_actions[num_metric, a] += region_size / (cells.width * cells.height)  # Normalize region size
+                # Add dist to close opponent as second tie breaker
+                # Add random as third tie breaker
+                min_opponent_dist = min(min(np.sum(np.abs((pos - p.position)))
+                                            for p in opponents), 16) + np.random.uniform()
+                sum_actions[num_metric,
+                            a] += (min_opponent_dist / (cells.width + cells.height)) / (cells.width * cells.height)
 
-        return actions[np.argmax(sum_actions)]
+        # apply weights to each metric score
+        sum_actions = self.weights.reshape((len(self.weights), 1)) * sum_actions
+
+        return actions[np.argmax(np.sum(sum_actions, axis=0))]
