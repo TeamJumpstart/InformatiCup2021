@@ -2,7 +2,7 @@ import numpy as np
 from scipy import ndimage
 from policies.policy import Policy
 from environments.simulator import Spe_edSimulator
-from policies.rounds_boardstate import RoundsBoardState
+from metrics.rounds_metric import RoundsMetric
 
 
 class RandomProbingPolicy(Policy):
@@ -12,7 +12,7 @@ class RandomProbingPolicy(Policy):
     Baseline strategy, each smarter policy should be able to outperform this.
     """
     def __init__(
-        self, n_steps=[3], n_probes=[10], full_action_set=False, metric=[RoundsBoardState()], weights=None, seed=None
+        self, n_steps=[3], n_probes=[10], full_action_set=False, metrics=[RoundsMetric()], weights=None, seed=None
     ):
         """Initialize RandomProbingPolicy.
 
@@ -31,11 +31,11 @@ class RandomProbingPolicy(Policy):
         self.n_probes = n_probes
         self.full_action_set = full_action_set
         self.rng = np.random.default_rng(seed)
-        self.metric = metric
-        if weights is not None and len(weights) != len(metric):
-            raise ValueError(f"Number of weights {weights} does mot match number of metrics {metric}")
+        self.metrics = metrics
+        if weights is not None and len(weights) != len(metrics):
+            raise ValueError(f"Number of weights {weights} does mot match number of metrics {metrics}")
         if weights is None:
-            self.weights = np.ones(len(metric))
+            self.weights = np.ones(len(metrics))
         else:
             self.weights = weights
 
@@ -46,9 +46,9 @@ class RandomProbingPolicy(Policy):
             actions = np.array(["change_nothing", "turn_left", "turn_right", "speed_up", "slow_down"])
         else:
             actions = np.array(["change_nothing", "turn_left", "turn_right"])
-        sum_actions = np.zeros((len(self.metric), ) + actions.shape, dtype=np.float32)
+        sum_actions = np.zeros((len(self.metrics), ) + actions.shape, dtype=np.float32)
 
-        def perform_probe_run(fixed_actions, random_steps=self.n_steps[0], metric=self.metric[0]):
+        def perform_probe_run(fixed_actions, random_steps=self.n_steps[0], metric=self.metrics[0]):
             """Performs one recursive probe run with random actions and returns the number of steps survived.
 
             Args:
@@ -95,11 +95,11 @@ class RandomProbingPolicy(Policy):
             return region_size, sim.players[0].position
 
         # perform 3 or 5 * `n_probes` runs each with maximum of `n_steps`
-        for num_metric in range(len(self.metric)):
+        for num_metric in range(len(self.metrics)):
             for a, action in enumerate(actions):
                 for _ in range(self.n_probes[num_metric]):
                     sum_actions[num_metric, a] = max(
-                        perform_probe_run([action], self.n_steps[num_metric], metric=self.metric[num_metric]),
+                        perform_probe_run([action], self.n_steps[num_metric], metric=self.metrics[num_metric]),
                         sum_actions[num_metric, a]
                     )
 
