@@ -101,6 +101,13 @@ def show_logfile(log_file):
 def render_logfile(log_file, fps=10):
     """Render logfile to mp4"""
     from visualization import Spe_edAx, render_video
+    from imageio_ffmpeg import get_ffmpeg_exe
+    import subprocess
+    import tempfile
+
+    def temp_file_name(suffix):
+        """Create the name of a temp file with given suffix without opening it."""
+        return Path(tempfile.gettempdir()) / (next(tempfile._get_candidate_names()) + suffix)
 
     game = SavedGame.load(log_file)
     game.move_controlled_player_to_front()
@@ -122,9 +129,30 @@ def render_logfile(log_file, fps=10):
             frame = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8).reshape(720, 720, 3)
             yield frame
 
+    # Render video to temp file
+    tmp_video = temp_file_name(".mp4")
     width, height = fig.canvas.get_width_height()
-    render_video(log_file.parent / (log_file.name[:-5] + ".mp4"), frames(), width, height, fps=fps)
+    render_video(tmp_video, frames(), width, height, fps=fps)
+
+    # Create thumbnail in temp file
+    tmp_thumbnail = temp_file_name(".jpg")
+    plt.savefig(tmp_thumbnail)
+
+    # Join both in log dir
+    subprocess.run(
+        [
+            get_ffmpeg_exe(), "-i",
+            str(tmp_video), "-i",
+            str(tmp_thumbnail), "-y", "-map", "0", "-map", "1", "-c", "copy", "-disposition:v:1", "attached_pic", "-v",
+            "warning",
+            str(log_file.parent / (log_file.name[:-5] + ".mp4"))
+        ]
+    )
+
+    # Cleanup
     plt.close(fig)
+    tmp_video.unlink()
+    tmp_thumbnail.unlink()
 
 
 if __name__ == "__main__":
