@@ -7,6 +7,7 @@ from environments import SimulatedSpe_edEnv, WebsocketEnv
 from environments.logging import Spe_edLogger, CloudUploader
 from environments.spe_ed import SavedGame
 from policies import RandomPolicy, HeuristicPolicy
+from heuristics import PathLengthHeuristic, RandomHeuristic, CompositeHeuristic
 import os
 import logging
 from pathlib import Path
@@ -180,7 +181,7 @@ if __name__ == "__main__":
             env = WebsocketEnv(os.environ["URL"], os.environ["KEY"])
 
         # Create policy
-        pol = HeuristicPolicy()
+        pol = HeuristicPolicy(CompositeHeuristic([RandomHeuristic(), PathLengthHeuristic()]))
 
         repeat = not args.show and args.render_file is None
 
