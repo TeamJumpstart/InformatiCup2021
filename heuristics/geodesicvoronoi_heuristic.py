@@ -13,16 +13,14 @@ class GeodesicVoronoiHeuristic(Heuristic):
                   or pass `None` for a random seed.
         """
         self.max_distance = max_distance
-        self.threshold = 0.5 * max_distance * max_distance
-        self.normalizedThreshold = 0.5
 
     def score(self, cells, player, opponents, rounds):
         """ Returns a score based on the computed geodesic voronoi diagram. """
 
         if not player.active:
-            return 0  # score is 0 for dead players - no need to compute anything
+            return 0, 0.0  # score is 0 for dead players - no need to compute anything
 
-        cells = np.transpose(cells)  # transpose array, as cells are encoded with (y,x)
+        cells = np.transpose(cells).copy()  # transpose array, as cells are encoded with (y,x)
         kernel = np.array([[1, 0], [-1, 0], [0, -1], [0, 1]], dtype=int)  # defines the connectivity of a cell
         voronoi = np.zeros_like(cells, dtype=np.int8)  # voronoi diagram
 
@@ -64,7 +62,7 @@ class GeodesicVoronoiHeuristic(Heuristic):
                 o_pos = (pos[0] + offset[0], pos[1] + offset[1])
                 if 0 <= o_pos[0] < shape[0] and 0 <= o_pos[1] < shape[1]:
                     if voronoi[o_pos[0], o_pos[1]] != 0:
-                        labels += voronoi[o_pos[0], o_pos[1]]
+                        labels += [voronoi[o_pos[0], o_pos[1]]]
             if len(np.unique(labels)) == 1:
                 return labels[0]
             return 0
@@ -95,19 +93,4 @@ class GeodesicVoronoiHeuristic(Heuristic):
         scores = dict(zip(unique, counts))
 
         # return the relative size of the voronoi cell for the controlled player
-        return scores[player.player_id]
-
-    def normalizedScore(self, cells, player, opponents, rounds):
-        """ Returns a normalized score based on the computed geodesic voronoi diagram.
-        The score is normalized by the grid size, which is the upper bound of the cell size.
-        """
-        return self.score(cells, player, opponents, rounds) / np.prod(cells.shape)
-
-    def normalizedScoreAvailable(self):
-        return True
-
-    def earlyOutThreshold(self):
-        return self.threshold
-
-    def normalizedEarlyOutThreshold(self):
-        return self.normalizedThreshold
+        return (scores[player.player_id], scores[player.player_id] / np.prod(cells.shape))

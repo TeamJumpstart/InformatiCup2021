@@ -1,7 +1,7 @@
 import numpy as np
 from policies.policy import Policy
 from environments.simulator import Spe_edSimulator
-from heuristics.rounds_heuristic import RoundsHeuristic
+from heuristics import RoundsHeuristic, RandomHeuristic
 
 
 class RandomProbingPolicy(Policy):
@@ -12,10 +12,10 @@ class RandomProbingPolicy(Policy):
     """
     def __init__(
         self,
-        n_steps=[3],
-        n_probes=[10],
+        n_steps=[3, 0],
+        n_probes=[10, 1],
         full_action_set=False,
-        heuristics=[RoundsHeuristic()],
+        heuristics=[RoundsHeuristic(), RandomHeuristic()],
         weights=None,
         seed=None
     ):
@@ -66,10 +66,7 @@ class RandomProbingPolicy(Policy):
                 env = env.step([action])
                 if not env.players[0].active:
                     # fixed actions result in certain death
-                    if heuristic.normalizedScoreAvailable():
-                        return heuristic.normalizedScore(env.cells, env.players[0], opponents, env.rounds)
-                    else:
-                        return heuristic.score(env.cells, env.players[0], opponents, env.rounds)
+                    return heuristic.score(env.cells, env.players[0], opponents, env.rounds)
 
             for _ in range(random_steps):
                 dead_end = True
@@ -86,31 +83,23 @@ class RandomProbingPolicy(Policy):
                     break
 
             # return the board state score value
-            if heuristic.normalizedScoreAvailable():
-                return heuristic.normalizedScore(env.cells, env.players[0], opponents, env.rounds)
-            else:
-                return heuristic.score(env.cells, env.players[0], opponents, env.rounds)
+            return heuristic.score(env.cells, env.players[0], opponents, env.rounds)
 
         # perform 3 or 5 * `n_probes` runs each with maximum of `n_steps`
         for num_heuristic in range(len(self.heuristics)):
             for _ in range(self.n_probes[num_heuristic]):
                 for a, action in enumerate(actions):
-                    heuristic = self.heuristics[num_heuristic]
-                    n_steps = self.n_steps[num_heuristic]
                     # perform a single probe run and remember the biggest resulting score
-                    sum_actions[num_heuristic, a] = max(
-                        perform_probe_run([action], n_steps, heuristic), sum_actions[num_heuristic, a]
+                    score, score_normalized = perform_probe_run(
+                        [action], self.n_steps[num_heuristic], self.heuristics[num_heuristic]
                     )
-
-                    # early out for the current action if our score is above a certain threshold defined by the metric
-                    if heuristic.normalizedScoreAvailable() \
-                            and sum_actions[num_heuristic, a] > heuristic.normalizedEarlyOutThreshold():
-                        break
-                    if not heuristic.normalizedScoreAvailable() \
-                            and sum_actions[num_heuristic, a] > heuristic.earlyOutThreshold():
-                        break
+                    if score_normalized is not None:
+                        sum_actions[num_heuristic, a] = max(score_normalized, sum_actions[num_heuristic, a])
+                        if (score_normalized == 1.0):
+                            break  # early out for the current action
+                    else:
+                        sum_actions[num_heuristic, a] = max(score, sum_actions[num_heuristic, a])
 
         # apply weights to each heuristic score
         sum_actions = np.reshape(self.weights, (len(self.weights), 1)) * sum_actions
-
         return actions[np.argmax(np.sum(sum_actions, axis=0))]
