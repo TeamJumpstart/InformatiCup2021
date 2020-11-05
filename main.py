@@ -6,7 +6,7 @@ from tqdm import tqdm
 from environments import SimulatedSpe_edEnv, WebsocketEnv
 from environments.logging import Spe_edLogger, CloudUploader
 from environments.spe_ed import SavedGame
-from policies import RandomPolicy, RandomProbingPolicy
+from policies import RandomPolicy, HeuristicPolicy
 import os
 import logging
 from pathlib import Path
@@ -180,7 +180,7 @@ if __name__ == "__main__":
             env = WebsocketEnv(os.environ["URL"], os.environ["KEY"])
 
         # Create policy
-        pol = RandomProbingPolicy(n_steps=[20], n_probes=[100], full_action_set=True)
+        pol = HeuristicPolicy()
 
         repeat = not args.show and args.render_file is None
 
