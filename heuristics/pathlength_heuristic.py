@@ -4,22 +4,16 @@ from environments.simulator import Spe_edSimulator
 from environments import spe_ed
 
 
-class RandomProbingHeuristic(Heuristic):
-    """Performs a random probe run and evaluates the board state afterwards by the given heuristics."""
-    def __init__(self, heuristic, n_steps, n_probes, seed=None):
-        """Initialize RandomProbingHeuristic."""
-        self.heuristic = heuristic
+class PathLengthHeuristic(Heuristic):
+    """Performs a random probe run and evaluates length of the path."""
+    def __init__(self, n_steps=20, n_probes=100, seed=None):
+        """Initialize PathLengthHeuristic."""
         self.n_steps = n_steps
         self.n_probes = n_probes
         self.rng = np.random.default_rng(seed)
 
     def score(self, cells, player, opponents, rounds):
-        """Performs one recursive probe run with random actions and returns the number of steps survived.
-
-        Args:
-            fixed_actions: Sequence of fixed actions taken at start.
-            random_steps: Number of random actions taken afterwards
-        """
+        """Performs probe runs with random actions and returns the number of steps survived."""
         def perform_probe_run(env):
             """Simulate the given environment for maximum of `n_steps` with valid random steps or
             until the player cannot make a valid move, return the environment.
@@ -38,13 +32,15 @@ class RandomProbingHeuristic(Heuristic):
                     break
             return env
 
-        score = 0
+        probe_length = 0
         for _ in range(self.n_probes):
             # perform a single probe run
             env = perform_probe_run(Spe_edSimulator(cells, [player], rounds))
-            probe_score = self.heuristic.score(env.cells, env.players[0], opponents, env.rounds)
-            # remember only the score of the best probe run
-            score = max(probe_score, score)
+            # remember only the length of the best probe run
+            probe_length = max(env.rounds - rounds, probe_length)
+            # early out - we found one path with the maximal distance
+            if probe_length >= self.n_steps:
+                return probe_length
 
         # return the board state score value
-        return score
+        return probe_length

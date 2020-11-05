@@ -90,4 +90,4 @@ class GeodesicVoronoiHeuristic(Heuristic):
         scores = dict(zip(unique, counts))
 
         # return the relative size of the voronoi cell for the controlled player
-        return (scores[player.player_id], scores[player.player_id] / np.prod(cells.shape))
+        return scores[player.player_id] / np.prod(cells.shape)

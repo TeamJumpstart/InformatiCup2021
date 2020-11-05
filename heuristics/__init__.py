@@ -5,6 +5,7 @@ from heuristics.region_heuristic import RegionHeuristic
 from heuristics.opponentdistance_heuristic import OpponentDistanceHeuristic
 from heuristics.geodesicvoronoi_heuristic import GeodesicVoronoiHeuristic
 from heuristics.randomprobing_heuristic import RandomProbingHeuristic
+from heuristics.pathlength_heuristic import PathLengthHeuristic
 
 __all__ = [
     "Heuristic",
@@ -14,4 +15,5 @@ __all__ = [
     "OpponentDistanceHeuristic",
     "GeodesicVoronoiHeuristic",
     "RandomProbingHeuristic",
+    "PathLengthHeuristic",
 ]

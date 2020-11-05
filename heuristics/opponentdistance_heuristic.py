@@ -13,4 +13,4 @@ class OpponentDistanceHeuristic(Heuristic):
         min_opponent_dist = min(
             min(np.sum(np.abs((player.position - o.position))) for o in opponents if o.active), self.threshold
         )
-        return (min_opponent_dist, min_opponent_dist / np.sum(cells.shape))
+        return min_opponent_dist / np.sum(cells.shape)
