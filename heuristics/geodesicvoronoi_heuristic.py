@@ -4,7 +4,7 @@ import numpy as np
 
 class GeodesicVoronoiHeuristic(Heuristic):
     """Tries to maximize the area that can be reached by the agent before the opponents."""
-    def __init__(self, max_distance=100):
+    def __init__(self, max_distance=40):
         """Initialize GeodesicVoronoiHeuristic.
 
         Args:
@@ -16,9 +16,6 @@ class GeodesicVoronoiHeuristic(Heuristic):
 
     def score(self, cells, player, opponents, rounds):
         """ Returns a score based on the computed geodesic voronoi diagram. """
-
-        if not player.active:
-            return 0, 0.0  # score is 0 for dead players - no need to compute anything
 
         cells = np.transpose(cells).copy()  # transpose array, as cells are encoded with (y,x)
         kernel = np.array([[1, 0], [-1, 0], [0, -1], [0, 1]], dtype=int)  # defines the connectivity of a cell

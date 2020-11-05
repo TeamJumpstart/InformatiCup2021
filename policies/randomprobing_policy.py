@@ -17,6 +17,7 @@ class RandomProbingPolicy(Policy):
         full_action_set=False,
         heuristics=[RoundsHeuristic(), RandomHeuristic()],
         weights=None,
+        early_out_thresholds=None,
         seed=None
     ):
         """Initialize RandomProbingPolicy.
@@ -37,12 +38,22 @@ class RandomProbingPolicy(Policy):
         self.full_action_set = full_action_set
         self.rng = np.random.default_rng(seed)
         self.heuristics = heuristics
+
         if weights is not None and len(weights) != len(heuristics):
             raise ValueError(f"Number of weights {weights} does mot match number of heuristics {heuristics}")
         if weights is None:
             self.weights = np.ones(len(heuristics))
         else:
             self.weights = weights
+
+        if early_out_thresholds is not None and len(early_out_thresholds) != len(heuristics):
+            raise ValueError(
+                f"Number of weights {early_out_thresholds} does mot match number of heuristics {heuristics}"
+            )
+        if early_out_thresholds is None:
+            self.early_out_thresholds = np.ones(len(heuristics))
+        else:
+            self.early_out_thresholds = early_out_thresholds
 
     def act(self, cells, player, opponents, rounds):
         """Chooses action based on random probe runs."""
@@ -65,8 +76,7 @@ class RandomProbingPolicy(Policy):
             for action in fixed_actions:
                 env = env.step([action])
                 if not env.players[0].active:
-                    # fixed actions result in certain death
-                    return heuristic.score(env.cells, env.players[0], opponents, env.rounds)
+                    return (0.0, 0.0)  # fixed actions result in certain death
 
             for _ in range(random_steps):
                 dead_end = True
@@ -95,8 +105,8 @@ class RandomProbingPolicy(Policy):
                     )
                     if score_normalized is not None:
                         sum_actions[num_heuristic, a] = max(score_normalized, sum_actions[num_heuristic, a])
-                        if (score_normalized == 1.0):
-                            break  # early out for the current action
+                        if score_normalized >= self.early_out_thresholds[num_heuristic]:
+                            break  # early out for current action
                     else:
                         sum_actions[num_heuristic, a] = max(score, sum_actions[num_heuristic, a])
 

@@ -7,8 +7,6 @@ class RegionHeuristic(Heuristic):
     """Returns the size of the region we're in."""
     def score(self, cells, player, opponents, rounds):
         """Compute the size of the region we're in after taking action."""
-        if not player.active:
-            return 0
         empty = cells == 0
         empty[player.y, player.x] = True  # Clear cell we're in
         labelled, _ = ndimage.label(empty)

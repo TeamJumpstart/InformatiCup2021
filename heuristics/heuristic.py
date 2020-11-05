@@ -14,7 +14,7 @@ class Heuristic(ABC):
             rounds: Number of this round. Starts with 1, thus `rounds % 6 == 0` indicates a jump.
 
         Returns:
-            Returns a two scalar values which describe the `goodness` of the current board state for `player`.
+            Returns two scalar values which describe the `goodness` of the current board state for `player`.
             The second value is normalized in the range [0, 1] if possible, otherwise it is set to `None`.
         """
         pass

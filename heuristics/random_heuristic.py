@@ -7,4 +7,4 @@ class RandomHeuristic(Heuristic):
     def score(self, cells, player, opponents, rounds):
         """Returns a random number in range [0, 1] if the player is active, otherwise 0."""
         rnd = np.random.uniform()
-        return (rnd, rnd) if player.active else (0.0, 0.0)
+        return (rnd, rnd)
