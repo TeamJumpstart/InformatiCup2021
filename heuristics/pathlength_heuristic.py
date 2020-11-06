@@ -43,4 +43,4 @@ class PathLengthHeuristic(Heuristic):
                 return probe_length
 
         # return the board state score value
-        return probe_length
+        return probe_length / self.n_steps
