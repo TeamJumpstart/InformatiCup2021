@@ -3,11 +3,12 @@ import numpy as np
 
 
 class CompositeHeuristic(Heuristic):
-    """Computes the distance sum to all players up to a threshold."""
+    """Allows to combine multiple heuristics into a single score evaluating the same board state. """
     def __init__(self, heuristics, weights=None):
         """Initialize OpponentDistanceHeuristic.
 
-        weights: Propability weights of each action. Pass `None` for uniform distribution.
+        heuristics: An array containing different `Heuristics` which should be evaluated in combination.
+        weights: Weighting of each `Heuristic`. Pass `None` for uniform weighting.
         """
         self.heuristics = heuristics
         if weights is not None and len(weights) != len(heuristics):
@@ -18,7 +19,7 @@ class CompositeHeuristic(Heuristic):
             self.weights = weights / np.sum(weights)
 
     def score(self, cells, player, opponents, rounds):
-        """Computes the distance to all players."""
+        """Computes the scombined heuristic score."""
         return sum(
             weight * heuristic.score(cells, player, opponents, rounds)
             for weight, heuristic in zip(self.weights, self.heuristics)

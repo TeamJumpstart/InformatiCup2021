@@ -1,6 +1,7 @@
 import unittest
 from environments import SimulatedSpe_edEnv
 import policies
+from heuristics import RandomHeuristic, CompositeHeuristic
 
 
 def run_policy(env, pol):
@@ -99,4 +100,27 @@ class TestSpiralPolicy(unittest.TestCase):
         """Executing the policy should not throw any error."""
         env = SimulatedSpe_edEnv(5, 5, [policies.SpiralPolicy() for _ in range(5)])
         pol = policies.SpiralPolicy()
+        run_policy(env, pol)
+
+
+class TestHeuristicPolicy(unittest.TestCase):
+    def test_execution(self):
+        """Executing the policy should not throw any error."""
+        env = SimulatedSpe_edEnv(5, 5, [policies.HeuristicPolicy(heuristic=RandomHeuristic()) for _ in range(5)])
+        pol = policies.HeuristicPolicy(heuristic=RandomHeuristic())
+        run_policy(env, pol)
+
+    def test_composite_execution(self):
+        env = SimulatedSpe_edEnv(5, 5, [policies.HeuristicPolicy(heuristic=RandomHeuristic()) for _ in range(5)])
+        pol = policies.HeuristicPolicy(
+            heuristic=CompositeHeuristic(
+                [RandomHeuristic(),
+                 RandomHeuristic(),
+                 CompositeHeuristic([
+                     RandomHeuristic(),
+                     RandomHeuristic(),
+                 ])],
+                weights=[1, 2, 3],
+            )
+        )
         run_policy(env, pol)
