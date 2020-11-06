@@ -51,14 +51,6 @@ class TestRandomPolicy(unittest.TestCase):
         run_policy(env, pol)
 
 
-class TestRandomProbingPolicy(unittest.TestCase):
-    def test_execution(self):
-        """Executing the policy should not throw any error."""
-        env = SimulatedSpe_edEnv(5, 5, [policies.RandomProbingPolicy() for _ in range(5)])
-        pol = policies.RandomProbingPolicy()
-        run_policy(env, pol)
-
-
 class TestScriptedPolicy(unittest.TestCase):
     def test_execution(self):
         """Executing the policy should not throw any error."""
