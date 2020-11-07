@@ -25,7 +25,7 @@ class TestOccupancyMap(unittest.TestCase):
         self.assertEqual(occ.dtype, np.float32)
 
     def test_depth_1(self):
-        """Compute occupancy for two steps."""
+        """Compute occupancy for one step."""
         cells = np.zeros((5, 5), dtype=np.int32)
         cells[2, 2] = 1
 
@@ -37,14 +37,13 @@ class TestOccupancyMap(unittest.TestCase):
         )
 
         assert_array_almost_equal(
-            occ,
-            np.array([
+            occ, [
                 [0, 0, 0, 0, 0],
-                [0, 0, 1, 0, 0],
-                [0, 0, 5, 2, 1],
-                [0, 0, 1, 0, 0],
+                [0, 0, 1 / 5, 0, 0],
+                [0, 0, 1, 2 / 5, 1 / 5],
+                [0, 0, 1 / 5, 0, 0],
                 [0, 0, 0, 0, 0],
-            ]) / 5
+            ]
         )
 
     def test_depth_2(self):
@@ -61,13 +60,13 @@ class TestOccupancyMap(unittest.TestCase):
 
         assert_array_almost_equal(
             occ,
-            np.array([
-                [0, 0, 2, 0, 1],
-                [0, 1, 5, 2, 1],
-                [0, 0, 25, 10, 7],
-                [0, 1, 5, 2, 1],
-                [0, 0, 2, 0, 1],
-            ]) / 25
+            [
+                [0, 0, 2 / 25, 0, 1 / 25],
+                [0, 1 / 25, 1 / 5, 49 / 625, 1 / 25],
+                [0, 0, 1, 2 / 5, 33 / 125],
+                [0, 1 / 25, 1 / 5, 49 / 625, 1 / 25],
+                [0, 0, 2 / 25, 0, 1 / 25],
+            ],
         )
 
     def test_jump(self):
@@ -83,12 +82,11 @@ class TestOccupancyMap(unittest.TestCase):
         )
 
         assert_array_almost_equal(
-            occ,
-            np.array([
+            occ, [
                 [0, 0, 0, 0, 0],
-                [1, 0, 0, 0, 0],
-                [5, 3, 1, 1, 1],
-                [1, 0, 0, 0, 0],
+                [1 / 5, 0, 0, 0, 0],
+                [1, 3 / 5, 1 / 5, 1 / 5, 1 / 5],
+                [1 / 5, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
-            ]) / 5
+            ]
         )
