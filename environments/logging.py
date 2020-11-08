@@ -65,5 +65,6 @@ class TournamentLogger():
         """
         combined_name = "_".join([pol_name for pol_name in policy_mapping.values()])
         log_file = self.log_dir / f"{combined_name}.json"
+        # ToDo: add logs for multiple games
         with open(log_file, "w") as f:
-            json.dump(states + policy_mapping, f, separators=(',', ':'))
+            json.dump({"states": states, "mapping": policy_mapping}, f, separators=(',', ':'))
