@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
 from numpy.testing import assert_array_equal, assert_array_almost_equal
-from environments.spe_ed import Player, directions_by_name
-from state_representation import occupancy_map
+from environments.spe_ed import Player, directions_by_name, SavedGame
+from state_representation import occupancy_map, padded_window
 
 
 class TestOccupancyMap(unittest.TestCase):
@@ -88,5 +88,45 @@ class TestOccupancyMap(unittest.TestCase):
                 [1, 3 / 5, 1 / 5, 1 / 5, 1 / 5],
                 [1 / 5, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
+            ]
+        )
+
+
+class TestPaddedWindow(unittest.TestCase):
+    def test_window(self):
+        game = SavedGame.load(r"tests/logs/20201019-182018.json")
+
+        t = 0
+        window = padded_window(game.cell_states[t], game.player_states[t][0].x, game.player_states[t][0].y, 2, -1)
+        assert_array_equal(
+            window, [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+            ]
+        )
+
+        t = 4
+        window = padded_window(game.cell_states[t], game.player_states[t][0].x, game.player_states[t][0].y, 2, -1)
+        assert_array_equal(
+            window, [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 1, 1],
+            ]
+        )
+        t = 23
+        window = padded_window(game.cell_states[t], game.player_states[t][0].x, game.player_states[t][0].y, 2, -1)
+        assert_array_equal(
+            window, [
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 0, 0, 0],
+                [-1, -1, -1, -1, -1],
             ]
         )
