@@ -28,9 +28,9 @@ def fetch_statistics(log_dir, csv_file):
 
         # Append new statisics
         df = pd.DataFrame(results, columns=["date", "rounds", "winner", "you", "names"])
-        df.to_csv("data.csv", mode='a', header=len(known_log_files) == 0, index=False)
+        df.to_csv(csv_file, mode='a', header=len(known_log_files) == 0, index=False)
 
     # Return all data from csv
     return pd.read_csv(
-        "data.csv", parse_dates=["date"], converters={"names": lambda x: x.strip("[]").replace("'", "").split(", ")}
+        csv_file, parse_dates=["date"], converters={"names": lambda x: x.strip("[]").replace("'", "").split(", ")}
     )
