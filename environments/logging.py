@@ -49,3 +49,20 @@ class CloudUploader():
         oc.put_file(self.remote_dir + log_file.name, str(log_file))
 
         oc.logout()
+
+
+class TournamentLogger():
+    def __init__(self, log_dir="logs/"):
+        self.log_dir = Path(log_dir)
+        self.log_dir.mkdir(parents=True, exist_ok=True)
+
+    def log(self, states, policy_mapping):
+        """Handle the logging of a completed tournament game with a set of different policies.
+
+        Args:
+            states: List of game states in form of parsed json.
+            policies: Dictionary containing a mapping from the player_id to the used policies name.
+        """
+        log_file = self.log_dir / f"{"_".join([pol["name"] for pol in policy_mapping.values()])}.json"
+        with open(log_file, "w") as f:
+            json.dump(states + policy_mapping, f, separators=(',', ':'))
