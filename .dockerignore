@@ -7,3 +7,4 @@ LICENSE
 README.md
 setup.cfg
 ./logs/
+./tournament/logs/

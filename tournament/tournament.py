@@ -52,7 +52,6 @@ number_games = 1
 
 def play_game(env, policies, show=False, fps=10, logger=None):
     obs = env.reset()
-
     if show and not env.render(screen_width=720, screen_height=720):
         return
     if logger is not None:  # Log initial state
@@ -96,13 +95,16 @@ if __name__ == "__main__":
 
     # ToDo: create varying width, height, number of players and constellations
 
-    with tqdm() as pbar:
+    with tqdm(total=5, desc="Number of players(2-6)", position=0) as player_number_pbar:
         for number_players in range(2, 7):  # games with 2 to 6 players
-            player_constellations = it.combinations(POLICY_LIST, number_players)  # maybe with replacements
-            for constellation in player_constellations:
-                # Create environment
-                env = SimulatedSpe_edEnv(40, 40, [c["pol"] for c in constellation[1:]])
-                for game in range(number_games):
-                    play_game(env, constellation, show=args.show)
-
-            pbar.update()
+            player_constellations = list(it.combinations(POLICY_LIST, number_players))  # maybe with replacements
+            with tqdm(
+                total=len(player_constellations), desc="Combinations", position=number_players - 1
+            ) as constellation_pbar:
+                for constellation in player_constellations:
+                    # Create environment
+                    env = SimulatedSpe_edEnv(40, 40, [c["pol"] for c in constellation[1:]])
+                    for game in range(number_games):
+                        play_game(env, constellation, show=args.show, logger=logger)
+                    constellation_pbar.update()
+            player_number_pbar.update()
