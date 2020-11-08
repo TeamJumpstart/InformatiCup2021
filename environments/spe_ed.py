@@ -198,6 +198,16 @@ class SavedGame:
         return len(self.cell_states) - 1
 
     @property
+    def names(self):
+        """Return list of all player names in this game."""
+        return [p.name for p in self.player_states[-1]]
+
+    @property
+    def player_ids(self):
+        """Return iterable of all player ids in this game."""
+        return (p.player_id for p in self.player_states[0])
+
+    @property
     def you(self):
         """Player_id of controlled player."""
         return self.data[0]["you"]
