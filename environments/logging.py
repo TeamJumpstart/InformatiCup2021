@@ -63,6 +63,7 @@ class TournamentLogger():
             states: List of game states in form of parsed json.
             policies: Dictionary containing a mapping from the player_id to the used policies name.
         """
-        log_file = self.log_dir / f"{"_".join([pol["name"] for pol in policy_mapping.values()])}.json"
+        combined_name = "_".join([pol_name for pol_name in policy_mapping.values()])
+        log_file = self.log_dir / f"{combined_name}.json"
         with open(log_file, "w") as f:
             json.dump(states + policy_mapping, f, separators=(',', ':'))
