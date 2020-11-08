@@ -6,10 +6,9 @@ from tqdm import tqdm
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from environments import SimulatedSpe_edEnv
-from environments.logging import Spe_edLogger
+from environments.logging import TournamentLogger
 from policies import RandomPolicy, HeuristicPolicy, SpiralPolicy
 from heuristics import PathLengthHeuristic, RandomHeuristic, CompositeHeuristic, RegionHeuristic, OpponentDistanceHeuristic
-import logging
 
 pol = HeuristicPolicy(
     CompositeHeuristic(
@@ -50,15 +49,8 @@ POLICY_LIST = [
 ]
 number_games = 1
 
-# Set up logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s %(levelname)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-)
 
-
-def play_game(env, policy, show=False, fps=10, logger=None):
+def play_game(env, policies, show=False, fps=10, logger=None):
     obs = env.reset()
 
     if show and not env.render(screen_width=720, screen_height=720):
@@ -68,7 +60,7 @@ def play_game(env, policy, show=False, fps=10, logger=None):
 
     done = False
     while not done:
-        action = policy["pol"].act(*obs)
+        action = policies[0]["pol"].act(*obs)
         obs, reward, done, _ = env.step(action)
 
         if show and not env.render(screen_width=720, screen_height=720):
@@ -76,8 +68,11 @@ def play_game(env, policy, show=False, fps=10, logger=None):
         if logger is not None:
             states.append(env.game_state())
 
-    if logger is not None:
-        logger.log(states)
+    if logger is not None:  # log states together with a mapping of player_id to policy
+        policy_mapping = dict(
+            zip([player_id for player_id, _ in env.game_state()["players"].items()], [pol["name"] for pol in policies])
+        )
+        logger.log(states, policy_mapping)
     if show:
         # Show final state
         while True:
@@ -88,18 +83,18 @@ def play_game(env, policy, show=False, fps=10, logger=None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='spe_ed tournament')
+    # ToDo: add modes for playing and analysis
     parser.add_argument('--show', action='store_true', help='Display game.')
     parser.add_argument('--log-dir', type=str, default=None, help='Directory for logs.')
     args = parser.parse_args()
 
     # Create logger
     if args.log_dir is not None:
-        logger_callbacks = []
-        logger = Spe_edLogger(args.log_dir, logger_callbacks)
+        logger = TournamentLogger(args.log_dir)
     else:
         logger = None
 
-    # ToDo: create varying with, height, number of players and constellations
+    # ToDo: create varying width, height, number of players and constellations
 
     with tqdm() as pbar:
         for number_players in range(2, 7):  # games with 2 to 6 players
@@ -108,6 +103,6 @@ if __name__ == "__main__":
                 # Create environment
                 env = SimulatedSpe_edEnv(40, 40, [c["pol"] for c in constellation[1:]])
                 for game in range(number_games):
-                    play_game(env, constellation[0], show=args.show)
+                    play_game(env, constellation, show=args.show)
 
             pbar.update()
