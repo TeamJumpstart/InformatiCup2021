@@ -37,4 +37,4 @@ def occupancy_map(cells, opponents, rounds, depth=3):
         if opponent.active:
             _occupancy_recursion(Spe_edSimulator(cells, [opponent], rounds))
 
-    return np.minimum(occ, 1)  # Clip to [0, 1]
+    return occ
