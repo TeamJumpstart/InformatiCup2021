@@ -40,7 +40,7 @@ class PathLengthHeuristic(Heuristic):
             probe_length = max(env.rounds - rounds, probe_length)
             # early out - we found one path with the maximal distance
             if probe_length >= self.n_steps:
-                return probe_length
+                return 1.0
 
         # return the board state score value
         return probe_length / self.n_steps
