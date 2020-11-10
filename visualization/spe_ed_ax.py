@@ -6,12 +6,12 @@ _cmap = ListedColormap(
     [
         (0.0, 0.0, 0.0, 1.0),  # Collision - black
         (1.0, 1.0, 1.0, 1.0),  # Background - white
-        (1.0, 0.0, 0.0, 1.0),  # Player 1 - red
-        (0.0, 1.0, 0.0, 1.0),  # Player 2 - green
-        (0.0, 0.0, 1.0, 1.0),  # Player 3 - blue
-        (1.0, 1.0, 0.0, 1.0),  # Player 4 - yellow
-        (0.0, 1.0, 1.0, 1.0),  # Player 5 - light blue
-        (1.0, 0.0, 1.0, 1.0),  # Player 6 - pink
+        (204.0 / 255, 7.0 / 255, 30.0 / 255, 1.0),  # Player 1 - red
+        (87.0 / 255, 171 / 255.0, 39.0 / 255, 1.0),  # Player 2 - green
+        (0.0 / 255, 84.0 / 255, 159.0 / 255, 1.0),  # Player 3 - blue
+        (246.0 / 255, 168.0 / 255, 0.0 / 255, 1.0),  # Player 4 - orange
+        (0.0 / 255, 152.0 / 255, 161.0 / 255, 1.0),  # Player 5 - turquoise
+        (97.0 / 255, 33.0 / 255, 88.0 / 255, 1.0),  # Player 6 - violet
     ]
 )
 
