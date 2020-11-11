@@ -6,6 +6,7 @@ from heuristics.geodesicvoronoi_heuristic import GeodesicVoronoiHeuristic
 from heuristics.randomprobing_heuristic import RandomProbingHeuristic
 from heuristics.pathlength_heuristic import PathLengthHeuristic
 from heuristics.composite_heuristic import CompositeHeuristic
+from heuristics.closeregion_heuristic import CloseRegionHeuristic
 
 __all__ = [
     "Heuristic",
@@ -16,4 +17,5 @@ __all__ = [
     "RandomProbingHeuristic",
     "PathLengthHeuristic",
     "CompositeHeuristic",
+    "CloseRegionHeuristic",
 ]
