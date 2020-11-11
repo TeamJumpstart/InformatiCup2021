@@ -7,14 +7,15 @@ from statistics import get_log_files
 from state_representation import windowed_abstraction
 
 
-def create_sequences(log_dir, date):
+def create_sequences(log_dir, date, radius=5):
+    "Create a state/action sequences .npz file."
     names = []
     data = {"names": names}
     for log_file in tqdm(get_log_files(log_dir, prefix=date)):
         game = SavedGame.load(log_file)
         for player_id in game.player_ids:
             # Compute abstraction window
-            windows = windowed_abstraction(game, player_id, radius=5)
+            windows = windowed_abstraction(game, player_id, radius=radius)
 
             # Infer actions
             actions = [
@@ -34,8 +35,19 @@ def create_sequences(log_dir, date):
     np.savez_compressed(Path(log_dir).parent / "sequences" / date, **data)
 
 
-def load_sequences(sequence_file):
+def load_sequence_file(sequence_file):
+    """Read state/action sequences from .npz file."""
     with np.load(sequence_file) as data:
         states = [data[f"{name}-state"] for name in data["names"]]
         actions = [data[f"{name}-action"] for name in data["names"]]
+    return states, actions
+
+
+def load_sequence_dataset(sequence_dir):
+    states = []
+    actions = []
+    for f in tqdm([f for f in Path(sequence_dir).iterdir() if f.name.endswith(".npz")], desc="Loading sequences"):
+        s, a = load_sequence_file(f)
+        states.extend(s)
+        actions.extend(a)
     return states, actions
