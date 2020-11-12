@@ -48,6 +48,7 @@ POLICY_LIST = [
     },
 ]
 number_games = 1
+width_height_pairs = [(30, 30), (50, 50)]
 
 
 def play_game(env, policies, show=False, fps=10, logger=None):
@@ -93,8 +94,6 @@ if __name__ == "__main__":
     else:
         logger = None
 
-    # ToDo: create varying width, height, number of players and constellations
-
     with tqdm(total=5, desc="Number of players(2-6)", position=0) as player_number_pbar:
         for number_players in range(2, 7):  # games with 2 to 6 players
             player_constellations = list(it.combinations(POLICY_LIST, number_players))  # maybe with replacements
@@ -102,9 +101,10 @@ if __name__ == "__main__":
                 total=len(player_constellations), desc="Combinations", position=number_players - 1
             ) as constellation_pbar:
                 for constellation in player_constellations:
-                    # Create environment
-                    env = SimulatedSpe_edEnv(40, 40, [c["pol"] for c in constellation[1:]])
-                    for game in range(number_games):
-                        play_game(env, constellation, show=args.show, logger=logger)
+                    for (width, height) in width_height_pairs:
+                        # Create environment
+                        env = SimulatedSpe_edEnv(width, height, [c["pol"] for c in constellation[1:]])
+                        for game in range(number_games):
+                            play_game(env, constellation, show=args.show, logger=logger)
                     constellation_pbar.update()
             player_number_pbar.update()
