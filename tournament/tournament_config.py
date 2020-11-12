@@ -1,6 +1,7 @@
 from policies import RandomPolicy, HeuristicPolicy, SpiralPolicy
 from heuristics import PathLengthHeuristic, RandomHeuristic, CompositeHeuristic, RegionHeuristic, OpponentDistanceHeuristic
 
+# participating policies with names
 policy_list = [
     {
         "name":
@@ -39,5 +40,7 @@ policy_list = [
         "pol": HeuristicPolicy(OpponentDistanceHeuristic())
     },
 ]
+# number of games to be played
 number_games = 1
+# different map sizez to be played
 width_height_pairs = [(30, 30), (50, 50)]

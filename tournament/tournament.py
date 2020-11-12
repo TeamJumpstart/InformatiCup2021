@@ -11,6 +11,7 @@ import tournament_config
 
 
 def play_game(env, policies, show=False, fps=10, logger=None):
+    """Simulate a single game with the given environment and policies"""
     obs = env.reset()
     if show and not env.render(screen_width=720, screen_height=720):
         return
@@ -32,8 +33,7 @@ def play_game(env, policies, show=False, fps=10, logger=None):
             zip([player_id for player_id, _ in env.game_state()["players"].items()], [pol["name"] for pol in policies])
         )
         logger.log(states, policy_mapping)
-    if show:
-        # Show final state
+    if show:  # Show final state
         while True:
             if not env.render(screen_width=720, screen_height=720):
                 return
@@ -42,7 +42,10 @@ def play_game(env, policies, show=False, fps=10, logger=None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='spe_ed tournament')
-    # ToDo: add modes for playing and analysis
+    parser.add_argument('mode', nargs='?', choices=[
+        'play',
+        'analyze',
+    ], default="play")
     parser.add_argument('--show', action='store_true', help='Display game.')
     parser.add_argument('--log-dir', type=str, default=None, help='Directory for logs.')
     args = parser.parse_args()
@@ -53,19 +56,29 @@ if __name__ == "__main__":
     else:
         logger = None
 
-    with tqdm(total=5, desc="Number of players(2-6)", position=0) as player_number_pbar:
-        for tournament_config.number_players in range(2, 7):  # games with 2 to 6 players
-            player_constellations = list(
-                it.combinations(tournament_config.policy_list, tournament_config.number_players)
-            )  # maybe with replacements
-            with tqdm(
-                total=len(player_constellations), desc="Combinations", position=tournament_config.number_players - 1
-            ) as constellation_pbar:
-                for constellation in player_constellations:
-                    for (width, height) in tournament_config.width_height_pairs:
-                        # Create environment
-                        env = SimulatedSpe_edEnv(width, height, [c["pol"] for c in constellation[1:]])
-                        for game in range(tournament_config.number_games):
-                            play_game(env, constellation, show=args.show, logger=logger)
-                    constellation_pbar.update()
-            player_number_pbar.update()
+    if args.mode == "analyze":
+        # ToDo
+        pass
+    else:  # play
+        # games with 2 to 6 players
+        with tqdm(total=5, desc="Number of players(2-6)", position=0) as player_number_pbar:
+            for tournament_config.number_players in range(2, 7):
+                player_constellations = list(
+                    it.combinations(tournament_config.policy_list, tournament_config.number_players)
+                )  # maybe with replacements
+                # games with different policy combinations
+                with tqdm(
+                    total=len(player_constellations),
+                    desc="Combinations",
+                    position=tournament_config.number_players - 1
+                ) as constellation_pbar:
+                    for constellation in player_constellations:
+                        # games with different map size
+                        for (width, height) in tournament_config.width_height_pairs:
+                            # Create environment
+                            env = SimulatedSpe_edEnv(width, height, [c["pol"] for c in constellation[1:]])
+                            # number of games to be played
+                            for game in range(tournament_config.number_games):
+                                play_game(env, constellation, show=args.show, logger=logger)
+                        constellation_pbar.update()
+                player_number_pbar.update()
