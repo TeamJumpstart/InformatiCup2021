@@ -7,48 +7,7 @@ import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from environments import SimulatedSpe_edEnv
 from environments.logging import TournamentLogger
-from policies import RandomPolicy, HeuristicPolicy, SpiralPolicy
-from heuristics import PathLengthHeuristic, RandomHeuristic, CompositeHeuristic, RegionHeuristic, OpponentDistanceHeuristic
-
-pol = HeuristicPolicy(
-    CompositeHeuristic(
-        [
-            PathLengthHeuristic(20, 100),
-            RegionHeuristic(),
-            OpponentDistanceHeuristic(dist_threshold=16),
-            RandomHeuristic(),
-        ],
-        weights=[20, 1, 1e-3, 1e-4]
-    )
-)
-POLICY_LIST = [
-    {
-        "name": "Composite",
-        "pol": pol
-    },
-    {
-        "name": "Random",
-        "pol": RandomPolicy()
-    },
-    {
-        "name": "Spiral",
-        "pol": SpiralPolicy()
-    },
-    {
-        "name": "PathLength",
-        "pol": HeuristicPolicy(PathLengthHeuristic())
-    },
-    {
-        "name": "Region",
-        "pol": HeuristicPolicy(RegionHeuristic())
-    },
-    {
-        "name": "OppDist",
-        "pol": HeuristicPolicy(OpponentDistanceHeuristic())
-    },
-]
-number_games = 1
-width_height_pairs = [(30, 30), (50, 50)]
+import tournament_config
 
 
 def play_game(env, policies, show=False, fps=10, logger=None):
@@ -95,16 +54,18 @@ if __name__ == "__main__":
         logger = None
 
     with tqdm(total=5, desc="Number of players(2-6)", position=0) as player_number_pbar:
-        for number_players in range(2, 7):  # games with 2 to 6 players
-            player_constellations = list(it.combinations(POLICY_LIST, number_players))  # maybe with replacements
+        for tournament_config.number_players in range(2, 7):  # games with 2 to 6 players
+            player_constellations = list(
+                it.combinations(tournament_config.policy_list, tournament_config.number_players)
+            )  # maybe with replacements
             with tqdm(
-                total=len(player_constellations), desc="Combinations", position=number_players - 1
+                total=len(player_constellations), desc="Combinations", position=tournament_config.number_players - 1
             ) as constellation_pbar:
                 for constellation in player_constellations:
-                    for (width, height) in width_height_pairs:
+                    for (width, height) in tournament_config.width_height_pairs:
                         # Create environment
                         env = SimulatedSpe_edEnv(width, height, [c["pol"] for c in constellation[1:]])
-                        for game in range(number_games):
+                        for game in range(tournament_config.number_games):
                             play_game(env, constellation, show=args.show, logger=logger)
                     constellation_pbar.update()
             player_number_pbar.update()
