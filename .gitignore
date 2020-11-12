@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 ./logs/
-./tournament/logs/
+tournament/logs/
