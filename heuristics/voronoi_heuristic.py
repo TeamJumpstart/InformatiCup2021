@@ -14,45 +14,37 @@ class VoronoiHeuristic(Heuristic):
                 of the voronoi diagram to account for jumps. default: 0
         """
         self.max_steps = max_steps
-        self.iterations = opening_iterations
+        self.opening_iterations = opening_iterations
 
     def score(self, cells, player, opponents, rounds):
         """ Computes an approximation of the geodesic voronoi diagram using binary dilation."""
         unmodified_cells = cells
-        # open all {self.iterations} wide walls aka "articulating points" to account for jumps
-        if self.iterations:
-            cells = np.pad(cells, (self.iterations, ))
-            cells = morphology.binary_opening(cells, iterations=self.iterations)
-            cells = cells[self.iterations:-self.iterations, self.iterations:-self.iterations]
+        # open all {self.opening_iterations} wide walls aka "articulating points" to account for jumps
+        if self.opening_iterations:
+            cells = np.pad(cells, (self.opening_iterations, ))
+            cells = morphology.binary_opening(cells, iterations=self.opening_iterations)
+            cells = cells[self.opening_iterations:-self.opening_iterations,
+                          self.opening_iterations:-self.opening_iterations]
 
-        # initialize arrays
-        map_voronoi = {}
-        bin_voronoi = []
+        # initialize arrays, one binary map for each player
         mask = cells == 0
-        for p in [player, *opponents]:
-            if p.active:
-                # create arrays only for active players
-                map_voronoi[p.player_id] = len(bin_voronoi)
-                bin_voronoi.append(np.zeros_like(cells, dtype=np.bool))
-                # reset player position to allow dilation
-                mask[p.y, p.x] = True
-                bin_voronoi[map_voronoi[p.player_id]][p.y, p.x] = True
-
-        bin_voronoi = np.array(bin_voronoi)
+        voronoi = np.zeros((len(opponents) + 1, *cells.shape), dtype=np.bool)
+        for idx, p in enumerate((player, *opponents)):
+            mask[p.y, p.x] = True  # reset player position to allow dilation
+            voronoi[idx, p.y, p.x] = True
 
         # geodesic voronoi cell computation
         for _ in range(self.max_steps):
-            for i, _ in enumerate(bin_voronoi):
-                bin_voronoi[i] = morphology.binary_dilation(bin_voronoi[i], mask=mask)  # expand cell by one step
-            xor = np.sum(bin_voronoi, axis=0) > 1  # compute overlaps for every cell
+            for i in range(len(voronoi)):
+                voronoi[i] = morphology.binary_dilation(voronoi[i], mask=mask)  # expand cell by one step
+            xor = np.sum(voronoi, axis=0) > 1  # compute overlaps for every cell
             mask[xor] = 0  # mask out all overlaps
-            bin_voronoi[:, xor] = 0  # reset all overlapping cell borders
+            voronoi[:, xor] = 0  # reset all overlapping cell borders
 
-        if self.iterations:
-            bin_voronoi[:, unmodified_cells > 0] = 0  # reset all occupied cells
-            for p in [player, *opponents]:
-                if p.active:
-                    bin_voronoi[map_voronoi[p.player_id]][p.y, p.x] = True  # reset player position
+        if self.opening_iterations:
+            voronoi[:, unmodified_cells > 0] = 0  # reset all occupied cells
+            for idx, p in enumerate((player, *opponents)):
+                voronoi[idx, p.y, p.x] = True  # reset player positions
 
         # return the relative size of the voronoi cell for the controlled player
-        return np.sum(bin_voronoi[map_voronoi[player.player_id]]) / np.prod(cells.shape)
+        return np.sum(voronoi[0]) / np.prod(cells.shape)
