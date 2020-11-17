@@ -37,7 +37,7 @@ class Spe_edAxVoronoi():
         # filter inactive players
         players = [p for p in players if p.active]
 
-        unmodified_cells = cells
+        occupied_cells = cells != 0
         # open all {self.iterations} wide walls aka "articulating points" to account for jumps
         if iterations:
             cells = np.pad(cells, (iterations, ))
@@ -60,7 +60,7 @@ class Spe_edAxVoronoi():
             voronoi[:, xor] = 0  # reset all overlapping cell borders
 
         if iterations:
-            voronoi[:, unmodified_cells > 0] = 0  # reset all occupied cells
+            voronoi[:, occupied_cells] = 0  # reset all occupied cells
             for idx, p in enumerate(players):
                 voronoi[idx, p.y, p.x] = True  # reset player positions
 
@@ -69,8 +69,12 @@ class Spe_edAxVoronoi():
         for idx, p in enumerate(players):
             voronoi_map[voronoi[idx]] = p.player_id
 
-        self.img.set_data((voronoi_map + 1) / 7)
+        voronoi_map = voronoi_map + 1  # update player color index and free cells
+        voronoi_map[occupied_cells] = 0  # set all occupied cells to zero
+
+        # update cell data
+        self.img.set_data(voronoi_map / 7)
 
         # Update player heads
         # Dead players don't get a head
-        self.heads.set_offsets([(p.x, p.y) if p.active else (np.nan, np.nan) for p in players])
+        self.heads.set_offsets([(p.x, p.y) for p in players])

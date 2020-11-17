@@ -32,11 +32,14 @@ class Spe_edAxRegion():
         empty = cells == 0
         # Clear cell for all players
         for p in players:
-            if p.active:
-                empty[p.y, p.x] = True
+            empty[p.y, p.x] = True
 
         # compute distinct regions
         labelled, num_features = ndimage.label(empty)
+
+        # Reset cells for all players
+        for p in players:
+            labelled[p.y, p.x] = 0
 
         # update cells
         self.img.set_data(labelled / num_features)

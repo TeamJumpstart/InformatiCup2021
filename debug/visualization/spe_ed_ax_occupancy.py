@@ -22,7 +22,7 @@ class Spe_edAxOccupancy():
 
     def update(self, cells, players, rounds=1):
         """Draw a new cells state."""
-        occ_map = occupancy_map(cells, players, rounds, self.depth)
+        occ_map = occupancy_map(cells, [p for p in players if p.player_id > 1], rounds, self.depth)
 
         # update cells
         self.img.set_data(occ_map)
