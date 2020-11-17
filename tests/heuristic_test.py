@@ -1,14 +1,14 @@
 import unittest
 import heuristics
-from environments import spe_ed
 import numpy as np
+from environments import spe_ed
 
 
-def empty_board():
+def empty_board_1player():
     """ board state visualised: board size = 5x5
     - - - - -
     - - - - -
-    - - - - -
+    - - 1 - -
     - - - - -
     - - - - -
     """
@@ -19,11 +19,44 @@ def empty_board():
     return (cells, player, opponents, rounds)
 
 
+def empty_board_2players():
+    """ board state visualised: board size = 5x5
+    2 - - - -
+    - - - - -
+    - - - - -
+    - - - - -
+    - - - - 1
+    """
+    cells = np.zeros((5, 5), dtype=bool)
+    player = spe_ed.Player(player_id=1, x=4, y=4, direction=spe_ed.directions[3], speed=1, active=True)
+    opponents = [spe_ed.Player(player_id=2, x=0, y=0, direction=spe_ed.directions[1], speed=1, active=True)]
+    rounds = 0
+    return (cells, player, opponents, rounds)
+
+
+def empty_board_3players():
+    """ board state visualised: board size = 5x5
+    2 - - - 3
+    - - - - -
+    - - - - -
+    - - - - -
+    - - - - 1
+    """
+    cells = np.zeros((5, 5), dtype=bool)
+    player = spe_ed.Player(player_id=1, x=4, y=4, direction=spe_ed.directions[3], speed=1, active=True)
+    opponents = [
+        spe_ed.Player(player_id=2, x=0, y=0, direction=spe_ed.directions[1], speed=1, active=True),
+        spe_ed.Player(player_id=3, x=0, y=4, direction=spe_ed.directions[1], speed=1, active=True)
+    ]
+    rounds = 0
+    return (cells, player, opponents, rounds)
+
+
 def default_round1_board():
     """ board state visualised: board size = 5x5
     # - - - -
-    # - - - -
-    - - # # -
+    2 - - - -
+    - - # 1 -
     - - - - -
     - - - - -
     """
@@ -44,7 +77,7 @@ def default_almost_full_board():
     """ board state visualised: board size = 5x5
     - # # # #
     - # # # #
-    # # - - #
+    2 # - - 1
     # # # # #
     # # # # #
     """
@@ -83,12 +116,12 @@ class TestRandomHeuristic(unittest.TestCase):
 
 class TestRegionHeuristic(unittest.TestCase):
     def test_empty_board(self):
-        score = heuristics.RegionHeuristic().score(*empty_board())
+        score = heuristics.RegionHeuristic().score(*empty_board_1player())
         self.assertEqual(score, 1)
 
     def test_default_round1_board(self):
         score = heuristics.RegionHeuristic().score(*default_round1_board())
-        self.assertEqual(score, 22.0 / 25.0)
+        self.assertEqual(score, 11.5 / 25.0)
 
     def test_default_almost_full_board(self):
         score = heuristics.RegionHeuristic().score(*default_almost_full_board())
@@ -125,23 +158,23 @@ class TestOpponentDistanceHeuristic(unittest.TestCase):
         self.assertEqual(board_state[3], default_board_state[3])
 
 
-class TestGeodesicVoronoiHeuristic(unittest.TestCase):
+class TestVoronoiHeuristic(unittest.TestCase):
     def test_empty_board(self):
-        score = heuristics.GeodesicVoronoiHeuristic(max_distance=16).score(*empty_board())
+        score = heuristics.VoronoiHeuristic(max_steps=16, opening_iterations=0).score(*empty_board_1player())
         self.assertEqual(score, 1.0)
 
     def test_default_round1_board(self):
-        score = heuristics.GeodesicVoronoiHeuristic(max_distance=16).score(*default_round1_board())
+        score = heuristics.VoronoiHeuristic(max_steps=16, opening_iterations=0).score(*default_round1_board())
         self.assertEqual(score, 12.0 / 25.0)
 
     def test_default_almost_full_board(self):
-        score = heuristics.GeodesicVoronoiHeuristic(max_distance=16).score(*default_almost_full_board())
+        score = heuristics.VoronoiHeuristic(max_steps=16, opening_iterations=0).score(*default_almost_full_board())
         self.assertEqual(score, 3.0 / 25.0)
 
     def test_immutable_input(self):
         """Check if the heuristic modifies the input data itself."""
         board_state = default_round1_board()
-        heuristics.GeodesicVoronoiHeuristic().score(*board_state)
+        heuristics.VoronoiHeuristic(max_steps=16, opening_iterations=0).score(*board_state)
         default_board_state = default_round1_board()
         self.assertTrue(np.array_equal(board_state[0], default_board_state[0]))
         self.assertEqual(board_state[1], default_board_state[1])
@@ -152,7 +185,8 @@ class TestGeodesicVoronoiHeuristic(unittest.TestCase):
 class TestRandomProbingHeuristic(unittest.TestCase):
     def test_empty_board(self):
         """Evaluating the policy should not throw any error."""
-        heuristics.RandomProbingHeuristic(heuristics.RegionHeuristic(), n_steps=5, n_probes=100).score(*empty_board())
+        heuristics.RandomProbingHeuristic(heuristics.RegionHeuristic(), n_steps=5,
+                                          n_probes=100).score(*empty_board_1player())
 
     def test_default_round1_board(self):
         """Evaluating the policy should not throw any error."""
@@ -179,7 +213,7 @@ class TestRandomProbingHeuristic(unittest.TestCase):
 class TestPathLengthHeuristic(unittest.TestCase):
     def test_empty_board(self):
         """Evaluating the policy should not throw any error."""
-        score = heuristics.PathLengthHeuristic(n_steps=5, n_probes=10).score(*empty_board())
+        score = heuristics.PathLengthHeuristic(n_steps=5, n_probes=10).score(*empty_board_1player())
         self.assertGreater(score, 2.0 / 5.0)
         self.assertLessEqual(score, 1.0)
 
@@ -215,7 +249,7 @@ class TestCompositeHeuristic(unittest.TestCase):
                 heuristics.RandomHeuristic(),
             ],
             weights=[1, 20000, 1000]
-        ).score(*empty_board())
+        ).score(*empty_board_1player())
         self.assertGreaterEqual(score, 0.0)
         self.assertLessEqual(score, 1.0)
 
