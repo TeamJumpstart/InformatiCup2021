@@ -158,7 +158,9 @@ def render_logfile(log_file, fps=10):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='spe_ed')
-    parser.add_argument('mode', nargs='?', choices=['play', 'replay', 'render_logdir', 'tournament'], default="play")
+    parser.add_argument(
+        'mode', nargs='?', choices=['play', 'replay', 'render_logdir', 'plot', 'tournament'], default="play"
+    )
     parser.add_argument('--show', action='store_true', help='Display game.')
     parser.add_argument('--render-file', type=str, default=None, help='File to render to. Should end with .mp4')
     parser.add_argument('--sim', action='store_true', help='Use simulator.')
@@ -184,6 +186,15 @@ if __name__ == "__main__":
         show_logfile(args.log_file)
     elif args.mode == 'tournament':
         run_tournament(args.show, args.log_dir)
+    elif args.mode == 'plot':
+        from statistics import create_plots
+
+        log_dir = Path(args.log_dir)
+        if not log_dir.is_dir():
+            logging.error(f"{log_dir} is not a directory")
+            quit(1)
+
+        create_plots(log_dir, log_dir.parent / "statistics.csv")
     else:
         # Create logger
         if args.log_dir is not None:
