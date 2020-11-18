@@ -8,6 +8,7 @@ from environments.logging import Spe_edLogger, CloudUploader
 from environments.spe_ed import SavedGame
 from policies import RandomPolicy, HeuristicPolicy
 from heuristics import PathLengthHeuristic, RandomHeuristic, CompositeHeuristic, RegionHeuristic, OpponentDistanceHeuristic
+from tournament.tournament import run_tournament
 import os
 import logging
 from pathlib import Path
@@ -157,11 +158,7 @@ def render_logfile(log_file, fps=10):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='spe_ed')
-    parser.add_argument('mode', nargs='?', choices=[
-        'play',
-        'replay',
-        'render_logdir',
-    ], default="play")
+    parser.add_argument('mode', nargs='?', choices=['play', 'replay', 'render_logdir', 'tournament'], default="play")
     parser.add_argument('--show', action='store_true', help='Display game.')
     parser.add_argument('--render-file', type=str, default=None, help='File to render to. Should end with .mp4')
     parser.add_argument('--sim', action='store_true', help='Use simulator.')
@@ -185,6 +182,8 @@ if __name__ == "__main__":
             render_logfile(log_file, fps=args.fps)
     elif args.mode == 'replay':
         show_logfile(args.log_file)
+    elif args.mode == 'tournament':
+        run_tournament(args.show, args.log_dir)
     else:
         # Create logger
         if args.log_dir is not None:
