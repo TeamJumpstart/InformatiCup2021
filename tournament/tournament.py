@@ -7,7 +7,7 @@ from environments.logging import TournamentLogger
 import tournament.tournament_config
 
 
-def play_game(env, policies, show=False, fps=10, logger=None):
+def play_game(env, policies, game_number, show=False, fps=10, logger=None):
     """Simulate a single game with the given environment and policies"""
     obs = env.reset()
     if show and not env.render(screen_width=720, screen_height=720):
@@ -29,7 +29,7 @@ def play_game(env, policies, show=False, fps=10, logger=None):
         policy_mapping = dict(
             zip([player_id for player_id, _ in env.game_state()["players"].items()], [pol["name"] for pol in policies])
         )
-        logger.log(states, policy_mapping)
+        logger.log(states, policy_mapping, game_number)
     if show:  # Show final state
         while True:
             if not env.render(screen_width=720, screen_height=720):
@@ -38,6 +38,7 @@ def play_game(env, policies, show=False, fps=10, logger=None):
 
 
 def run_tournament(show, log_dir):
+    '''Run a sequence of games in different combinations of given policies and log their results'''
     # Create logger
     if log_dir is not None:
         directory = Path(log_dir)
@@ -61,14 +62,14 @@ def run_tournament(show, log_dir):
             ) as constellation_pbar:
                 for constellation in player_constellations:
                     # games with different map size
-                    for (width, height) in tournament.tournament_config.width_height_pairs:  # ToDo: add to file name
+                    for game_number, (width, height) in enumerate(tournament.tournament_config.width_height_pairs):
                         # do not run games when log already exists
-                        log_file = directory / "_".join([pol_name for pol_name in dict(constellation).keys()]) / ".json"
-                        if logger is not None and log_file.is_file():
+                        log_file = directory / "_".join([pol["name"] for pol in constellation])
+                        if logger is not None and Path(log_file.as_posix() + f"_{game_number}.json").is_file():
                             continue
                         env = SimulatedSpe_edEnv(width, height, [c["pol"] for c in constellation[1:]])
                         # number of games to be played
                         for game in range(tournament.tournament_config.number_games):
-                            play_game(env, constellation, show=show, logger=logger)
+                            play_game(env, constellation, game_number, show=show, logger=logger)
                     constellation_pbar.update()
             player_number_pbar.update()
