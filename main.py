@@ -159,7 +159,10 @@ def render_logfile(log_file, fps=10):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='spe_ed')
     parser.add_argument(
-        'mode', nargs='?', choices=['play', 'replay', 'render_logdir', 'plot', 'tournament'], default="play"
+        'mode',
+        nargs='?',
+        choices=['play', 'replay', 'render_logdir', 'plot', 'tournament', 'tournament-plot'],
+        default="play"
     )
     parser.add_argument('--show', action='store_true', help='Display game.')
     parser.add_argument('--render-file', type=str, default=None, help='File to render to. Should end with .mp4')
@@ -185,6 +188,8 @@ if __name__ == "__main__":
     elif args.mode == 'replay':
         show_logfile(args.log_file)
     elif args.mode == 'tournament':
+        run_tournament(args.show, args.log_dir)
+    elif args.mode == 'tournament-plot':
         run_tournament(args.show, args.log_dir)
     elif args.mode == 'plot':
         from statistics import create_plots

@@ -4,12 +4,13 @@ from visualization import WinRateAx
 from statistics.stats import fetch_statistics
 
 
-def plot_win_rate_over_time(output_file, stats):
+def plot_win_rate_over_time(output_file, stats, tournament_mode=False):
     """Plot our win rate over time."""
     fig = plt.figure()
     ax = plt.subplot(1, 1, 1)
 
-    stats = stats[stats['date'] >= '2020-10-30']  # Truncate early data
+    if not tournament_mode:
+        stats = stats[stats['date'] >= '2020-10-30']  # Truncate early data
     won = stats['you'] == stats['winner']
     WinRateAx(fig, ax, stats["date"], won)
 
@@ -30,3 +31,12 @@ def create_plots(log_dir, stats_file):
 
     # Create plots
     plot_win_rate_over_time(plot_dir / "win_rate.pdf", stats)
+
+
+def tournament_plots(log_dir, stats_file):
+    # Load statistics
+    stats = fetch_statistics(log_dir, stats_file)
+
+    # Create output folder
+    plot_dir = Path(stats_file).parent / "plots"
+    plot_dir.mkdir(exist_ok=True)

@@ -5,7 +5,7 @@ from environments.spe_ed import SavedGame
 from statistics.log_files import get_log_files
 
 
-def fetch_statistics(log_dir, csv_file):
+def fetch_statistics(log_dir, csv_file, tournament_mode=False):
     # Seach for unprocessed log files
     known_log_files = set(pd.read_csv(csv_file)['date']) if Path(csv_file).exists() else set()
     new_log_files = [f for f in get_log_files(log_dir) if f.name[:-5] not in known_log_files]
@@ -18,10 +18,10 @@ def fetch_statistics(log_dir, csv_file):
 
             results.append(
                 (
-                    log_file.name[:-5],  # date
+                    log_file.name[:-5] if not tournament_mode else None,  # date
                     game.rounds,  # rounds
                     game.winner.name if game.winner is not None else None,  # winner
-                    game.names[game.you - 1],  # you
+                    game.names[game.you - 1] if not tournament_mode else None,  # you
                     game.names,  # names
                 )
             )
