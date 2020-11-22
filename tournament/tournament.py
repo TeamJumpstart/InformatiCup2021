@@ -26,10 +26,7 @@ def play_game(env, policies, game_number, show=False, fps=10, logger=None):
             states.append(env.game_state())
 
     if logger is not None:  # log states together with a mapping of player_id to policy
-        policy_mapping = dict(
-            zip([player_id for player_id, _ in env.game_state()["players"].items()], [pol["name"] for pol in policies])
-        )
-        logger.log(states, policy_mapping, game_number)
+        logger.log(states, [pol["name"] for pol in policies], game_number)
     if show:  # Show final state
         while True:
             if not env.render(screen_width=720, screen_height=720):
@@ -42,8 +39,7 @@ def run_tournament(show, log_dir):
     # Create logger
     if log_dir is not None:
         directory = Path(log_dir)
-        if not directory.is_dir():
-            directory.mkdir(parents=True, exist_ok=True)
+        directory.mkdir(parents=True, exist_ok=True)
         logger = TournamentLogger(log_dir)
     else:
         logger = None
