@@ -1,6 +1,6 @@
 import numpy as np
 import gym
-from environments.spe_ed import Map
+from environments.spe_ed import Cells
 
 
 class Spe_edEnv(gym.Env):
@@ -66,9 +66,10 @@ class Spe_edEnv(gym.Env):
             player_id: Id of the player to get the observation for
         """
         occupancy = self.cells != 0
+        occupancy.setflags(write=False)  # Prevent accidentally writing
         you = player
         opponents = [p for p in self.players if p.active and p.player_id != player.player_id]
-        return Map(occupancy), you, opponents, self.rounds
+        return Cells(occupancy), you, opponents, self.rounds
 
     def game_state(self):
         """Get current game state as dict."""

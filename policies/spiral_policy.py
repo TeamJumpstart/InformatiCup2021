@@ -22,11 +22,11 @@ class SpiralPolicy(Policy):
             return cells.is_free(player.position + pos)
 
         # check if we can create a spiral loop
-        if is_free(forward) & is_free(2 * forward):
+        if is_free(forward) and is_free(2 * forward):
             return "change_nothing"
 
         if self.clockwise:
-            if is_free(right) & is_free(left) & (not is_free(forward)):
+            if is_free(right) and is_free(left) and not is_free(forward):
                 self.clockwise = False
                 return "turn_left"
             if is_free(right):
@@ -34,7 +34,7 @@ class SpiralPolicy(Policy):
             elif is_free(left):
                 return "turn_left"
         else:
-            if is_free(right) & is_free(left) & (not is_free(forward)):
+            if is_free(right) and is_free(left) and not is_free(forward):
                 self.clockwise = True
                 return "turn_right"
             if is_free(left):

@@ -124,24 +124,30 @@ class Player:
         return str(self.player_id), d
 
 
-class Map:
+class Cells(np.ndarray):
     """Cell state wrapper for common methods."""
-    def __init__(self, cells):
-        self.cells = cells
-        self.cells.setflags(write=False)  # Prevent accidentally writing
-        self.width = cells.shape[0]
-        self.height = cells.shape[1]
+    def __new__(cls, cells):
+        return cells.view(cls)
 
-    def __getitem__(self, key):
-        y, x = key
+    def __array_finalize__(self, obj):
+        if obj is None:
+            return
+
+    @property
+    def width(self):
+        return self.shape[1]
+
+    @property
+    def height(self):
+        return self.shape[0]
+
+    def is_free(self, position):
+        """Check if target location is not occupied"""
+        x, y = position
         # Check if index is inside bounds
         if 0 <= x < self.width and 0 <= y < self.height:
-            return self.cells[y, x]
-        return None  # Otherwise return None
-
-    def is_free(self, pos):
-        """Check if target location is not occupied"""
-        return self[pos[1], pos[0]] == 0
+            return self[y, x] == 0
+        return False
 
 
 def infer_action(player_before, player_after):

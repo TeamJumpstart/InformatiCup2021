@@ -24,7 +24,7 @@ class HeuristicPolicy(Policy):
 
         for a, action in enumerate(spe_ed.actions):
             # perform a single action
-            env = Spe_edSimulator(cells.cells, [player], rounds).step([action])
+            env = Spe_edSimulator(cells, [player], rounds).step([action])
             # evaluate the heuristic, if the player is active
             if env.players[0].active:
                 scores[a] = self.heuristic.score(env.cells, env.players[0], opponents, env.rounds)

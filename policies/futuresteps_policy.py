@@ -62,9 +62,9 @@ class FutureStepsPolicy(Policy):
         sum_right = sum_future_steps(player.position, player.direction.turn_right(), self.n_steps)
 
         # Choose action based on number of possible future steps.
-        if (sum_left > sum_forward) & (sum_left >= sum_right):
+        if sum_left > sum_forward and sum_left >= sum_right:
             return "turn_left"
-        elif (sum_right > sum_forward) & (sum_right >= sum_left):
+        elif sum_right > sum_forward and sum_right >= sum_left:
             return "turn_right"
         else:
             return "change_nothing"
