@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-import typing
 import json
 import numpy as np
 
@@ -7,7 +6,7 @@ actions = ("turn_left", "turn_right", "slow_down", "speed_up", "change_nothing")
 
 
 @dataclass(frozen=True)
-class Direction:
+class Direction(np.lib.mixins.NDArrayOperatorsMixin):
     """Common operations for directions"""
     index: int
     name: str
@@ -30,12 +29,14 @@ class Direction:
         return self.cartesian
 
 
-directions = (
+directions = np.empty(4, dtype=object)
+directions[:] = (
     Direction(0, "right", 0, np.array([1, 0])),
     Direction(1, "down", np.pi / 2, np.array([0, 1])),
     Direction(2, "left", np.pi, np.array([-1, 0])),
     Direction(3, "up", np.pi * 3 / 2, np.array([0, -1])),
 )
+directions.setflags(write=False)  # Prevent accidentally writing
 directions_by_name = {d.name: d for d in directions}
 
 
