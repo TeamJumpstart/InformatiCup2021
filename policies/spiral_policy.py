@@ -13,9 +13,9 @@ class SpiralPolicy(Policy):
     def act(self, cells, player, opponents, round):
 
         # directions - relative to player direction
-        forward = player.direction.cartesian
-        left = player.direction.turn_left().cartesian
-        right = player.direction.turn_right().cartesian
+        forward = player.direction
+        left = player.direction.turn_left()
+        right = player.direction.turn_right()
 
         def is_free(pos):
             """is_free relative to player position."""

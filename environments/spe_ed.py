@@ -25,6 +25,10 @@ class Direction:
     def __repr__(self):
         return self.name
 
+    def __array__(self):
+        """Return numpy compatible representation."""
+        return self.cartesian
+
 
 directions = (
     Direction(0, "right", 0, np.array([1, 0])),

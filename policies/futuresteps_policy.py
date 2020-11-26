@@ -29,7 +29,7 @@ class FutureStepsPolicy(Policy):
     def act(self, cells, player, opponents, round):
         def sum_future_steps(pos, direction, n_steps, steps=[]):
             number_of_moves = 0
-            pos = pos + direction.cartesian  # update one position step
+            pos = pos + direction  # update one position step
 
             if cells.is_free(pos):  # check current pos
                 if self.dynamic:  # check dynamic board state with future moves
