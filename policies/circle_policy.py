@@ -25,3 +25,7 @@ class CirclePolicy(Policy):
             return "turn_left"
 
         return "change_nothing"  # We're surrounded
+
+    def __str__(self):
+        """Get readable representation."""
+        return "CirclePolicy"

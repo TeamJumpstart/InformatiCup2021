@@ -21,3 +21,7 @@ class ScriptedPolicy(Policy):
             return self.actions[rounds - 1]
 
         return "change_nothing"
+
+    def __str__(self):
+        """Get readable representation."""
+        return "ScriptedPolicy"

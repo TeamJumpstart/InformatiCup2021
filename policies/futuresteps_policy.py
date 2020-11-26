@@ -68,3 +68,7 @@ class FutureStepsPolicy(Policy):
             return "turn_right"
         else:
             return "change_nothing"
+
+    def __str__(self):
+        """Get readable representation."""
+        return f"CirclePolicy[n_steps={self.n_steps}, dynamic={self.dynamic}]"

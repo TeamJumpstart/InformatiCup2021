@@ -8,16 +8,13 @@ class HeuristicPolicy(Policy):
     """Policy that performs a single action in every valid direction and
     evaluates the score of the given metric applied on the future board state to choose next actions.
     """
-    def __init__(self, heuristic, seed=None):
+    def __init__(self, heuristic):
         """Initialize HeuristicPolicy.
 
         Args:
             heuristic: `Heuristic` that will be evaluated after one action of the player was performed.
-            seed: Seed for the random number generator. Use a fixed seed for reproducibility,
-                  or pass `None` for a random seed.
         """
 
-        self.rng = np.random.default_rng(seed)
         self.heuristic = heuristic
 
     def act(self, cells, player, opponents, rounds):
@@ -34,3 +31,7 @@ class HeuristicPolicy(Policy):
 
         # select action with the highest score
         return spe_ed.actions[np.argmax(scores)]
+
+    def __str__(self):
+        """Get readable representation."""
+        return "HeuristicPolicy[]"  # TODO Encode heuristic

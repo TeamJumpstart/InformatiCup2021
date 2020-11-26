@@ -34,3 +34,7 @@ class RandomPolicy(Policy):
             action = "change_nothing"
 
         return action
+
+    def __str__(self):
+        """Get readable representation."""
+        return "RandomPolicy"
