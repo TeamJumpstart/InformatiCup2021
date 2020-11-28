@@ -17,7 +17,7 @@ class TournamentEnv(SimulatedSpe_edEnv):
         actions = []
         for player in self.players:  # Compute actions of players
             if player.active:
-                policy = self.policies[player.player_id - 2]
+                policy = self.policies[player.player_id - 1]
                 obs = self._get_obs(player)
                 actions.append(policy.act(*obs))
             else:
@@ -29,7 +29,7 @@ class TournamentEnv(SimulatedSpe_edEnv):
         done = sum(1 for p in self.players if p.active) < 2
         if done:
             for p in self.players:
-                p.name = str(policy)
+                p.name = str(self.policies[p.player_id - 1])
         return done
 
     def game_state(self):
