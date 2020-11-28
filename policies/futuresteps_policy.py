@@ -29,7 +29,7 @@ class FutureStepsPolicy(Policy):
     def act(self, cells, player, opponents, round):
         def sum_future_steps(pos, direction, n_steps, steps=[]):
             number_of_moves = 0
-            pos = pos + direction.cartesian  # update one position step
+            pos = pos + direction  # update one position step
 
             if cells.is_free(pos):  # check current pos
                 if self.dynamic:  # check dynamic board state with future moves
@@ -62,9 +62,13 @@ class FutureStepsPolicy(Policy):
         sum_right = sum_future_steps(player.position, player.direction.turn_right(), self.n_steps)
 
         # Choose action based on number of possible future steps.
-        if (sum_left > sum_forward) & (sum_left >= sum_right):
+        if sum_left > sum_forward and sum_left >= sum_right:
             return "turn_left"
-        elif (sum_right > sum_forward) & (sum_right >= sum_left):
+        elif sum_right > sum_forward and sum_right >= sum_left:
             return "turn_right"
         else:
             return "change_nothing"
+
+    def __str__(self):
+        """Get readable representation."""
+        return f"CirclePolicy[n_steps={self.n_steps}, dynamic={self.dynamic}]"

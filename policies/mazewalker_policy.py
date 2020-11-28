@@ -18,9 +18,9 @@ class MazeWalkerPolicy(Policy):
             return cells.is_free(player.position + pos)
 
         # directions - relative to player direction
-        forward = player.direction.cartesian
-        left = player.direction.turn_left().cartesian
-        right = player.direction.turn_right().cartesian
+        forward = player.direction
+        left = player.direction.turn_left()
+        right = player.direction.turn_right()
 
         if self.hit_wall:  # follow the wall
             if is_free(left):
@@ -37,3 +37,7 @@ class MazeWalkerPolicy(Policy):
                 return "turn_right"
 
         return "change_nothing"  # We're surrounded
+
+    def __str__(self):
+        """Get readable representation."""
+        return "MazeWalkerPolicy"

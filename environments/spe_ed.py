@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-import typing
 import json
 import numpy as np
 
@@ -7,30 +6,37 @@ actions = ("turn_left", "turn_right", "slow_down", "speed_up", "change_nothing")
 
 
 @dataclass(frozen=True)
-class Direction:
+class Direction(np.lib.mixins.NDArrayOperatorsMixin):
     """Common operations for directions"""
+    index: int
     name: str
     angle: float
     cartesian: np.ndarray
 
     def turn_left(self):
         """Rotates one turn to the left."""
-        return directions[(directions.index(self) + 3) % 4]
+        return directions[(self.index + 3) % 4]
 
     def turn_right(self):
         """Rotates one turn to the right."""
-        return directions[(directions.index(self) + 1) % 4]
+        return directions[(self.index + 1) % 4]
 
     def __repr__(self):
         return self.name
 
+    def __array__(self):
+        """Return numpy compatible representation."""
+        return self.cartesian
 
-directions = (
-    Direction("right", 0, np.array([1, 0])),
-    Direction("down", np.pi / 2, np.array([0, 1])),
-    Direction("left", np.pi, np.array([-1, 0])),
-    Direction("up", np.pi * 3 / 2, np.array([0, -1])),
+
+directions = np.empty(4, dtype=object)
+directions[:] = (
+    Direction(0, "right", 0, np.array([1, 0])),
+    Direction(1, "down", np.pi / 2, np.array([0, 1])),
+    Direction(2, "left", np.pi, np.array([-1, 0])),
+    Direction(3, "up", np.pi * 3 / 2, np.array([0, -1])),
 )
+directions.setflags(write=False)  # Prevent accidentally writing
 directions_by_name = {d.name: d for d in directions}
 
 
@@ -118,24 +124,30 @@ class Player:
         return str(self.player_id), d
 
 
-class Map:
+class Cells(np.ndarray):
     """Cell state wrapper for common methods."""
-    def __init__(self, cells):
-        self.cells = cells
-        self.cells.setflags(write=False)  # Prevent accidentally writing
-        self.width = cells.shape[0]
-        self.height = cells.shape[1]
+    def __new__(cls, cells):
+        return cells.view(cls)
 
-    def __getitem__(self, key):
-        y, x = key
+    def __array_finalize__(self, obj):
+        if obj is None:
+            return
+
+    @property
+    def width(self):
+        return self.shape[1]
+
+    @property
+    def height(self):
+        return self.shape[0]
+
+    def is_free(self, position):
+        """Check if target location is not occupied"""
+        x, y = position
         # Check if index is inside bounds
         if 0 <= x < self.width and 0 <= y < self.height:
-            return self.cells[y, x]
-        return None  # Otherwise return None
-
-    def is_free(self, pos):
-        """Check if target location is not occupied"""
-        return self[pos[1], pos[0]] == 0
+            return self[y, x] == 0
+        return False
 
 
 def infer_action(player_before, player_after):

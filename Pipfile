@@ -8,13 +8,17 @@ yapf = "*"
 flake8 = "*"
 
 [packages]
-numpy = "*"
+numpy = "!=1.19.4"
+scipy = "*"
+scikit-learn = "*"
+pandas = "*"
+matplotlib = "*"
+seaborn = "*"
 gym = "*"
 tqdm = "*"
 imageio-ffmpeg = "*"
 websockets = "*"
 pyocclient = "*"
-matplotlib = "*"
 
 [requires]
 python_version = "3.8.6"
