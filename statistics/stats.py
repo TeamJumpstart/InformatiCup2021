@@ -6,8 +6,11 @@ from statistics.log_files import get_log_files
 
 
 def fetch_statistics(log_dir, csv_file, tournament_mode=False):
+    file_name_format = 'date'
+    if tournament_mode:
+        file_name_format = 'matchup'
     # Seach for unprocessed log files
-    known_log_files = set(pd.read_csv(csv_file)['date']) if Path(csv_file).exists() else set()
+    known_log_files = set(pd.read_csv(csv_file)[file_name_format]) if Path(csv_file).exists() else set()
     new_log_files = [f for f in get_log_files(log_dir) if f.name[:-5] not in known_log_files]
 
     if len(new_log_files) > 0:
@@ -18,19 +21,21 @@ def fetch_statistics(log_dir, csv_file, tournament_mode=False):
 
             results.append(
                 (
-                    log_file.name[:-5] if not tournament_mode else None,  # date
+                    log_file.name[:-5],  # order by file name
                     game.rounds,  # rounds
                     game.winner.name if game.winner is not None else None,  # winner
-                    game.names[game.you - 1] if not tournament_mode else None,  # you
+                    game.names[game.you - 1] if game.you is not None else None,  # you
                     game.names,  # names
                 )
             )
 
         # Append new statisics
-        df = pd.DataFrame(results, columns=["date", "rounds", "winner", "you", "names"])
+        df = pd.DataFrame(results, columns=[file_name_format, "rounds", "winner", "you", "names"])
         df.to_csv(csv_file, mode='a', header=len(known_log_files) == 0, index=False)
 
     # Return all data from csv
     return pd.read_csv(
-        csv_file, parse_dates=["date"], converters={"names": lambda x: x.strip("[]").replace("'", "").split(", ")}
+        csv_file,
+        parse_dates=[file_name_format],
+        converters={"names": lambda x: x.strip("[]").replace("'", "").split(", ")}
     )

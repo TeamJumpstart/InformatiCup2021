@@ -190,7 +190,14 @@ if __name__ == "__main__":
     elif args.mode == 'tournament':
         run_tournament(args.show, args.log_dir)
     elif args.mode == 'tournament-plot':
-        run_tournament(args.show, args.log_dir)
+        from statistics import create_tournament_plots
+
+        log_dir = Path(args.log_dir)
+        if not log_dir.is_dir():
+            logging.error(f"{log_dir} is not a directory")
+            quit(1)
+
+        create_tournament_plots(log_dir, log_dir.parent / "statistics.csv")
     elif args.mode == 'plot':
         from statistics import create_plots
 

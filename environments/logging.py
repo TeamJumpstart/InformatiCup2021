@@ -65,6 +65,5 @@ class TournamentLogger():
         """
         combined_name = "_".join(policies)
         log_file = self.log_dir / f"{combined_name}_{game_number}.json"
-        # ToDo: add logs for multiple games
         with open(log_file, "w") as f:
             json.dump(states, f, separators=(',', ':'))
