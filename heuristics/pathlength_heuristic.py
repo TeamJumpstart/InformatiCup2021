@@ -44,3 +44,7 @@ class PathLengthHeuristic(Heuristic):
 
         # return the board state score value
         return probe_length / self.n_steps
+
+    def __str__(self):
+        """Get readable representation."""
+        return "PathLenghtHeuristic"

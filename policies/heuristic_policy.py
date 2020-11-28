@@ -34,4 +34,4 @@ class HeuristicPolicy(Policy):
 
     def __str__(self):
         """Get readable representation."""
-        return "HeuristicPolicy[]"  # TODO Encode heuristic
+        return f"HeuristicPolicy[{str(self.heuristic)}]"

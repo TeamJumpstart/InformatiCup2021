@@ -14,3 +14,7 @@ class OpponentDistanceHeuristic(Heuristic):
             min(np.sum(np.abs((player.position - o.position))) for o in opponents if o.active), self.dist_threshold
         )
         return min_opponent_dist / np.sum(cells.shape)
+
+    def __str__(self):
+        """Get readable representation."""
+        return "OpponentDistanceHeuristic"

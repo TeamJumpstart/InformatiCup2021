@@ -40,3 +40,7 @@ class RegionHeuristic(Heuristic):
 
         # return a normalized score
         return score / np.prod(cells.shape)
+
+    def __str__(self):
+        """Get readable representation."""
+        return "RegionHeuristic"
