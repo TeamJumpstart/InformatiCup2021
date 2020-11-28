@@ -2,14 +2,50 @@ import matplotlib.pyplot as plt
 import itertools as it
 from tqdm import tqdm
 from pathlib import Path
+from environments.simulator import simulate
 from environments.simulator import SimulatedSpe_edEnv
 from environments.logging import TournamentLogger
 import tournament.tournament_config
 
 
+class TournamentEnv(SimulatedSpe_edEnv):
+    def __init__(self, width, height, policies, seed=None):
+        SimulatedSpe_edEnv.__init__(self, width, height, policies[1:])
+        self.policies = policies
+
+    def step(self):
+        actions = []
+        for player in self.players:  # Compute actions of players
+            if player.active:
+                policy = self.policies[player.player_id - 2]
+                obs = self._get_obs(player)
+                actions.append(policy.act(*obs))
+            else:
+                actions.append("change_nothing")
+
+        # Perform simulation step
+        _, _, self.rounds = simulate(self.cells, self.players, self.rounds, actions)
+
+        done = sum(1 for p in self.players if p.active) < 2
+        if done:
+            for p in self.players:
+                p.name = str(policy)
+        return done
+
+    def game_state(self):
+        """Get current game state as dict."""
+        return {
+            'width': self.width,
+            'height': self.height,
+            'cells': self.cells.tolist(),
+            'players': dict(p.to_dict() for p in self.players),
+            'you': None,
+            'running': sum(1 for p in self.players if p.active) > 1,
+        }
+
+
 def play_game(env, policies, game_number, show=False, fps=10, logger=None):
     """Simulate a single game with the given environment and policies"""
-    obs = env.reset()
     if show and not env.render(screen_width=720, screen_height=720):
         return
     if logger is not None:  # Log initial state
@@ -17,8 +53,7 @@ def play_game(env, policies, game_number, show=False, fps=10, logger=None):
 
     done = False
     while not done:
-        action = policies[0]["pol"].act(*obs)
-        obs, reward, done, _ = env.step(action)
+        done = env.step()
 
         if show and not env.render(screen_width=720, screen_height=720):
             return
@@ -44,6 +79,7 @@ def run_tournament(show, log_dir):
     else:
         logger = None
 
+    #ToDo: file name with width height
     # games with 2 to 6 players
     with tqdm(total=5, desc="Number of players(2-6)", position=0) as player_number_pbar:
         for tournament.tournament_config.number_players in range(2, 7):
@@ -63,7 +99,8 @@ def run_tournament(show, log_dir):
                         log_file = directory / "_".join([pol["name"] for pol in constellation])
                         if logger is not None and Path(log_file.as_posix() + f"_{game_number}.json").is_file():
                             continue
-                        env = SimulatedSpe_edEnv(width, height, [c["pol"] for c in constellation[1:]])
+                        env = TournamentEnv(width, height, [c["pol"] for c in constellation])
+                        env.reset()
                         # number of games to be played
                         for game in range(tournament.tournament_config.number_games):
                             play_game(env, constellation, game_number, show=show, logger=logger)
