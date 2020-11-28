@@ -33,17 +33,17 @@ def create_plots(log_dir, stats_file):
     plot_win_rate_over_time(plot_dir / "win_rate.pdf", stats)
 
 
-def plot_win_rate(policy_names, stats, output_file):
+def plot_win_rate(policy_names, policy_nick_names, stats, output_file):
     won_games = []
     for policy_name in policy_names:
-        relevant_games = stats[stats["matchup"].str.contains(policy_name, regex=False)]
+        relevant_games = stats[stats["names"].str.contains(policy_name, regex=False)]
         won_games.append(
-            len([winner for winner in relevant_games["winner"] if winner is not None and winner == policy_name]) / # does not work because winner doesnt have policy name
+            len([winner for winner in relevant_games["winner"] if winner is not None and winner == policy_name]) /
             len(relevant_games)
         )
 
     plt.figure()
-    plt.bar(policy_names, won_games)
+    plt.bar(policy_nick_names, won_games)
     plt.xlabel("Policy name")
     plt.ylabel("Win rate")
 
@@ -60,6 +60,7 @@ def create_tournament_plots(log_dir, stats_file):
     plot_dir.mkdir(exist_ok=True)
 
     # Create plots of matchup stats, overall win rate of each policy
-    policy_names = np.unique(np.concatenate([matchup.split('_')[:-1] for matchup in stats['matchup'].values]).flat)
-    print(policy_names)
-    plot_win_rate(policy_names, stats, plot_dir / "win_rate.png")
+    policy_nick_names = np.unique(np.concatenate([matchup.split('_')[:-1] for matchup in stats['matchup'].values]).flat)
+    policy_names = np.unique(np.concatenate(stats['names'].values).flat)
+    print(policy_nick_names)
+    plot_win_rate(policy_names, policy_nick_names, stats, plot_dir / "win_rate.png")
