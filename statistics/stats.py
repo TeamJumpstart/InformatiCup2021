@@ -41,3 +41,31 @@ def fetch_statistics(log_dir, csv_file, tournament_mode=False):
         parse_dates=[file_name_format],
         converters={"names": lambda x: x.strip("[]").replace("'", "").split(", ")}
     )
+
+
+def get_win_rate(policy, stats, number_of_players=None, matchup_opponent=None, grid_size=None):
+    '''Returns overall win rate for the selected policy by default or specific for a given opponent or size of the grid.
+
+    Args:
+            policy: full name of policy
+            stats: pandas df of statistics from fetch_statistics
+            matchup_opponent: full name of policy to compare against
+            grid_size: width-height tuple
+
+    '''
+    relevant_games = stats[stats["names"].str.contains(policy, regex=False)]
+    if number_of_players is not None:
+        relevant_games = relevant_games[relevant_games["names"].map(len) == number_of_players]
+    if matchup_opponent is not None:
+        if matchup_opponent == policy:
+            return None
+        relevant_games = relevant_games[relevant_games["names"].str.contains(matchup_opponent, regex=False)]
+    if grid_size is not None:
+        relevant_games = relevant_games[(relevant_games["width"] == grid_size[0]) &
+                                        (relevant_games["height"] == grid_size[1])]
+    return len([winner for winner in relevant_games["winner"] if winner is not None and winner == policy]
+              ) / len(relevant_games)
+
+
+def create_matchup_stats(policy_nick_names, policy_names, stats, stats_file):
+    matchup_win_rates = []

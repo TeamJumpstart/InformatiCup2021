@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from pathlib import Path
 from visualization import WinRateAx
-from statistics.stats import fetch_statistics
+from statistics.stats import fetch_statistics, get_win_rate, create_matchup_stats
 import numpy as np
 
 
@@ -33,17 +33,13 @@ def create_plots(log_dir, stats_file):
     plot_win_rate_over_time(plot_dir / "win_rate.pdf", stats)
 
 
-def plot_win_rate(policy_names, policy_nick_names, stats, output_file):
-    won_games = []
+def plot_win_rate(policy_names, policy_nick_names, stats, output_file, number_of_players=None, grid_size=None):
+    win_rates = []
     for policy_name in policy_names:
-        relevant_games = stats[stats["names"].str.contains(policy_name, regex=False)]
-        won_games.append(
-            len([winner for winner in relevant_games["winner"] if winner is not None and winner == policy_name]) /
-            len(relevant_games)
-        )
+        win_rates.append(get_win_rate(policy_name, stats, number_of_players=number_of_players, grid_size=grid_size))
 
     plt.figure()
-    plt.bar(policy_nick_names, won_games)
+    plt.bar(policy_nick_names, win_rates)
     plt.xlabel("Policy name")
     plt.ylabel("Win rate")
 
@@ -62,5 +58,11 @@ def create_tournament_plots(log_dir, stats_dir):
     # Create plots of matchup stats, overall win rate of each policy
     policy_nick_names = np.unique(np.concatenate([matchup.split('_')[:-2] for matchup in stats['matchup'].values]).flat)
     policy_names = np.unique(np.concatenate(stats['names'].values).flat)
+    create_matchup_stats(stats, stats_dir / "matchup_statistics.csv")
     print(policy_nick_names)
+
     plot_win_rate(policy_names, policy_nick_names, stats, plot_dir / "win_rate.png")
+    plot_win_rate(policy_names, policy_nick_names, stats, plot_dir / "win_rate_small.png", grid_size=(30, 30))
+    plot_win_rate(policy_names, policy_nick_names, stats, plot_dir / "win_rate_big.png", grid_size=(50, 50))
+    plot_win_rate(policy_names, policy_nick_names, stats, plot_dir / "win_rate_1v1.png", number_of_players=2)
+    plot_win_rate(policy_names, policy_nick_names, stats, plot_dir / "win_rate_6p.png", number_of_players=6)
