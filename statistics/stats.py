@@ -26,11 +26,13 @@ def fetch_statistics(log_dir, csv_file, tournament_mode=False):
                     game.winner.name if game.winner is not None else None,  # winner
                     game.names[game.you - 1] if game.you is not None else None,  # you
                     game.names,  # names
+                    game.width,
+                    game.height,
                 )
             )
 
         # Append new statisics
-        df = pd.DataFrame(results, columns=[file_name_format, "rounds", "winner", "you", "names"])
+        df = pd.DataFrame(results, columns=[file_name_format, "rounds", "winner", "you", "names", "width", "height"])
         df.to_csv(csv_file, mode='a', header=len(known_log_files) == 0, index=False)
 
     # Return all data from csv

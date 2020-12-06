@@ -5,7 +5,7 @@ from pathlib import Path
 from environments.simulator import simulate
 from environments.simulator import SimulatedSpe_edEnv
 from environments.logging import TournamentLogger
-import tournament.tournament_config
+import tournament.tournament_config as config
 
 
 class TournamentEnv(SimulatedSpe_edEnv):
@@ -44,7 +44,7 @@ class TournamentEnv(SimulatedSpe_edEnv):
         }
 
 
-def play_game(env, policies, game_number, show=False, fps=10, logger=None):
+def play_game(env, policies, game_suffix, show=False, fps=10, logger=None):
     """Simulate a single game with the given environment and policies"""
     if show and not env.render(screen_width=720, screen_height=720):
         return
@@ -61,7 +61,7 @@ def play_game(env, policies, game_number, show=False, fps=10, logger=None):
             states.append(env.game_state())
 
     if logger is not None:  # log states together with a mapping of player_id to policy
-        logger.log(states, [pol["name"] for pol in policies], game_number)
+        logger.log(states, [pol["name"] for pol in policies], game_suffix)
     if show:  # Show final state
         while True:
             if not env.render(screen_width=720, screen_height=720):
@@ -79,30 +79,28 @@ def run_tournament(show, log_dir):
     else:
         logger = None
 
-    #ToDo: file name with width height
     # games with 2 to 6 players
     with tqdm(total=5, desc="Number of players(2-6)", position=0) as player_number_pbar:
-        for tournament.tournament_config.number_players in range(2, 7):
+        for config.number_players in range(2, 7):
             player_constellations = list(
-                it.combinations(tournament.tournament_config.policy_list, tournament.tournament_config.number_players)
+                it.combinations(config.policy_list, config.number_players)
             )  # maybe with replacements
             # games with different policy combinations
             with tqdm(
-                total=len(player_constellations),
-                desc="Combinations",
-                position=tournament.tournament_config.number_players - 1
+                total=len(player_constellations), desc="Combinations", position=config.number_players - 1
             ) as constellation_pbar:
                 for constellation in player_constellations:
                     # games with different map size
-                    for game_number, (width, height) in enumerate(tournament.tournament_config.width_height_pairs):
-                        # do not run games when log already exists
-                        log_file = directory / "_".join([pol["name"] for pol in constellation])
-                        if logger is not None and Path(log_file.as_posix() + f"_{game_number}.json").is_file():
-                            continue
-                        env = TournamentEnv(width, height, [c["pol"] for c in constellation])
-                        env.reset()
+                    for (width, height) in config.width_height_pairs:
                         # number of games to be played
-                        for game in range(tournament.tournament_config.number_games):
-                            play_game(env, constellation, game_number, show=show, logger=logger)
+                        for game_number in range(config.number_games):
+                            log_file = directory / "_".join([pol["name"] for pol in constellation])
+                            game_suffix = f"_w{width}h{height}_{game_number}.json"
+                            # do not run games when log already exists
+                            if logger is not None and Path(log_file.as_posix() + game_suffix).is_file():
+                                continue
+                            env = TournamentEnv(width, height, [c["pol"] for c in constellation])
+                            env.reset()
+                            play_game(env, constellation, game_suffix, show=show, logger=logger)
                     constellation_pbar.update()
             player_number_pbar.update()

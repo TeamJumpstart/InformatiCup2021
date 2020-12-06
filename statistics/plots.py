@@ -51,16 +51,16 @@ def plot_win_rate(policy_names, policy_nick_names, stats, output_file):
     plt.close()
 
 
-def create_tournament_plots(log_dir, stats_file):
+def create_tournament_plots(log_dir, stats_dir):
     # Load statistics
-    stats = fetch_statistics(log_dir, stats_file, tournament_mode=True)
+    stats = fetch_statistics(log_dir, stats_dir / "statistics.csv", tournament_mode=True)
 
     # Create output folder
-    plot_dir = Path(stats_file).parent / "plots"
+    plot_dir = stats_dir / "plots"
     plot_dir.mkdir(exist_ok=True)
 
     # Create plots of matchup stats, overall win rate of each policy
-    policy_nick_names = np.unique(np.concatenate([matchup.split('_')[:-1] for matchup in stats['matchup'].values]).flat)
+    policy_nick_names = np.unique(np.concatenate([matchup.split('_')[:-2] for matchup in stats['matchup'].values]).flat)
     policy_names = np.unique(np.concatenate(stats['names'].values).flat)
     print(policy_nick_names)
     plot_win_rate(policy_names, policy_nick_names, stats, plot_dir / "win_rate.png")

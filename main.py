@@ -197,7 +197,7 @@ if __name__ == "__main__":
             logging.error(f"{log_dir} is not a directory")
             quit(1)
 
-        create_tournament_plots(log_dir, log_dir.parent / "statistics.csv")
+        create_tournament_plots(log_dir, log_dir.parent)
     elif args.mode == 'plot':
         from statistics import create_plots
 

@@ -56,14 +56,14 @@ class TournamentLogger():
         self.log_dir = Path(log_dir)
         self.log_dir.mkdir(parents=True, exist_ok=True)
 
-    def log(self, states, policies, game_number):
+    def log(self, states, policy_names, game_suffix):
         """Handle the logging of a completed tournament game with a set of different policies.
 
         Args:
             states: List of game states in form of parsed json.
             policies: The used policies names
         """
-        combined_name = "_".join(policies)
-        log_file = self.log_dir / f"{combined_name}_{game_number}.json"
+        combined_name = "_".join(policy_names)
+        log_file = self.log_dir / f"{combined_name}{game_suffix}"
         with open(log_file, "w") as f:
             json.dump(states, f, separators=(',', ':'))
