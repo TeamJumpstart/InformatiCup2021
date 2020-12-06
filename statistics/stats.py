@@ -63,9 +63,21 @@ def get_win_rate(policy, stats, number_of_players=None, matchup_opponent=None, g
     if grid_size is not None:
         relevant_games = relevant_games[(relevant_games["width"] == grid_size[0]) &
                                         (relevant_games["height"] == grid_size[1])]
+    if len(relevant_games) == 0:
+        return None
     return len([winner for winner in relevant_games["winner"] if winner is not None and winner == policy]
               ) / len(relevant_games)
 
 
-def create_matchup_stats(policy_nick_names, policy_names, stats, stats_file):
+def create_matchup_stats(policy_names, policy_nick_names, stats, csv_file):
     matchup_win_rates = []
+    for policy_name in policy_names:
+        policy_matchups = []
+        for opponent_policy in policy_names:
+            policy_matchups.append(get_win_rate(policy_name, stats, matchup_opponent=opponent_policy))
+        matchup_win_rates.append(policy_matchups)
+    df = pd.DataFrame(
+        [[policy_nick_names[i], policy_names[i]] + matchup_win_rates[i] for i in range(len(policy_names))],
+        columns=["Policy short", "Policy full"] + [f"vs{nick}" for nick in policy_nick_names]
+    )
+    df.to_csv(csv_file, mode='w', index=False)

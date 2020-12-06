@@ -58,7 +58,7 @@ def create_tournament_plots(log_dir, stats_dir):
     # Create plots of matchup stats, overall win rate of each policy
     policy_nick_names = np.unique(np.concatenate([matchup.split('_')[:-2] for matchup in stats['matchup'].values]).flat)
     policy_names = np.unique(np.concatenate(stats['names'].values).flat)
-    create_matchup_stats(stats, stats_dir / "matchup_statistics.csv")
+    create_matchup_stats(policy_names, policy_nick_names, stats, stats_dir / "matchup_statistics.csv")
     print(policy_nick_names)
 
     plot_win_rate(policy_names, policy_nick_names, stats, plot_dir / "win_rate.png")
