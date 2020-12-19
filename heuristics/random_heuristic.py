@@ -7,3 +7,7 @@ class RandomHeuristic(Heuristic):
     def score(self, cells, player, opponents, rounds):
         """Returns a random number in range [0, 1]"""
         return np.random.uniform()
+
+    def __str__(self):
+        """Get readable representation."""
+        return "RandomHeuristic"

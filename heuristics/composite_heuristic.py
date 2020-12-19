@@ -24,3 +24,7 @@ class CompositeHeuristic(Heuristic):
             weight * heuristic.score(cells, player, opponents, rounds)
             for weight, heuristic in zip(self.weights, self.heuristics)
         )
+
+    def __str__(self):
+        """Get readable representation."""
+        return f"CompositeHeuristic[{','.join([str(heuristic) for heuristic in self.heuristics])}]"

@@ -48,3 +48,7 @@ class VoronoiHeuristic(Heuristic):
 
         # return the relative size of the voronoi cell for the controlled player
         return np.sum(voronoi[0]) / np.prod(cells.shape)
+
+    def __str__(self):
+        """Get readable representation."""
+        return "VoronoiHeuristic"

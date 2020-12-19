@@ -48,3 +48,7 @@ class RandomProbingHeuristic(Heuristic):
 
         # return the board state score value
         return score
+
+    def __str__(self):
+        """Get readable representation."""
+        return "RandomProbingHeuristic"

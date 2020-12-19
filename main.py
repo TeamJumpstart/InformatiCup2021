@@ -8,6 +8,7 @@ from environments.logging import Spe_edLogger, CloudUploader
 from environments.spe_ed import SavedGame
 from policies import RandomPolicy, HeuristicPolicy
 from heuristics import PathLengthHeuristic, RandomHeuristic, CompositeHeuristic, RegionHeuristic, OpponentDistanceHeuristic
+from tournament.tournament import run_tournament
 import os
 import logging
 from pathlib import Path
@@ -157,17 +158,20 @@ def render_logfile(log_file, fps=10):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='spe_ed')
-    parser.add_argument('mode', nargs='?', choices=[
-        'play',
-        'replay',
-        'render_logdir',
-        'plot',
-    ], default="play")
+    parser.add_argument(
+        'mode',
+        nargs='?',
+        choices=['play', 'replay', 'render_logdir', 'plot', 'tournament', 'tournament-plot'],
+        default="play"
+    )
     parser.add_argument('--show', action='store_true', help='Display game.')
     parser.add_argument('--render-file', type=str, default=None, help='File to render to. Should end with .mp4')
     parser.add_argument('--sim', action='store_true', help='Use simulator.')
     parser.add_argument('--log-file', type=str, default=None, help='Log file to load.')
     parser.add_argument('--log-dir', type=str, default=None, help='Directory for logs.')
+    parser.add_argument(
+        '--t-config', type=str, default='./tournament/tournament_config.py', help='Tournament config file.'
+    )
     parser.add_argument('--upload', action='store_true', help='Upload generated log to cloud server.')
     parser.add_argument('--fps', type=int, default=10, help='FPS for rendering.')
     args = parser.parse_args()
@@ -186,6 +190,17 @@ if __name__ == "__main__":
             render_logfile(log_file, fps=args.fps)
     elif args.mode == 'replay':
         show_logfile(args.log_file)
+    elif args.mode == 'tournament':
+        run_tournament(args.show, args.log_dir, args.t_config)
+    elif args.mode == 'tournament-plot':
+        from statistics import create_tournament_plots
+
+        log_dir = Path(args.log_dir)
+        if not log_dir.is_dir():
+            logging.error(f"{log_dir} is not a directory")
+            quit(1)
+
+        create_tournament_plots(log_dir, log_dir.parent)
     elif args.mode == 'plot':
         from statistics import create_plots
 
