@@ -1,17 +1,17 @@
 from pathlib import Path
 import pandas as pd
+import json
 from tqdm import tqdm
 from environments.spe_ed import SavedGame
 from statistics.log_files import get_log_files
 
 
-def fetch_statistics(log_dir, csv_file, tournament_mode=False):
-    file_name_format = 'date'
-    if tournament_mode:
-        file_name_format = 'matchup'
+def fetch_statistics(log_dir, csv_file, key_column='date'):
     # Seach for unprocessed log files
-    known_log_files = set(pd.read_csv(csv_file)[file_name_format]) if Path(csv_file).exists() else set()
-    new_log_files = [f for f in get_log_files(log_dir) if f.name[:-5] not in known_log_files]
+    known_log_files = set(pd.read_csv(csv_file)[key_column]) if Path(csv_file).exists() else set()
+    new_log_files = [
+        f for f in get_log_files(log_dir) if f.name[:-5] not in known_log_files and f.name[:-5] != "_name_mapping"
+    ]  # exclude name mapping
 
     if len(new_log_files) > 0:
         # Process new log files
@@ -21,7 +21,7 @@ def fetch_statistics(log_dir, csv_file, tournament_mode=False):
 
             results.append(
                 (
-                    log_file.name[:-5],  # order by file name
+                    log_file.name[:-5],  # name of game
                     game.rounds,  # rounds
                     game.winner.name if game.winner is not None else None,  # winner
                     game.names[game.you - 1] if game.you is not None else None,  # you
@@ -32,15 +32,17 @@ def fetch_statistics(log_dir, csv_file, tournament_mode=False):
             )
 
         # Append new statisics
-        df = pd.DataFrame(results, columns=[file_name_format, "rounds", "winner", "you", "names", "width", "height"])
+        df = pd.DataFrame(results, columns=[key_column, "rounds", "winner", "you", "names", "width", "height"])
         df.to_csv(csv_file, mode='a', header=len(known_log_files) == 0, index=False)
 
     # Return all data from csv
-    return pd.read_csv(
-        csv_file,
-        parse_dates=[file_name_format],
-        converters={"names": lambda x: x.strip("[]").replace("'", "").split(", ")}
-    )
+    return pd.read_csv(csv_file, converters={"names": lambda x: x.strip("[]").replace("'", "").split(", ")})
+
+
+def read_name_mapping(log_dir):
+    with open(log_dir / "_name_mapping.json") as f:
+        name_mapping = json.load(f)
+    return name_mapping
 
 
 def get_win_rate(policy, stats, number_of_players=None, matchup_opponent=None, grid_size=None):
@@ -53,7 +55,7 @@ def get_win_rate(policy, stats, number_of_players=None, matchup_opponent=None, g
             grid_size: width-height tuple
 
     '''
-    relevant_games = stats[stats["names"].str.contains(policy, regex=False)]
+    relevant_games = stats[stats["names"].apply(lambda x: policy in x)]
     if number_of_players is not None:
         relevant_games = relevant_games[relevant_games["names"].map(len) == number_of_players]
     if matchup_opponent is not None:
@@ -70,6 +72,15 @@ def get_win_rate(policy, stats, number_of_players=None, matchup_opponent=None, g
 
 
 def create_matchup_stats(policy_names, policy_nick_names, stats, csv_file):
+    '''Creates a matchup table and saves it as a csv.
+
+    Args:
+            policy_names: full name of policy
+            policy_nick_names: policy nick names
+            stats: pandas df of statistics from fetch_statistics
+            csv_file: path to csv
+
+    '''
     matchup_win_rates = []
     for policy_name in policy_names:
         policy_matchups = []

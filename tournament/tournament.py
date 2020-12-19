@@ -44,7 +44,7 @@ class TournamentEnv(SimulatedSpe_edEnv):
         }
 
 
-def play_game(env, policies, game_suffix, show=False, fps=10, logger=None):
+def play_game(env, policy_names, game_suffix, show=False, fps=10, logger=None):
     """Simulate a single game with the given environment and policies"""
     if show and not env.render(screen_width=720, screen_height=720):
         return
@@ -61,7 +61,7 @@ def play_game(env, policies, game_suffix, show=False, fps=10, logger=None):
             states.append(env.game_state())
 
     if logger is not None:  # log states together with a mapping of player_id to policy
-        logger.log(states, [pol["name"] for pol in policies], game_suffix)
+        logger.log(states, policy_names, game_suffix)
     if show:  # Show final state
         while True:
             if not env.render(screen_width=720, screen_height=720):
@@ -94,13 +94,16 @@ def run_tournament(show, log_dir):
                     for (width, height) in config.width_height_pairs:
                         # number of games to be played
                         for game_number in range(config.number_games):
-                            log_file = directory / "_".join([pol["name"] for pol in constellation])
+                            policy_ids = [str(config.policy_list.index(c)) for c in constellation]
+                            log_file = directory / "_".join(policy_ids)
                             game_suffix = f"_w{width}h{height}_{game_number}.json"
                             # do not run games when log already exists
                             if logger is not None and Path(log_file.as_posix() + game_suffix).is_file():
                                 continue
                             env = TournamentEnv(width, height, [c["pol"] for c in constellation])
                             env.reset()
-                            play_game(env, constellation, game_suffix, show=show, logger=logger)
+                            play_game(env, policy_ids, game_suffix, show=show, logger=logger)
                     constellation_pbar.update()
             player_number_pbar.update()
+        if logger is not None:
+            logger.save_nick_names([c["name"] for c in constellation])

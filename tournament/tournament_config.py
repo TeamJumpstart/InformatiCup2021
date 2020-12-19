@@ -1,7 +1,7 @@
 from policies import RandomPolicy, HeuristicPolicy, SpiralPolicy
 from heuristics import PathLengthHeuristic, RandomHeuristic, CompositeHeuristic, RegionHeuristic, OpponentDistanceHeuristic
 
-# participating policies with names
+# participating policies with short nick names
 policy_list = [
     {
         "name":

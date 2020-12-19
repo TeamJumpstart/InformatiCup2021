@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from pathlib import Path
 from visualization import WinRateAx
-from statistics.stats import fetch_statistics, get_win_rate, create_matchup_stats
+from statistics.stats import fetch_statistics, read_name_mapping, get_win_rate, create_matchup_stats
 import numpy as np
 
 
@@ -49,14 +49,14 @@ def plot_win_rate(policy_names, policy_nick_names, stats, output_file, number_of
 
 def create_tournament_plots(log_dir, stats_dir):
     # Load statistics
-    stats = fetch_statistics(log_dir, stats_dir / "statistics.csv", tournament_mode=True)
+    stats = fetch_statistics(log_dir, stats_dir / "statistics.csv", key_column='matchup')
 
     # Create output folder
     plot_dir = stats_dir / "plots"
     plot_dir.mkdir(exist_ok=True)
 
     # Create plots of matchup stats, overall win rate of each policy
-    policy_nick_names = np.unique(np.concatenate([matchup.split('_')[:-2] for matchup in stats['matchup'].values]).flat)
+    policy_nick_names = list(read_name_mapping(log_dir).values())
     policy_names = np.unique(np.concatenate(stats['names'].values).flat)
     create_matchup_stats(policy_names, policy_nick_names, stats, stats_dir / "matchup_statistics.csv")
     print(policy_nick_names)
