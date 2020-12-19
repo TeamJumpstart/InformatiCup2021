@@ -33,7 +33,9 @@ def create_plots(log_dir, stats_file):
     plot_win_rate_over_time(plot_dir / "win_rate.pdf", stats)
 
 
-def plot_win_rate(policy_names, policy_nick_names, stats, output_file, number_of_players=None, grid_size=None):
+def plot_tournament_win_rates(
+    policy_names, policy_nick_names, stats, output_file, number_of_players=None, grid_size=None
+):
     win_rates = []
     for policy_name in policy_names:
         win_rates.append(get_win_rate(policy_name, stats, number_of_players=number_of_players, grid_size=grid_size))
@@ -61,8 +63,10 @@ def create_tournament_plots(log_dir, stats_dir):
     create_matchup_stats(policy_names, policy_nick_names, stats, stats_dir / "matchup_statistics.csv")
     print(policy_nick_names)
 
-    plot_win_rate(policy_names, policy_nick_names, stats, plot_dir / "win_rate.png")
-    plot_win_rate(policy_names, policy_nick_names, stats, plot_dir / "win_rate_small.png", grid_size=(30, 30))
-    plot_win_rate(policy_names, policy_nick_names, stats, plot_dir / "win_rate_big.png", grid_size=(50, 50))
-    plot_win_rate(policy_names, policy_nick_names, stats, plot_dir / "win_rate_1v1.png", number_of_players=2)
-    plot_win_rate(policy_names, policy_nick_names, stats, plot_dir / "win_rate_6p.png", number_of_players=6)
+    plot_tournament_win_rates(policy_names, policy_nick_names, stats, plot_dir / "win_rate.png")
+    plot_tournament_win_rates(
+        policy_names, policy_nick_names, stats, plot_dir / "win_rate_small.png", grid_size=(30, 30)
+    )
+    plot_tournament_win_rates(policy_names, policy_nick_names, stats, plot_dir / "win_rate_big.png", grid_size=(50, 50))
+    plot_tournament_win_rates(policy_names, policy_nick_names, stats, plot_dir / "win_rate_1v1.png", number_of_players=2)
+    plot_tournament_win_rates(policy_names, policy_nick_names, stats, plot_dir / "win_rate_6p.png", number_of_players=6)

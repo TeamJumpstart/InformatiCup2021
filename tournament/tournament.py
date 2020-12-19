@@ -5,7 +5,7 @@ from pathlib import Path
 from environments.simulator import simulate
 from environments.simulator import SimulatedSpe_edEnv
 from environments.logging import TournamentLogger
-import tournament.tournament_config as config
+from importlib.machinery import SourceFileLoader
 
 
 class TournamentEnv(SimulatedSpe_edEnv):
@@ -69,7 +69,7 @@ def play_game(env, policy_names, game_suffix, show=False, fps=10, logger=None):
             plt.pause(0.01)  # Sleep
 
 
-def run_tournament(show, log_dir):
+def run_tournament(show, log_dir, tournament_config_file):
     '''Run a sequence of games in different combinations of given policies and log their results'''
     # Create logger
     if log_dir is not None:
@@ -79,11 +79,13 @@ def run_tournament(show, log_dir):
     else:
         logger = None
 
+    # load config file
+    config = SourceFileLoader('tournament_config', tournament_config_file).load_module()
     # games with 2 to 6 players
     with tqdm(total=5, desc="Number of players(2-6)", position=0) as player_number_pbar:
         for config.number_players in range(2, 7):
             player_constellations = list(
-                it.combinations(config.policy_list, config.number_players)
+                it.combinations(config.policies, config.number_players)
             )  # maybe with replacements
             # games with different policy combinations
             with tqdm(
@@ -94,7 +96,7 @@ def run_tournament(show, log_dir):
                     for (width, height) in config.width_height_pairs:
                         # number of games to be played
                         for game_number in range(config.number_games):
-                            policy_ids = [str(config.policy_list.index(c)) for c in constellation]
+                            policy_ids = [str(config.policies.index(c)) for c in constellation]
                             log_file = directory / "_".join(policy_ids)
                             game_suffix = f"_w{width}h{height}_{game_number}.json"
                             # do not run games when log already exists

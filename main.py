@@ -169,6 +169,9 @@ if __name__ == "__main__":
     parser.add_argument('--sim', action='store_true', help='Use simulator.')
     parser.add_argument('--log-file', type=str, default=None, help='Log file to load.')
     parser.add_argument('--log-dir', type=str, default=None, help='Directory for logs.')
+    parser.add_argument(
+        '--t-config', type=str, default='./tournament/tournament_config.py', help='Tournament config file.'
+    )
     parser.add_argument('--upload', action='store_true', help='Upload generated log to cloud server.')
     parser.add_argument('--fps', type=int, default=10, help='FPS for rendering.')
     args = parser.parse_args()
@@ -188,7 +191,7 @@ if __name__ == "__main__":
     elif args.mode == 'replay':
         show_logfile(args.log_file)
     elif args.mode == 'tournament':
-        run_tournament(args.show, args.log_dir)
+        run_tournament(args.show, args.log_dir, args.t_config)
     elif args.mode == 'tournament-plot':
         from statistics import create_tournament_plots
 

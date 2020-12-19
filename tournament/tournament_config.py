@@ -1,8 +1,9 @@
 from policies import RandomPolicy, HeuristicPolicy, SpiralPolicy
 from heuristics import PathLengthHeuristic, RandomHeuristic, CompositeHeuristic, RegionHeuristic, OpponentDistanceHeuristic
+import random
 
 # participating policies with short nick names
-policy_list = [
+policies = [
     {
         "name":
             "Composite",
@@ -40,7 +41,9 @@ policy_list = [
         "pol": HeuristicPolicy(OpponentDistanceHeuristic())
     },
 ]
-# different map sizez to be played
-width_height_pairs = [(30, 30), (50, 50)]
+# different map sizes to be played
+width_height_pairs = [
+    (30, 30), (50, 50)
+]  # or use randomly generated ranges: [(randint(20,51), randint(20,51)), (randint(50, 101), randint(50, 101))]
 # number of games to be played for each constellation
 number_games = 2
