@@ -141,3 +141,8 @@ class Spe_edSimulator:
     def undo(self):
         """Undo the last simulation step"""
         return self.parent
+
+    @property
+    def player(self):
+        """Shorthand for the first player"""
+        return self.players[0]
