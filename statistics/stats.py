@@ -36,7 +36,11 @@ def fetch_statistics(log_dir, csv_file, key_column='date'):
         df.to_csv(csv_file, mode='a', header=len(known_log_files) == 0, index=False)
 
     # Return all data from csv
-    return pd.read_csv(csv_file, converters={"names": lambda x: x.strip("[]").replace("'", "").split(", ")})
+    return pd.read_csv(
+        csv_file,
+        parse_dates=["date"] if key_column == "date" else None,
+        converters={"names": lambda x: x.strip("[]").replace("'", "").split(", ")}
+    )
 
 
 def read_name_mapping(log_dir):
