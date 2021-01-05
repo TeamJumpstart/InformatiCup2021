@@ -249,6 +249,19 @@ if __name__ == "__main__":
         repeat = not args.show and args.render_file is None
 
         while True:
-            play(env, pol, show=args.show, render_file=args.render_file, fps=args.fps, logger=logger, silent=not repeat)
+            try:
+                play(
+                    env,
+                    pol,
+                    show=args.show,
+                    render_file=args.render_file,
+                    fps=args.fps,
+                    logger=logger,
+                    silent=not repeat
+                )
+            except Exception:
+                logging.exception("Exception during play")
+                time.sleep(60)  # Sleep for a bit and try again
+
             if not repeat:
                 break
