@@ -263,3 +263,17 @@ class SavedGame:
                 # Swap players
                 players = self.player_states[t]
                 players[0], players[you - 1] = players[you - 1], players[0]
+
+    def get_obs(self, t, player_id):
+        """Get obersation from the perspective of a specific player.
+
+        Returned values can be used as input for a policy.
+
+        Args:
+            player_id: Id of the player to get the observation for
+        """
+        occupancy = self.cell_states[t] != 0
+        occupancy.setflags(write=False)  # Prevent accidentally writing
+        you = self.player_states[t][player_id - 1]
+        opponents = [p for p in self.player_states[t] if p.active and p.player_id != player_id]
+        return Cells(occupancy), you, opponents, t + 1
