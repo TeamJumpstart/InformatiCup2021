@@ -31,6 +31,7 @@ class DLASTree():
         if self.final:
             return
 
+        self.evaluated = True
         self.children = []
         occ_prob = 1
         # randomise action traversal to explore different nodes
@@ -53,7 +54,7 @@ class DepthSearchPolicy(Policy):
     Tries to evaluate a single guided depth first search on each valid action.
     Node expansion is determined by the occupancy map. Implements a watch dog for an early out.
     """
-    def __init__(self, heuristic, depth=8, seed=None):
+    def __init__(self, heuristic, depth=4, occupancy_depth=3, iterative_deepening=True, seed=None):
         """Initialize DepthSearchPolicy.
 
         Args:
@@ -64,7 +65,11 @@ class DepthSearchPolicy(Policy):
         self.heuristic = heuristic
         self.search_tree_depth = depth
         self.occupancy_map_depth = 3
+        self.iterative_deepening = iterative_deepening
+
         self.interrupt = 1000
+        self.explored = 0
+        self.evaluated = 0
 
     def evaluateOneNode(self, init_env, occ_map, priority_queue):
         """Evaluate one node, given a priority queue and an initial environment.
@@ -95,34 +100,75 @@ class DepthSearchPolicy(Policy):
             actions.reverse()
             env = init_env.step(actions)
 
-        # expand nodes until reach a final node
-        while not node.final:
-            node.expandNode(env, occ_map)
-            child_queue = []
-            for child in node.children:
-                if not child.evaluated:
-                    child_queue += [(child.occ_prob, child)]
-            # sort children based on occupancy
-            child_queue.sort(key=lambda pair: pair[0])
+        # perform iterative deepening
+        if self.iterative_deepening:
+            # expand node and create children for intermediate nodes
+            if not node.final:
+                node.expandNode(env, occ_map)
+                child_queue = []
+                for child in node.children:
+                    if not child.evaluated:
+                        child_queue += [(child.occ_prob, child)]
+                # sort children based on occupancy
+                child_queue.sort(key=lambda pair: pair[0])
+                self.explored += len(child_queue)
 
-            # continue with highest priority child
-            if len(child_queue) > 0:
-                node.evaluated = True
-                node = child_queue.pop(0)[1]
-                env = env.step([node.action])
                 # add remaining nodes to priority queue for later processing
-                priority_queue.extend(child_queue)
-            # all children already evaluated (e.g. occ >= 1.0)
-            else:
-                node.evaluated = True
-                node.final = True
+                if len(child_queue) > 0:
+                    priority_queue.extend(child_queue)
+                # all children already evaluated (e.g. occ >= 1.0)
+                else:
+                    node.final = True
 
-        # evaluate heuristic on the final node
-        if not node.evaluated and env.players[0].active:
-            player = env.players[0]
-            opponents = [p for p in env.players if p.active and p.player_id != player.player_id]
-            if len(opponents) > 0:
-                score = self.heuristic.score(env.cells, player, opponents, env.rounds)
+            # evaluate heuristic on the node
+            node.evaluated = True
+            if env.players[0].active:
+                player = env.players[0]
+                opponents = [p for p in env.players if p.active and p.player_id != player.player_id]
+                if len(opponents) > 0:
+                    # evaluate the heuristic
+                    score = self.heuristic.score(env.cells, player, opponents, env.rounds)
+                    # depth weighted score
+                    score *= node.depth / node.max_depth
+                    node.evaluated = True
+                    self.interrupt -= 1
+                    self.evaluated += 1
+
+        # evaluate only final nodes
+        else:
+            # expand nodes until reach a final node
+            while not node.final:
+                node.expandNode(env, occ_map)
+                child_queue = []
+                for child in node.children:
+                    if not child.evaluated:
+                        child_queue += [(child.occ_prob, child)]
+                # sort children based on occupancy
+                child_queue.sort(key=lambda pair: pair[0])
+                self.explored += len(child_queue)
+
+                # continue with highest priority child
+                if len(child_queue) > 0:
+                    node = child_queue.pop(0)[1]
+                    env = env.step([node.action])
+                    # add remaining nodes to priority queue for later processing
+                    priority_queue.extend(child_queue)
+                # all children already evaluated (e.g. occ >= 1.0)
+                else:
+                    node.final = True
+
+            # evaluate heuristic on the final node
+            if not node.evaluated and env.players[0].active:
+                player = env.players[0]
+                opponents = [p for p in env.players if p.active and p.player_id != player.player_id]
+                if len(opponents) > 0:
+                    # evaluate the heuristic
+                    score = self.heuristic.score(env.cells, player, opponents, env.rounds)
+                    # depth weighted score
+                    score *= node.depth / node.max_depth
+                    node.evaluated = True
+                    self.interrupt -= 1
+                    self.evaluated += 1
 
         # sort the priority queue by occupancy value
         priority_queue.sort(key=lambda pair: pair[0])
@@ -138,8 +184,10 @@ class DepthSearchPolicy(Policy):
         """ Perform Depth-Limited Action Search based on an occupancy map
             to choose actions based on weighted heuristic scores with occupancy map.
         """
-        self.interrupt = np.random.randint(5, 100)
-        print(self.interrupt)
+        self.evaluated = 0
+        self.explored = 0
+        self.interrupt = 100  # np.random.randint(5, 100)
+        print()
         scores = dict(zip(spe_ed.actions, [0.0 for _ in spe_ed.actions]))
 
         # create initial environment
@@ -169,13 +217,12 @@ class DepthSearchPolicy(Policy):
                 # update priority queue and scores
                 priority_queues[action] = new_queue
                 scores[action] = max(scores[action], float(score))
-                self.interrupt -= 1
             # remove empty queues
             priority_queues = {action: queue for action, queue in priority_queues.items() if queue}
 
         # select action with the highest score
-        print(scores)
-        print(max(scores, key=scores.get))
+        print(f"Nodes evaluated/explored: {str(self.evaluated)}/{self.explored}")
+        print(f"selected action: {str(max(scores, key=scores.get))}", scores)
         return max(scores, key=scores.get)
 
     def __str__(self):
