@@ -1,4 +1,5 @@
 import unittest
+from numpy.testing import assert_array_equal
 import heuristics
 import numpy as np
 from environments import spe_ed
@@ -131,11 +132,8 @@ class TestRegionHeuristic(unittest.TestCase):
         """Check if the heuristic modifies the input data itself."""
         board_state = default_round1_board()
         heuristics.RegionHeuristic().score(*board_state)
-        default_board_state = default_round1_board()
-        self.assertTrue(np.array_equal(board_state[0], default_board_state[0]))
-        self.assertEqual(board_state[1], default_board_state[1])
-        self.assertEqual(board_state[2], default_board_state[2])
-        self.assertEqual(board_state[3], default_board_state[3])
+
+        assert_array_equal(board_state[0], default_round1_board()[0])
 
 
 class TestOpponentDistanceHeuristic(unittest.TestCase):
@@ -151,11 +149,8 @@ class TestOpponentDistanceHeuristic(unittest.TestCase):
         """Check if the heuristic modifies the input data itself."""
         board_state = default_round1_board()
         heuristics.OpponentDistanceHeuristic().score(*board_state)
-        default_board_state = default_round1_board()
-        self.assertTrue(np.array_equal(board_state[0], default_board_state[0]))
-        self.assertEqual(board_state[1], default_board_state[1])
-        self.assertEqual(board_state[2], default_board_state[2])
-        self.assertEqual(board_state[3], default_board_state[3])
+
+        assert_array_equal(board_state[0], default_round1_board()[0])
 
 
 class TestVoronoiHeuristic(unittest.TestCase):
@@ -175,11 +170,8 @@ class TestVoronoiHeuristic(unittest.TestCase):
         """Check if the heuristic modifies the input data itself."""
         board_state = default_round1_board()
         heuristics.VoronoiHeuristic(max_steps=16, opening_iterations=0).score(*board_state)
-        default_board_state = default_round1_board()
-        self.assertTrue(np.array_equal(board_state[0], default_board_state[0]))
-        self.assertEqual(board_state[1], default_board_state[1])
-        self.assertEqual(board_state[2], default_board_state[2])
-        self.assertEqual(board_state[3], default_board_state[3])
+
+        assert_array_equal(board_state[0], default_round1_board()[0])
 
 
 class TestRandomProbingHeuristic(unittest.TestCase):
@@ -203,40 +195,38 @@ class TestRandomProbingHeuristic(unittest.TestCase):
         board_state = default_round1_board()
         heuristics.RandomProbingHeuristic(heuristic=heuristics.RandomHeuristic(), n_steps=5,
                                           n_probes=10).score(*board_state)
-        default_board_state = default_round1_board()
-        self.assertTrue(np.array_equal(board_state[0], default_board_state[0]))
-        self.assertEqual(board_state[1], default_board_state[1])
-        self.assertEqual(board_state[2], default_board_state[2])
-        self.assertEqual(board_state[3], default_board_state[3])
+
+        assert_array_equal(board_state[0], default_round1_board()[0])
 
 
 class TestPathLengthHeuristic(unittest.TestCase):
     def test_empty_board(self):
-        """Evaluating the policy should not throw any error."""
-        score = heuristics.PathLengthHeuristic(n_steps=5, n_probes=10).score(*empty_board_1player())
-        self.assertGreater(score, 2.0 / 5.0)
-        self.assertLessEqual(score, 1.0)
+        board_state = empty_board_1player()
+
+        score = heuristics.PathLengthHeuristic(n_steps=5).score(*board_state)
+        self.assertEqual(score, 1.0)
+
+        score = heuristics.PathLengthHeuristic(n_steps=10).score(*board_state)
+        self.assertEqual(score, 1.0)
+
+        score = heuristics.PathLengthHeuristic(n_steps=25).score(*board_state)
+        self.assertEqual(score, 1.0)
 
     def test_default_round1_board(self):
-        """Evaluating the policy should not throw any error."""
-        score = heuristics.PathLengthHeuristic(n_steps=5, n_probes=10).score(*default_round1_board())
+        score = heuristics.PathLengthHeuristic(n_steps=5).score(*default_round1_board())
         self.assertGreater(score, 2.0 / 5.0)
         self.assertLessEqual(score, 1.0)
 
     def test_default_almost_full_board(self):
-        """Evaluating the policy should not throw any error."""
-        score = heuristics.PathLengthHeuristic(n_steps=5, n_probes=2).score(*default_almost_full_board())
+        score = heuristics.PathLengthHeuristic(n_steps=5).score(*default_almost_full_board())
         self.assertEqual(score, 2.0 / 5.0)
 
     def test_immutable_input(self):
         """Check if the heuristic modifies the input data itself."""
         board_state = default_round1_board()
-        heuristics.PathLengthHeuristic(n_steps=5, n_probes=10).score(*board_state)
-        default_board_state = default_round1_board()
-        self.assertTrue(np.array_equal(board_state[0], default_board_state[0]))
-        self.assertEqual(board_state[1], default_board_state[1])
-        self.assertEqual(board_state[2], default_board_state[2])
-        self.assertEqual(board_state[3], default_board_state[3])
+        heuristics.PathLengthHeuristic(n_steps=5).score(*board_state)
+
+        assert_array_equal(board_state[0], default_round1_board()[0])
 
 
 class TestCompositeHeuristic(unittest.TestCase):
