@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import itertools as it
 from tqdm import tqdm
 from pathlib import Path
+import multiprocessing as mp
 from environments.simulator import simulate
 from environments.simulator import SimulatedSpe_edEnv
 from environments.logging import TournamentLogger
@@ -44,7 +45,7 @@ class TournamentEnv(SimulatedSpe_edEnv):
         }
 
 
-def play_game(env, policy_names, game_suffix, show=False, fps=10, logger=None):
+def play_game(env, policy_names, game_suffix, show=False, logger=None):
     """Simulate a single game with the given environment and policies"""
     if show and not env.render(screen_width=720, screen_height=720):
         return
@@ -81,6 +82,8 @@ def run_tournament(show, log_dir, tournament_config_file):
 
     # load config file
     config = SourceFileLoader('tournament_config', tournament_config_file).load_module()
+    # create processor pool for multiprocessing
+    pool = mp.Pool(mp.cpu_count())
     # games with 2 to 6 players
     with tqdm(total=5, desc="Number of players(2-6)", position=0) as player_number_pbar:
         for config.number_players in range(2, 7):
@@ -92,6 +95,7 @@ def run_tournament(show, log_dir, tournament_config_file):
                 total=len(player_constellations), desc="Combinations", position=config.number_players - 1
             ) as constellation_pbar:
                 for constellation in player_constellations:
+                    game_data = []
                     # games with different map size
                     for (width, height) in config.width_height_pairs:
                         # number of games to be played
@@ -102,10 +106,14 @@ def run_tournament(show, log_dir, tournament_config_file):
                             # do not run games when log already exists
                             if logger is not None and Path(log_file.as_posix() + game_suffix).is_file():
                                 continue
-                            env = TournamentEnv(width, height, [c["pol"] for c in constellation])
-                            env.reset()
-                            play_game(env, policy_ids, game_suffix, show=show, logger=logger)
+                            environment = TournamentEnv(width, height, [c["pol"] for c in constellation])
+                            environment.reset()
+                            game_data.append([policy_ids, game_suffix, environment])
+                    # parallelized execution using starmap (takes multiple parameters as opposed to map), async: faster but potentially out of order
+                    pool.starmap_async(play_game, [(env, ids, suf, show, logger) for ids, suf, env in game_data]).get()
                     constellation_pbar.update()
             player_number_pbar.update()
         if logger is not None:
             logger.save_nick_names([c["name"] for c in constellation])
+
+    pool.close()
