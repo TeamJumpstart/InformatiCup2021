@@ -21,7 +21,7 @@ class DLASTree():
         # do not need to evaluate score if player is dead or player will be certainly dead
         self.evaluated = occ_prob >= 1.0
         # evaluate only final nodes, TODO: find good threshold for occ_prob
-        self.final = depth >= max_depth or occ_prob >= 0.99
+        self.final = depth >= max_depth or occ_prob >= 0.95
 
         self.rng = np.random.default_rng(seed)
 
@@ -61,8 +61,8 @@ class DepthSearchPolicy(Policy):
         base_heuristic,
         depth_heuristic,
         weights=None,
-        depth=6,
-        occupancy_depth=3,
+        search_tree_depth=6,
+        occupancy_map_depth=3,
         priority_heuristic=ConstantHeuristic(),
         seed=None
     ):
@@ -83,8 +83,8 @@ class DepthSearchPolicy(Policy):
         else:
             self.weights = weights / np.sum(weights)
 
-        self.search_tree_depth = depth
-        self.occupancy_map_depth = occupancy_depth
+        self.search_tree_depth = search_tree_depth
+        self.occupancy_map_depth = occupancy_map_depth
         self.priority_heuristic = priority_heuristic
 
         self.interrupt = 0
@@ -133,9 +133,11 @@ class DepthSearchPolicy(Policy):
                     try:
                         priority_value = self.priority_heuristic.score(env.cells, env.players[0], opponents, env.rounds)
                         priority_value *= 1 - child.occ_prob
-                    except:
-                        print(child.action, child.occ_prob, child.depth)
+                    except IndexError:
+                        print("Index Error in Depth Search:")
                         print(env.players[0])
+                        print("Node:", child.action, child.occ_prob, child.depth)
+
                     self.explored += 1
                     child_queue += [(priority_value, child)]
                     env = env.undo()
@@ -173,11 +175,14 @@ class DepthSearchPolicy(Policy):
         """ Perform Depth-Limited Action Search based on an occupancy map
             to choose actions based on weighted heuristic scores with occupancy map.
         """
+        if not player.active:
+            return
+
         self.evaluated = 0
         self.explored = 5
 
         # self.interrupt = time.time() + np.random.randint(2, 15)  # time in seconds
-        self.interrupt = time.time() + 3  # time in seconds
+        self.interrupt = time.time() + 1  # time in seconds
 
         scores = dict(zip(spe_ed.actions, [0.0 for _ in spe_ed.actions]))
         depth_scores = dict(zip(spe_ed.actions, [0.0 for _ in spe_ed.actions]))
@@ -220,17 +225,28 @@ class DepthSearchPolicy(Policy):
             # remove empty queues
             priority_queues = {action: queue for action, queue in priority_queues.items() if queue}
 
-        print(f"Nodes: {str(self.evaluated)}/{self.explored}")
-        print(f"Base Scores: {str(scores)}")
-        print(f"Depth Scores: {str(depth_scores)}")
-        # print(f"Action: {str(max(scores, key=scores.get))}")
-        # print("Scores:", scores)
-        # for action in priority_queues:
-        #    print(str(action), np.unique([k for k, v in priority_queues[action]], return_counts=True))
+        # normalize score
+        sum_scores = sum(scores.values())
+        if sum_scores > 0:
+            scores = {action: score / sum_scores for action, score in scores.items()}
+
+        # normalize depth search score
+        sum_scores = sum(depth_scores.values())
+        if sum_scores > 0:
+            depth_scores = {action: score / sum_scores for action, score in depth_scores.items()}
+
+        #print(f" Nodes: {str(self.evaluated)}/{self.explored}")
+        #print(f" Base Scores: {str(scores)}")
+        #print(f" Depth Scores: {str(depth_scores)}")
 
         # weight base and depth scores accordingly
         for action in scores:
             scores[action] = self.weights[0] * scores[action] + self.weights[1] * depth_scores[action]
+
+        #print(f" Action: {str(max(scores, key=scores.get))}")
+        # print("Scores:", scores)
+        # for action in priority_queues:
+        #    print(str(action), np.unique([k for k, v in priority_queues[action]], return_counts=True))
 
         # select action with the highest score
         return max(scores, key=scores.get)
