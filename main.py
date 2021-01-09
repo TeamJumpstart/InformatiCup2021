@@ -229,7 +229,7 @@ if __name__ == "__main__":
 
         # Create environment
         if args.sim:
-            env = SimulatedSpe_edEnv(40, 40, [HeuristicPolicy(PathLengthHeuristic()) for _ in range(5)])
+            env = SimulatedSpe_edEnv(40, 40, [HeuristicPolicy(PathLengthHeuristic(10)) for _ in range(5)])
         else:
             env = WebsocketEnv(os.environ["URL"], os.environ["KEY"])
 
@@ -237,7 +237,7 @@ if __name__ == "__main__":
         pol = HeuristicPolicy(
             CompositeHeuristic(
                 [
-                    PathLengthHeuristic(20, 100),
+                    PathLengthHeuristic(20),
                     RegionHeuristic(),
                     OpponentDistanceHeuristic(dist_threshold=16),
                     RandomHeuristic(),

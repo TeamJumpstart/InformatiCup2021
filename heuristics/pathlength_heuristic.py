@@ -4,7 +4,7 @@ from environments.simulator import Spe_edSimulator
 
 class PathLengthHeuristic(Heuristic):
     """Performs a random probe run and evaluates length of the path."""
-    def __init__(self, n_steps, n_probes=None, seed=None):
+    def __init__(self, n_steps):
         """Initialize PathLengthHeuristic.
 
         Args:

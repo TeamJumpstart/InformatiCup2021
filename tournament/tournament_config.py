@@ -11,7 +11,7 @@ policies = [
             HeuristicPolicy(
                 CompositeHeuristic(
                     [
-                        PathLengthHeuristic(20, 100),
+                        PathLengthHeuristic(20),
                         RegionHeuristic(),
                         OpponentDistanceHeuristic(dist_threshold=16),
                         RandomHeuristic(),
@@ -30,7 +30,7 @@ policies = [
     },
     {
         "name": "PathLength",
-        "pol": HeuristicPolicy(PathLengthHeuristic())
+        "pol": HeuristicPolicy(PathLengthHeuristic(10))
     },
     {
         "name": "Region",

@@ -200,6 +200,43 @@ class TestRandomProbingHeuristic(unittest.TestCase):
 
 
 class TestPathLengthHeuristic(unittest.TestCase):
+    def test_small_board(self):
+        """ board state visualised: board size = 1x3
+        1 - - 
+        """
+        cells = np.zeros((1, 3), dtype=bool)
+        player = spe_ed.Player(player_id=1, x=0, y=0, direction=spe_ed.directions[0], speed=1, active=True)
+        opponents = []
+        rounds = 0
+
+        score = heuristics.PathLengthHeuristic(n_steps=1).score(cells, player, opponents, rounds)
+        self.assertEqual(score, 1.0)
+
+        score = heuristics.PathLengthHeuristic(n_steps=2).score(cells, player, opponents, rounds)
+        self.assertEqual(score, 1.0)
+
+        score = heuristics.PathLengthHeuristic(n_steps=3).score(cells, player, opponents, rounds)
+        self.assertEqual(score, 2 / 3)
+
+    def test_small_board2(self):
+        """ board state visualised: board size = 1x3
+        1 - - 
+        - - -
+        """
+        cells = np.zeros((2, 3), dtype=bool)
+        player = spe_ed.Player(player_id=1, x=0, y=0, direction=spe_ed.directions[0], speed=1, active=True)
+        opponents = []
+        rounds = 0
+
+        score = heuristics.PathLengthHeuristic(n_steps=5).score(cells, player, opponents, rounds)
+        self.assertEqual(score, 1.0)
+
+        score = heuristics.PathLengthHeuristic(n_steps=6).score(cells, player, opponents, rounds)
+        self.assertEqual(score, 1.0)
+
+        score = heuristics.PathLengthHeuristic(n_steps=7).score(cells, player, opponents, rounds)
+        self.assertEqual(score, 6 / 7)
+
     def test_empty_board(self):
         board_state = empty_board_1player()
 
@@ -209,8 +246,8 @@ class TestPathLengthHeuristic(unittest.TestCase):
         score = heuristics.PathLengthHeuristic(n_steps=10).score(*board_state)
         self.assertEqual(score, 1.0)
 
-        score = heuristics.PathLengthHeuristic(n_steps=25).score(*board_state)
-        self.assertEqual(score, 1.0)
+        # score = heuristics.PathLengthHeuristic(n_steps=25).score(*board_state)
+        # self.assertEqual(score, 1.0)
 
     def test_default_round1_board(self):
         score = heuristics.PathLengthHeuristic(n_steps=5).score(*default_round1_board())
@@ -250,7 +287,7 @@ class TestCompositeHeuristic(unittest.TestCase):
         score = heuristics.CompositeHeuristic(
             heuristics=[
                 heuristics.OpponentDistanceHeuristic(),
-                heuristics.PathLengthHeuristic(n_steps=2, n_probes=2),
+                heuristics.PathLengthHeuristic(n_steps=2),
             ]
         ).score(*default_round1_board())
         self.assertGreaterEqual(score, 0.0)
@@ -263,11 +300,11 @@ class TestCompositeHeuristic(unittest.TestCase):
         score = heuristics.CompositeHeuristic(
             heuristics=[
                 heuristics.OpponentDistanceHeuristic(),
-                heuristics.PathLengthHeuristic(n_steps=2, n_probes=2),
+                heuristics.PathLengthHeuristic(n_steps=2),
                 heuristics.CompositeHeuristic(
                     heuristics=[
                         heuristics.RandomHeuristic(),
-                        heuristics.PathLengthHeuristic(n_steps=2, n_probes=2),
+                        heuristics.PathLengthHeuristic(n_steps=2),
                     ],
                     weights=[1, 2000]
                 ),
