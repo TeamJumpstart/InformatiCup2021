@@ -4,13 +4,14 @@ from environments.simulator import Spe_edSimulator
 
 class PathLengthHeuristic(Heuristic):
     """Performs a random probe run and evaluates length of the path."""
-    def __init__(self, n_steps):
+    def __init__(self, n_steps, expanded_node_limit=1000):
         """Initialize PathLengthHeuristic.
 
         Args:
             n_steps: Number of steps to look into the future
         """
         self.n_steps = n_steps
+        self.expanded_node_limit = expanded_node_limit
 
     def score(self, cells, player, opponents, rounds):
         """Perform a DFS to seach the longest path reachable."""
@@ -21,7 +22,7 @@ class PathLengthHeuristic(Heuristic):
             nonlocal expanded
 
             path_length = sim.rounds - rounds
-            if path_length >= self.n_steps or expanded > 1000:  # Maximum search depth reached
+            if path_length >= self.n_steps or expanded > self.expanded_node_limit:  # Maximum search depth reached
                 return path_length  # Early out
 
             for action in ("change_nothing", "turn_left", "turn_right", "slow_down", "speed_up"):
