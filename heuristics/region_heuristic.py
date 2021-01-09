@@ -5,7 +5,7 @@ import numpy as np
 
 
 class RegionHeuristic(Heuristic):
-    def __init__(self, closing_iterations=0):
+    def __init__(self, closing_iterations=0, include_opponent_regions=True):
         """Initialize RegionHeuristic.
 
         Args:
@@ -13,6 +13,7 @@ class RegionHeuristic(Heuristic):
                 of the regions to ommit smaller regions. default: 0
         """
         self.closing_iterations = closing_iterations
+        self.include_opponent_regions = include_opponent_regions
 
     def score(self, cells, player, opponents, rounds):
         """Compute the relative size of the region we're in."""
@@ -20,26 +21,34 @@ class RegionHeuristic(Heuristic):
         if self.closing_iterations:
             cells = morphology.binary_closing(cells, iterations=self.closing_iterations)
 
+        players = [player] + opponents
+
         # inverse map (mask occupied cells)
         empty = cells == 0
         # Clear cell we're in and for all active opponents
-        empty[player.y, player.x] = True
-        for o in opponents:
-            empty[o.y, o.x] = True
+        for p in players:
+            empty[p.y, p.x] = True
 
         # compute distinct regions
         labelled, _ = ndimage.label(empty)
 
-        # Get the region we're in and compute its size
-        region = labelled[player.y, player.x]
-        region_size = np.sum(labelled == region)
+        # Get the region each player is in
+        regions = np.array([labelled[p.y, p.x] for p in players])
+        # Compute the sizes and divide by numbers of players in each region
+        region_sizes = np.array([np.sum(labelled == region) / np.sum(regions == region) for region in regions])
 
-        # Compute the number of opponents in our region with which we fight in the region
-        opponents_in_region = sum([labelled[o.y, o.x] == region for o in opponents])
-        score = region_size / (1 + opponents_in_region)
+        # Normalize by grid size
+        region_sizes /= np.prod(cells.shape)
 
-        # return a normalized score
-        return score / np.prod(cells.shape)
+        score = region_sizes[0]
+
+        if self.include_opponent_regions and len(opponents) > 0:
+            # Use product of own region size times the inverse of the average of opponent regions sizes
+            # Note: Using the average prevents reckless speeding up, as otherwise this would be strongly
+            # preferred as it may reduce the regions of multiple players at once.
+            score *= (1 - np.mean(region_sizes[1:]))
+
+        return score
 
     def __str__(self):
         """Get readable representation."""

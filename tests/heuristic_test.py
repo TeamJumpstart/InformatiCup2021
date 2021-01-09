@@ -122,11 +122,17 @@ class TestRegionHeuristic(unittest.TestCase):
 
     def test_default_round1_board(self):
         score = heuristics.RegionHeuristic().score(*default_round1_board())
-        self.assertEqual(score, 11.5 / 25.0)
+        self.assertEqual(score, (23 / 2 / 25) * (1 - 23 / 2 / 25))
+
+        score = heuristics.RegionHeuristic(include_opponent_regions=False).score(*default_round1_board())
+        self.assertEqual(score, (23 / 2 / 25))
 
     def test_default_almost_full_board(self):
         score = heuristics.RegionHeuristic().score(*default_almost_full_board())
-        self.assertEqual(score, 3.0 / 25.0)
+        self.assertEqual(score, (3 / 1 / 25) * (1 - 3 / 1 / 25))
+
+        score = heuristics.RegionHeuristic(include_opponent_regions=False).score(*default_almost_full_board())
+        self.assertEqual(score, (3 / 1 / 25))
 
     def test_immutable_input(self):
         """Check if the heuristic modifies the input data itself."""
