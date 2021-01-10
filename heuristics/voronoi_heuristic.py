@@ -5,7 +5,7 @@ from scipy.ndimage import morphology
 
 class VoronoiHeuristic(Heuristic):
     """Tries to maximize the area that can be reached by the agent before the opponents."""
-    def __init__(self, max_steps=40, opening_iterations=0):
+    def __init__(self, max_steps=40, opening_iterations=0, minimize_opponents=False):
         """Initialize VoronoiHeuristic.
 
         Args:
@@ -15,6 +15,7 @@ class VoronoiHeuristic(Heuristic):
         """
         self.max_steps = max_steps
         self.opening_iterations = opening_iterations
+        self.minimize_opponents = minimize_opponents
 
     def score(self, cells, player, opponents, rounds):
         """ Computes an approximation of the geodesic voronoi diagram using binary dilation."""
@@ -46,9 +47,14 @@ class VoronoiHeuristic(Heuristic):
             for idx, p in enumerate((player, *opponents)):
                 voronoi[idx, p.y, p.x] = True  # reset player positions
 
-        # return the relative size of the voronoi cell for the controlled player
-        return np.sum(voronoi[0]) / np.prod(cells.shape)
+        if self.minimize_opponents:
+            return 1 - (np.sum(voronoi[1:]) / np.prod(cells.shape))
+        else:
+            # return the relative size of the voronoi cell for the controlled player
+            return np.sum(voronoi[0]) / np.prod(cells.shape)
 
     def __str__(self):
         """Get readable representation."""
-        return "VoronoiHeuristic"
+        return f"VoronoiHeuristic(max_steps={str(self.max_steps)}, \
+            opening_iterations={str(self.opening_iterations)}, \
+            minimize_opponents={str(self.minimize_opponents)})"

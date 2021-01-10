@@ -47,4 +47,5 @@ class PathLengthHeuristic(Heuristic):
 
     def __str__(self):
         """Get readable representation."""
-        return f"PathLenghtHeuristic[{self.n_steps}]"
+        return f"PathLenghtHeuristic(n_steps={str(self.n_steps)}, \
+            n_probes={str(self.n_probes)})"
