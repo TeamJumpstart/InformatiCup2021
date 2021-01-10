@@ -37,4 +37,4 @@ class RandomPolicy(Policy):
 
     def __str__(self):
         """Get readable representation."""
-        return "RandomPolicy"
+        return "RandomPolicy()"

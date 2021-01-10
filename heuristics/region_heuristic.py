@@ -52,4 +52,4 @@ class RegionHeuristic(Heuristic):
 
     def __str__(self):
         """Get readable representation."""
-        return "RegionHeuristic"
+        return f"RegionHeuristic(closing_iterations={str(self.closing_iterations)})"

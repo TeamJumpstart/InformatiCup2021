@@ -9,7 +9,7 @@ class HeuristicPolicy(Policy):
     """Policy that performs a single action in every valid direction and
     evaluates the score of the given metric applied on the future board state to choose next actions.
     """
-    def __init__(self, heuristic, occupancy_map_depth=3):
+    def __init__(self, heuristic, occupancy_map_depth=0):
         """Initialize HeuristicPolicy.
 
         Args:
@@ -23,8 +23,7 @@ class HeuristicPolicy(Policy):
         """Chooses action based on weighted heuristic scores."""
 
         scores = np.zeros(len(spe_ed.actions), dtype=np.float32)
-        if self.occupancy_map_depth > 0:
-            occ_map = occupancy_map(cells, opponents, rounds, self.occupancy_map_depth)
+        occ_map = occupancy_map(cells, opponents, rounds, self.occupancy_map_depth)
         init_env = Spe_edSimulator(cells, [player], rounds)
 
         for a, action in enumerate(spe_ed.actions):
@@ -33,12 +32,11 @@ class HeuristicPolicy(Policy):
             # evaluate the heuristic, if the player is active
             if env.players[0].active:
                 scores[a] = self.heuristic.score(env.cells, env.players[0], opponents, env.rounds)
-                if self.occupancy_map_depth > 0:
-                    scores[a] *= np.prod(1 - occ_map[np.logical_xor(env.cells, init_env.cells)])
+                scores[a] *= np.prod(1 - occ_map[np.logical_xor(env.cells, init_env.cells)])
 
         # select action with the highest score
         return spe_ed.actions[np.argmax(scores)]
 
     def __str__(self):
         """Get readable representation."""
-        return f"HeuristicPolicy[{str(self.heuristic)}]"
+        return f"HeuristicPolicy(heuristic={str(self.heuristic)}, occupancy_map_depth={str(self.occupancy_map_depth)})"
