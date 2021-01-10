@@ -46,4 +46,4 @@ class SpiralPolicy(Policy):
 
     def __str__(self):
         """Get readable representation."""
-        return "SpiralPolicy"
+        return "SpiralPolicy()"

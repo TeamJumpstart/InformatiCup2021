@@ -254,9 +254,11 @@ class DepthSearchPolicy(Policy):
     def __str__(self):
         """Get readable representation."""
         return f"DepthSearchPolicy[\
+            base_heuristic={str(self.base_heuristic)}, \
+            depth_heuristic={str(self.depth_heuristic)}, \
+            weights={str(self.weights)}, \
             search_tree_depth={str(self.search_tree_depth)}, \
             occupancy_map_depth={str(self.occupancy_map_depth)}, \
-            heuristic={str(self.heuristic)}, \
             priority_heuristic={str(self.priority_heuristic)}]"
 
     def interrupt(self):
