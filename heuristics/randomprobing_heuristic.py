@@ -51,4 +51,6 @@ class RandomProbingHeuristic(Heuristic):
 
     def __str__(self):
         """Get readable representation."""
-        return "RandomProbingHeuristic"
+        return f"RandomProbingHeuristic(heuristic={str(self.heuristic)}, \
+            n_steps={str(self.n_steps)}, \
+            n_probes={str(self.n_probes)})"

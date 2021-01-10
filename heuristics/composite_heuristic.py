@@ -19,7 +19,7 @@ class CompositeHeuristic(Heuristic):
             self.weights = weights / np.sum(weights)
 
     def score(self, cells, player, opponents, rounds):
-        """Computes the scombined heuristic score."""
+        """Computes the combined heuristic score."""
         return sum(
             weight * heuristic.score(cells, player, opponents, rounds)
             for weight, heuristic in zip(self.weights, self.heuristics)
@@ -27,4 +27,5 @@ class CompositeHeuristic(Heuristic):
 
     def __str__(self):
         """Get readable representation."""
-        return f"CompositeHeuristic[{','.join([str(heuristic) for heuristic in self.heuristics])}]"
+        return f"CompositeHeuristic[{','.join([str(heuristic) for heuristic in self.heuristics])}, \
+            weights={str(self.weights)}]"
