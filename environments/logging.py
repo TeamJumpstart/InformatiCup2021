@@ -29,6 +29,16 @@ class Spe_edLogger():
             except Exception:
                 logging.exception("Logging callback failed")
 
+    def log_policy(self, policy):
+        """Log the policy name of a game.
+
+        Args:
+            policy:  
+        """
+        log_file = self.log_dir / f"{datetime.now():%Y%m%d-%H%M%S}_policy.json"
+        with open(log_file, "w") as f:
+            json.dump(str(policy), f, separators=(',', ':'))
+
 
 class CloudUploader():
     def __init__(self, url, user, password, remote_dir):
