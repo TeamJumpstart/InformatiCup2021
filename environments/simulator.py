@@ -45,7 +45,7 @@ def simulate(cells, players, rounds, actions):
     # Round completed
     rounds += 1
 
-    return cells, players, rounds
+    return cells, players, rounds, newly_occupied.keys()
 
 
 class SimulatedSpe_edEnv(Spe_edEnv):
@@ -67,7 +67,7 @@ class SimulatedSpe_edEnv(Spe_edEnv):
                 actions.append("change_nothing")
 
         # Perform simulation step
-        _, _, self.rounds = simulate(self.cells, self.players, self.rounds, actions)
+        _, _, self.rounds, _ = simulate(self.cells, self.players, self.rounds, actions)
 
         done = sum(1 for p in self.players if p.active) < 2
         reward = 1 if done and self.controlled_player.active else 0
@@ -125,10 +125,11 @@ class Spe_edSimulator:
 
     Keeps a history.
     """
-    def __init__(self, cells, players, rounds, parent=None):
+    def __init__(self, cells, players, rounds, changed=[], parent=None):
         self.cells = cells
         self.players = players
         self.rounds = rounds
+        self.changed = changed
         self.parent = parent
 
     def step(self, actions):
