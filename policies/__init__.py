@@ -7,6 +7,7 @@ from policies.circle_policy import CirclePolicy
 from policies.futuresteps_policy import FutureStepsPolicy
 from policies.heuristic_policy import HeuristicPolicy
 from policies.depthsearch_policy import DepthSearchPolicy
+from policies.endgame_policy import EndgamePolicy
 
 __all__ = [
     "Policy",
@@ -18,4 +19,5 @@ __all__ = [
     "FutureStepsPolicy",
     "HeuristicPolicy",
     "DepthSearchPolicy",
+    "EndgamePolicy",
 ]

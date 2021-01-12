@@ -28,4 +28,4 @@ class CirclePolicy(Policy):
 
     def __str__(self):
         """Get readable representation."""
-        return "CirclePolicy"
+        return "CirclePolicy()"

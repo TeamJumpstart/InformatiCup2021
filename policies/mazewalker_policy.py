@@ -40,4 +40,4 @@ class MazeWalkerPolicy(Policy):
 
     def __str__(self):
         """Get readable representation."""
-        return "MazeWalkerPolicy"
+        return "MazeWalkerPolicy()"
