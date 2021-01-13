@@ -45,26 +45,6 @@ def computeRegionSize(cells, players):
     return player_region_size
 
 
-def computeVoronoiSize(cells, players):
-    max_steps = 2
-    # initialize arrays, one binary map for each player
-    mask = cells == 0
-    voronoi = np.zeros((len(players), *cells.shape), dtype=np.bool)
-    for idx, p in enumerate(players):
-        mask[p.y, p.x] = True  # reset player position to allow dilation
-        voronoi[idx, p.y, p.x] = True
-
-    # geodesic voronoi cell computation
-    for _ in range(max_steps):
-        for i in range(len(voronoi)):
-            voronoi[i] = morphology.binary_dilation(voronoi[i], mask=mask)  # expand cell by one step
-        xor = np.sum(voronoi, axis=0) > 1  # compute overlaps for every cell
-        mask[xor] = 0  # mask out all overlaps
-        voronoi[:, xor] = 0  # reset all overlapping cell borders
-
-    return np.sum(voronoi[0])
-
-
 def computeRegionNumber(cells, players):
     # inverse map (mask occupied cells)
     cells = np.pad(cells, (1, ))
@@ -116,21 +96,17 @@ class EndgamePolicy(Policy):
         remaining_actions = self.actions
 
         # bigger region is always better
-        remaining_actions, scores = tiebreakerFunc(env, remaining_actions, computeRegionSize, max)
+        remaining_actions, _ = tiebreakerFunc(env, remaining_actions, computeRegionSize, max)
         # less regions is preferable
-        remaining_actions, scores = tiebreakerFunc(env, remaining_actions, computeRegionNumber, min)
+        remaining_actions, _ = tiebreakerFunc(env, remaining_actions, computeRegionNumber, min)
 
         # tie breaker: morphological operations
         for i in range(2, 0, -1):
-            remaining_actions, scores = tiebreakerFunc(
-                env, remaining_actions, computeOccupiedCells, min, {'closing': i}
-            )
-            remaining_actions, scores = tiebreakerFunc(
-                env, remaining_actions, computeOccupiedCells, min, {'dilation': i}
-            )
+            remaining_actions, _ = tiebreakerFunc(env, remaining_actions, computeOccupiedCells, min, {'closing': i})
+            remaining_actions, _ = tiebreakerFunc(env, remaining_actions, computeOccupiedCells, min, {'dilation': i})
 
         # tie breaker: random walk
-        remaining_actions, scores = tiebreakerFunc(env, remaining_actions, computePathLength, max)
+        remaining_actions, _ = tiebreakerFunc(env, remaining_actions, computePathLength, max)
 
         # return remaining action
         return remaining_actions[-1]
