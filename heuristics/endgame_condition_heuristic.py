@@ -59,10 +59,9 @@ class EndgameConditionHeuristic(Heuristic):
         players = [player] + opponents
 
         num_opp_region = numOppInRegion(cells, players)
-        num_opp_dilation = numOppInRegion(applyMorphology(cells, dilation=1), players)
         num_opp_closing_opening = numOppInRegion(applyMorphology(cells, closing=1, opening=1), players)
 
-        if (num_opp_region + num_opp_dilation + num_opp_closing_opening) < 1:
+        if (num_opp_region + num_opp_closing_opening) < 1:
             return 1
         else:
             return 0
