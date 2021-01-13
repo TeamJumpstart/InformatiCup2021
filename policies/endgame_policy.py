@@ -8,6 +8,10 @@ from heuristics import PathLengthHeuristic
 
 
 def applyMorphology(cells, closing=0, opening=0, erosion=0, dilation=0):
+    """ Applys morphological operations on the given cells and returns them.
+        Multiple operations and multiple iterations of the operation can be specified at once.
+        Operations are executed in the following order: [closing, opening, erosion, dilation].
+    """
     # apply padding
     iterations = max(closing, opening, erosion, dilation)
     if iterations:
@@ -27,6 +31,7 @@ def applyMorphology(cells, closing=0, opening=0, erosion=0, dilation=0):
 
 
 def labelCells(cells, players):
+    """ Returns cells labeled on the region they belong to. Player positions are masked to belong to a region. """
     # inverse map (mask occupied cells)
     empty_cells = cells == 0
     # Clear cell for all players
@@ -38,6 +43,7 @@ def labelCells(cells, players):
 
 
 def computeRegionSize(cells, players):
+    """ Computes the size of the region the controlled player is in. """
     labelled_cells = labelCells(cells, players)
     # Get the region we're in and compute its size
     region_label = labelled_cells[players[0].y, players[0].x]
@@ -46,6 +52,7 @@ def computeRegionSize(cells, players):
 
 
 def computeRegionNumber(cells, players):
+    """ Computes the number of unique regions. """
     # inverse map (mask occupied cells)
     cells = np.pad(cells, (1, ))
     empty_cells = cells == 0
@@ -55,15 +62,31 @@ def computeRegionNumber(cells, players):
 
 
 def computeOccupiedCells(cells, players):
+    """ Computes the number of occupied cells. """
     return np.sum(cells)
 
 
 def computePathLength(cells, players):
-    path_length_heuristic = PathLengthHeuristic(n_steps=200, n_probes=100)
+    """ Evaluates the 'PathLengthHeuristic' with constant parameters. """
+    path_length_heuristic = PathLengthHeuristic(n_steps=200)
     return path_length_heuristic.score(cells, players[0], players[1:], 0)
 
 
 def tiebreakerFunc(env, remaining_actions, score_func=computeRegionSize, eval_func=max, morph_kwargs={}):
+    """ A general tiebreaker function to decide given an environment which actions are preferable
+        and should be executed.
+
+    Args:
+        env: The current game state given in `Spe_edSimulator`
+        raminin_actions: A list of actions to choose from.
+        score_func: A function, which accepts 'cells' and 'players' and returns a scalar value.
+        eval_func: accepts either `max` or `min` to decide, whether prefer a lower or higher score.
+        morph_kwargs: keyword arguments, to define morphological operations on the cells beforehand.
+
+    Return:
+        remaining_actions: A possibly reduced list of actions which were choosen to process further.
+        scores: A dictionary of action-score tuples for every input action.
+    """
     if len(remaining_actions) <= 1:
         return remaining_actions, {a: 0 for a in remaining_actions}
 
@@ -87,7 +110,15 @@ def tiebreakerFunc(env, remaining_actions, score_func=computeRegionSize, eval_fu
 
 
 class EndgamePolicy(Policy):
-    """EndgamePolicy."""
+    """ Provides a policy which can be used to master the endgame,
+        e.g. we are stuck in one cell and cannot interact with other players.
+        Tries to maximize the number of rounds that the policy survives until filling all available space.
+
+        An optimal or even satisfiable behavior is not guaranteed for any other circumstances.
+
+        Args:
+            actions: specifies which actions are considered at all. Default: uses all actions except 'speed_up'.
+    """
     def __init__(self, actions=None):
         self.actions = [a for a in spe_ed.actions if a != "speed_up"] if actions is None else actions
 
@@ -113,4 +144,4 @@ class EndgamePolicy(Policy):
 
     def __str__(self):
         """Get readable representation."""
-        return "EndgamePolicy()"
+        return f"EndgamePolicy(actions={str(self.actions)})"
