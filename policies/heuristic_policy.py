@@ -1,3 +1,4 @@
+from math import prod
 import numpy as np
 from policies.policy import Policy
 from environments.simulator import Spe_edSimulator
@@ -27,15 +28,15 @@ class HeuristicPolicy(Policy):
 
         scores = np.zeros(len(self.actions), dtype=np.float32)
         occ_map = occupancy_map(cells, opponents, rounds, self.occupancy_map_depth)
-        init_env = Spe_edSimulator(cells, [player], rounds)
+        cur_state = Spe_edSimulator(cells, [player], rounds)
 
         for a, action in enumerate(self.actions):
             # perform a single action
-            env = init_env.step([action])
+            next_state = cur_state.step([action])
             # evaluate the heuristic, if the player is active
-            if env.players[0].active:
-                scores[a] = self.heuristic.score(env.cells, env.players[0], opponents, env.rounds)
-                scores[a] *= np.prod(1 - occ_map[np.logical_xor(env.cells, init_env.cells)])
+            if next_state.player.active:
+                scores[a] = self.heuristic.score(next_state.cells, next_state.player, opponents, next_state.rounds)
+                scores[a] *= prod(1 - occ_map[y, x] for x, y in next_state.changed)
 
         # select action with the highest score
         return self.actions[np.argmax(scores)]
