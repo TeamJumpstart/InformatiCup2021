@@ -2,10 +2,10 @@ from abc import ABC, abstractmethod
 
 
 class Heuristic(ABC):
-    """ Defines an abstract class to represent a board state heuristic."""
+    """Abstract class to represent a board state heuristic."""
     @abstractmethod
     def score(self, cells, player, opponents, rounds):
-        """Compute a score value for a given game state
+        """Compute a score value for a given game state.
 
         Args:
             cells: binary ndarray of cell occupancies.

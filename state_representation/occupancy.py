@@ -8,13 +8,12 @@ def occupancy_map(cells, opponents, rounds, depth=3):
     Assumes actions of opponents to be uniformly distributed.
 
     Args:
-        cells, opponents, roungs: Game state
+        cells, opponents, rounds: Game state
         depth: How many steps to project opponent actions into the future
 
     Returns:
         occ: ndarray with occupancy probabilities
     """
-
     occ = (cells != 0).astype(np.float32)
     N_actions = len(spe_ed.actions)
 

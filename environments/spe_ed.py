@@ -7,7 +7,7 @@ actions = ("turn_left", "turn_right", "slow_down", "speed_up", "change_nothing")
 
 @dataclass(frozen=True)
 class Direction(np.lib.mixins.NDArrayOperatorsMixin):
-    """Common operations for directions"""
+    """Common operations for directions."""
     index: int
     name: str
     angle: float
@@ -142,7 +142,7 @@ class Cells(np.ndarray):
         return self.shape[0]
 
     def is_free(self, position):
-        """Check if target location is not occupied"""
+        """Check if target location is not occupied."""
         x, y = position
         # Check if index is inside bounds
         if 0 <= x < self.width and 0 <= y < self.height:
@@ -168,7 +168,7 @@ def infer_action(player_before, player_after):
 
 
 class SavedGame:
-    """Save game representation
+    """Save game representation.
 
     Complete game, that sonsist of a series of states.
     Each state contains:
@@ -180,6 +180,11 @@ class SavedGame:
     * deadline: irrelevant
     """
     def __init__(self, data):
+        """Initialize SavedGame.
+
+        Args:
+            data: JSON object
+        """
         self.data = data
         self.cell_states = [np.array(state['cells'], dtype=np.int8) for state in data]
         self.player_states = [
@@ -226,7 +231,7 @@ class SavedGame:
 
     @classmethod
     def load(cls, file_name):
-        """"Load a saved game.
+        """Load a saved game.
 
         Args:
             file_name: Path to the save game in json format.
@@ -270,6 +275,7 @@ class SavedGame:
         Returned values can be used as input for a policy.
 
         Args:
+            t: timestep, zero-indexed, so t=0 equals rounds=1
             player_id: Id of the player to get the observation for
         """
         occupancy = self.cell_states[t] != 0

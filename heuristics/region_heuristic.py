@@ -5,12 +5,14 @@ import numpy as np
 
 
 class RegionHeuristic(Heuristic):
+    """TODO."""
     def __init__(self, closing_iterations=0, include_opponent_regions=True):
         """Initialize RegionHeuristic.
 
         Args:
             closing_iterations: number of performed closing operations on the cell state before the computation
                 of the regions to ommit smaller regions. default: 0
+            include_opponent_regions: Multiply the score with the inverse region size of opponents
         """
         self.closing_iterations = closing_iterations
         self.include_opponent_regions = include_opponent_regions

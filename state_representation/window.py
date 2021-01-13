@@ -5,6 +5,8 @@ def padded_window(cells, x, y, radius, padding_value=0):
     """Slice a fixed size window from `cells`, centered on `(y, x)`. Borders are padded.
 
     Args:
+        cells: Game state
+        x, y: Position of the window
         radius: Radius of the window, resulting window has a shape of `(2*radius+1, 2*radius+1)`.
         padding_value: Scalar value to use for padding
     Return:

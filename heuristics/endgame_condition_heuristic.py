@@ -5,9 +5,10 @@ from heuristics.heuristic import Heuristic
 
 
 def applyMorphology(cells, closing=0, opening=0, erosion=0, dilation=0):
-    """ Applys morphological operations on the given cells and returns them.
-        Multiple operations and multiple iterations of the operation can be specified at once.
-        Operations are executed in the following order: [closing, opening, erosion, dilation].
+    """Applys morphological operations on the given cells and returns them.
+
+    Multiple operations and multiple iterations of the operation can be specified at once.
+    Operations are executed in the following order: [closing, opening, erosion, dilation].
     """
     # apply padding
     iterations = max(closing, opening, erosion, dilation)
@@ -28,7 +29,7 @@ def applyMorphology(cells, closing=0, opening=0, erosion=0, dilation=0):
 
 
 def labelCells(cells, players):
-    """ Returns cells labeled on the region they belong to. Player positions are masked to belong to a region. """
+    """Returns cells labeled on the region they belong to. Player positions are masked to belong to a region."""
     # inverse map (mask occupied cells)
     empty_cells = cells == 0
     # Clear cell for all players
@@ -40,7 +41,7 @@ def labelCells(cells, players):
 
 
 def numOppInRegion(cells, players):
-    """ Compute number of opponents in the region the controlled player is in. """
+    """Compute number of opponents in the region the controlled player is in."""
     cells_lebelled = labelCells(cells, players)
     # Get the region each player is in
     regions = np.array([cells_lebelled[p.y, p.x] for p in players])
@@ -50,12 +51,12 @@ def numOppInRegion(cells, players):
 
 
 class EndgameConditionHeuristic(Heuristic):
-    """ Evaluates the game state to decide if we are in a endgame state. """
+    """Evaluates the game state to decide if we are in a endgame state."""
     def __init__(self):
         """Initialize EndgameConditionHeuristic."""
 
     def score(self, cells, player, opponents, rounds):
-        """ Evaluates the given state to decide if we are in the endgame.
+        """Evaluates the given state to decide if we are in the endgame.
 
         Computes the number of opponents in the current cell, as well as once with closing and opening operations.
         It is very uncertain, that an enemy will enter our reagion at this point or we can leave the region.

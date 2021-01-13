@@ -8,21 +8,28 @@ import logging
 
 
 class WebsocketEnv(Spe_edEnv):
+    """TODO."""
     def __init__(self, url, key):
-        Spe_edEnv.__init__(self, 40, 40)
+        """Initialize WebsocketEnv.
+
+        Args:
+            url: Websocket URL of the server
+            key: API key
+        """
+        Spe_edEnv.__init__(self, 40, 40)  # Dummy dimensions
 
         self.url = url
         self.key = key
 
     def reset(self):
-        """Build connection, save state, and return observation"""
+        """Build connection, save state, and return observation."""
         self.websocket = asyncio.get_event_loop().run_until_complete(self.connect())
         logging.info("Waiting for initial state...")
         asyncio.get_event_loop().run_until_complete(self.await_state())
         return self._get_obs(self.controlled_player)
 
     async def connect(self):
-        """Build connection and return websocket connection"""
+        """Build connection and return websocket connection."""
         logging.info("Client connecting")
         try:
             return await websockets.connect(f"{self.url}?key={self.key}", max_queue=None)
@@ -37,7 +44,7 @@ class WebsocketEnv(Spe_edEnv):
                 raise
 
     async def await_state(self):
-        """Wait for received game state and save state in class attributes"""
+        """Wait for received game state and save state in class attributes."""
         state = json.loads(await self.websocket.recv())
         self.__game_state = state
 
@@ -54,7 +61,7 @@ class WebsocketEnv(Spe_edEnv):
             await self.websocket.close()
 
     def step(self, action):
-        """Send action, save state and return observation"""
+        """Send action, save state and return observation."""
         # only send action if player is active
         if self.controlled_player.active is True:
             asyncio.get_event_loop().run_until_complete(self.send_action(action))
@@ -64,7 +71,7 @@ class WebsocketEnv(Spe_edEnv):
         return self._get_obs(self.controlled_player), reward, self.done, {}
 
     async def send_action(self, action):
-        """Wait for send action"""
+        """Wait for send action."""
         await self.websocket.send(json.dumps({"action": action}))
         logging.info(f"Client sent action {action}")
 

@@ -2,9 +2,10 @@ from abc import ABC, abstractmethod
 
 
 class Policy(ABC):
+    """Abstract base class for all policies."""
     @abstractmethod
     def act(self, cells, you, opponents, rounds):
-        """Produce an action for a given game state
+        """Produce an action for a given game state.
 
         Args:
             cells: binary ndarray of cell occupancies.

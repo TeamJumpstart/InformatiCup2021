@@ -10,11 +10,20 @@ from importlib.machinery import SourceFileLoader
 
 
 class TournamentEnv(SimulatedSpe_edEnv):
+    """TODO."""
     def __init__(self, width, height, policies, seed=None):
+        """Initialize TournamentEnv.
+
+        Args:
+            width, height: TODO
+            policies: TODO
+            seed: TODO
+        """
         SimulatedSpe_edEnv.__init__(self, width, height, policies[1:])
         self.policies = policies
 
     def step(self):
+        """TODO."""
         actions = []
         for player in self.players:  # Compute actions of players
             if player.active:
@@ -46,7 +55,7 @@ class TournamentEnv(SimulatedSpe_edEnv):
 
 
 def play_game(env, policy_names, game_suffix, show=False, logger=None):
-    """Simulate a single game with the given environment and policies"""
+    """Simulate a single game with the given environment and policies."""
     if show and not env.render(screen_width=720, screen_height=720):
         return
     if logger is not None:  # Log initial state
@@ -71,7 +80,7 @@ def play_game(env, policy_names, game_suffix, show=False, logger=None):
 
 
 def run_tournament(show, log_dir, tournament_config_file):
-    '''Run a sequence of games in different combinations of given policies and log their results'''
+    """Run a sequence of games in different combinations of given policies and log their results."""
     # Create logger
     if log_dir is not None:
         directory = Path(log_dir)
@@ -109,7 +118,8 @@ def run_tournament(show, log_dir, tournament_config_file):
                             environment = TournamentEnv(width, height, [c["pol"] for c in constellation])
                             environment.reset()
                             game_data.append([policy_ids, game_suffix, environment])
-                    # parallelized execution using starmap (takes multiple parameters as opposed to map), async: faster but potentially out of order
+                    # parallelized execution using starmap (takes multiple parameters as opposed to map), async: faster
+                    # but potentially out of order
                     pool.starmap_async(play_game, [(env, ids, suf, show, logger) for ids, suf, env in game_data]).get()
                     constellation_pbar.update()
             player_number_pbar.update()

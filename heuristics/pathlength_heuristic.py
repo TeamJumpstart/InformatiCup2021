@@ -15,6 +15,7 @@ class PathLengthHeuristic(Heuristic):
 
         Args:
             n_steps: Number of steps to look into the future
+            expanded_node_limit: Threshold to prevent long execution times
         """
         self.n_steps = n_steps
         self.expanded_node_limit = expanded_node_limit

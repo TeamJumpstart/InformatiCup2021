@@ -1,6 +1,7 @@
 from policies import RandomPolicy, HeuristicPolicy, SpiralPolicy
-from heuristics import PathLengthHeuristic, RandomHeuristic, CompositeHeuristic, RegionHeuristic, OpponentDistanceHeuristic
-import random
+from heuristics import (
+    PathLengthHeuristic, RandomHeuristic, CompositeHeuristic, RegionHeuristic, OpponentDistanceHeuristic
+)
 
 # participating policies with short nick names
 policies = [

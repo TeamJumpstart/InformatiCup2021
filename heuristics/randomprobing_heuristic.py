@@ -7,19 +7,21 @@ from environments import spe_ed
 class RandomProbingHeuristic(Heuristic):
     """Performs a random probe run and evaluates the board state afterwards by the given heuristics."""
     def __init__(self, heuristic, n_steps, n_probes, seed=None):
-        """Initialize RandomProbingHeuristic."""
+        """Initialize RandomProbingHeuristic.
+
+        Args:
+            heuristic: Heuristic to evaluate for each probe
+            n_steps: Number of random steps for each probe run
+            n_probes: Number of probe runs
+            seed: Random seed of the action selection
+        """
         self.heuristic = heuristic
         self.n_steps = n_steps
         self.n_probes = n_probes
         self.rng = np.random.default_rng(seed)
 
     def score(self, cells, player, opponents, rounds):
-        """Performs one recursive probe run with random actions and returns the number of steps survived.
-
-        Args:
-            fixed_actions: Sequence of fixed actions taken at start.
-            random_steps: Number of random actions taken afterwards
-        """
+        """Perform one recursive probe run with random actions and returns the number of steps survived."""
         def perform_probe_run(env):
             """Simulate the given environment for maximum of `n_steps` with valid random steps or
             until the player cannot make a valid move, return the environment.

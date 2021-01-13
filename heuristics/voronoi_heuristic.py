@@ -12,13 +12,14 @@ class VoronoiHeuristic(Heuristic):
             max_steps: The maximal number of steps from the cell center to cell border
             opening_iterations: number of performed opening operations on the cell state before the computation
                 of the voronoi diagram to account for jumps. default: 0
+            minimize_opponents: TODO
         """
         self.max_steps = max_steps
         self.opening_iterations = opening_iterations
         self.minimize_opponents = minimize_opponents
 
     def score(self, cells, player, opponents, rounds):
-        """ Computes an approximation of the geodesic voronoi diagram using binary dilation."""
+        """Computes an approximation of the geodesic voronoi diagram using binary dilation."""
         unmodified_cells = cells
         # open all {self.opening_iterations} wide walls aka "articulating points" to account for jumps
         if self.opening_iterations:

@@ -7,14 +7,13 @@ class MazeWalkerPolicy(Policy):
     Baseline strategy, smarter policies should be able to outperform this.
     """
     def __init__(self):
-        """Initialize MazeWalkerPolicy.
-
-        """
+        """Initialize MazeWalkerPolicy."""
         self.hit_wall = False
 
     def act(self, cells, player, opponents, round):
-        # if_free - relative to player position
+        """TODO."""
         def is_free(pos):
+            """is_free, but relative to player position."""
             return cells.is_free(player.position + pos)
 
         # directions - relative to player direction

@@ -68,5 +68,7 @@ def create_tournament_plots(log_dir, stats_dir):
         policy_names, policy_nick_names, stats, plot_dir / "win_rate_small.png", grid_size=(30, 30)
     )
     plot_tournament_win_rates(policy_names, policy_nick_names, stats, plot_dir / "win_rate_big.png", grid_size=(50, 50))
-    plot_tournament_win_rates(policy_names, policy_nick_names, stats, plot_dir / "win_rate_1v1.png", number_of_players=2)
+    plot_tournament_win_rates(
+        policy_names, policy_nick_names, stats, plot_dir / "win_rate_1v1.png", number_of_players=2
+    )
     plot_tournament_win_rates(policy_names, policy_nick_names, stats, plot_dir / "win_rate_6p.png", number_of_players=6)

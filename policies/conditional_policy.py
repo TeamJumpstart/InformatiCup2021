@@ -2,11 +2,12 @@ from policies.policy import Policy
 
 
 class ConditionalPolicy(Policy):
-    """ Allows to evaluate different policies in a hierarchical manner.
-        The first policy is executed, which condition satisfies their corresponding threshold.
+    """Allows to evaluate different policies in a hierarchical manner.
+
+    The first policy, which whose condition satisfies their corresponding threshold, is executed.
     """
     def __init__(self, policies, conditions, thresholds):
-        """ Initializes ConditionalPolicy. If given only one policy, conditions and thresholds can be 'None'.
+        """Initialize ConditionalPolicy. If given only one policy, conditions and thresholds can be 'None'.
 
         Args:
             policies: List of 'Policy's. Provide at least one policy to execute.
@@ -34,7 +35,7 @@ class ConditionalPolicy(Policy):
                 )
 
     def act(self, cells, player, opponents, rounds):
-        """Execute the first policy, which condition satisfies its threshold. """
+        """Execute the first policy, whose condition satisfies its threshold."""
         for policy, condition, threshold in zip(self.policies, self.conditions, self.thresholds):
             if condition.score(cells, player, opponents, rounds) >= threshold:
                 return policy.act(cells, player, opponents, rounds)
