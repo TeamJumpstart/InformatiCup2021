@@ -44,4 +44,4 @@ class ConditionalPolicy(Policy):
         """Get readable representation."""
         return f"ConditionalPolicy(policies={str(self.policies)}, \
             conditions={str(self.conditions)}, \
-            thresholds={str(self.thresholds)})"
+            thresholds={self.thresholds})"

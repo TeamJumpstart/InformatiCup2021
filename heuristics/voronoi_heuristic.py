@@ -55,6 +55,6 @@ class VoronoiHeuristic(Heuristic):
 
     def __str__(self):
         """Get readable representation."""
-        return f"VoronoiHeuristic(max_steps={str(self.max_steps)}, \
-            opening_iterations={str(self.opening_iterations)}, \
-            minimize_opponents={str(self.minimize_opponents)})"
+        return f"VoronoiHeuristic(max_steps={self.max_steps}, \
+            opening_iterations={self.opening_iterations}, \
+            minimize_opponents={self.minimize_opponents})"

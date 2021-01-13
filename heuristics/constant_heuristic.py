@@ -13,4 +13,4 @@ class ConstantHeuristic(Heuristic):
 
     def __str__(self):
         """Get readable representation."""
-        return f"ConstantHeuristic({str(self.value)})"
+        return f"ConstantHeuristic({self.value})"

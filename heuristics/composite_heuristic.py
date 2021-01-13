@@ -28,4 +28,4 @@ class CompositeHeuristic(Heuristic):
     def __str__(self):
         """Get readable representation."""
         return f"CompositeHeuristic[{','.join([str(heuristic) for heuristic in self.heuristics])}, \
-            weights={str(self.weights)}]"
+            weights={self.weights}]"

@@ -43,5 +43,5 @@ class HeuristicPolicy(Policy):
     def __str__(self):
         """Get readable representation."""
         return f"HeuristicPolicy(heuristic={str(self.heuristic)}, \
-            occupancy_map_depth={str(self.occupancy_map_depth)}, \
-            actions={str(self.actions)})"
+            occupancy_map_depth={self.occupancy_map_depth}, \
+            actions={self.actions})"
