@@ -71,4 +71,4 @@ class FutureStepsPolicy(Policy):
 
     def __str__(self):
         """Get readable representation."""
-        return f"CirclePolicy(n_steps={self.n_steps}, dynamic={self.dynamic})"
+        return f"CirclePolicy(n_steps={str(self.n_steps)}, dynamic={str(self.dynamic)})"
