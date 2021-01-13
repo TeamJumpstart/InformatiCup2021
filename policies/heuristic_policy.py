@@ -14,6 +14,8 @@ class HeuristicPolicy(Policy):
 
         Args:
             heuristic: `Heuristic` that will be evaluated after one action of the player was performed.
+            occupancy_map_depth: defines the depth of the occupoancy map. If > 0, uses it to weight scores.
+            actions: considers only given actions, if `None` uses all given action.
         """
 
         self.heuristic = heuristic
@@ -40,4 +42,6 @@ class HeuristicPolicy(Policy):
 
     def __str__(self):
         """Get readable representation."""
-        return f"HeuristicPolicy(heuristic={str(self.heuristic)}, occupancy_map_depth={str(self.occupancy_map_depth)})"
+        return f"HeuristicPolicy(heuristic={str(self.heuristic)}, \
+            occupancy_map_depth={str(self.occupancy_map_depth)}, \
+            actions={str(self.actions)})"
