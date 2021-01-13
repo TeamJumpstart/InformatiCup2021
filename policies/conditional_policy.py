@@ -15,27 +15,31 @@ class ConditionalPolicy(Policy):
         """
         self.policies = policies
         if policies is None:
-            raise ValueError(f"No policies provided {policies}.")
+            raise ValueError(f"No policies provided {str(policies)}.")
 
         if len(policies) == 1:
             self.conditions = []
             self.thresholds = []
         else:
             self.conditions = conditions
-            if conditions is None or len(policies) != len(conditions) - 1:
+            if conditions is None or len(policies) != len(conditions) + 1:
                 raise ValueError(
-                    f"Number of policies {policies} should be larger by one\
-                     than number of conditions {conditions}."
+                    f"Number of policies {str(policies)} should be larger by one\
+                     than number of conditions {str(conditions)}."
                 )
             self.thresholds = thresholds
-            if thresholds is None or len(conditions) != len(thresholds) - 1:
-                raise ValueError(f"Number of conditions {conditions} does mot match number of thresholds {thresholds}.")
+            if thresholds is None or len(conditions) != len(thresholds):
+                raise ValueError(
+                    f"Number of conditions {str(conditions)} does mot match number of thresholds {str(thresholds)}."
+                )
 
     def act(self, cells, player, opponents, rounds):
         """Execute the first policy, which condition satisfies its threshold. """
         for policy, condition, threshold in zip(self.policies, self.conditions, self.thresholds):
             if condition.score(cells, player, opponents, rounds) >= threshold:
+                print("execute", policy)
                 return policy.act(cells, player, opponents, rounds)
+        print("execute", self.policies[-1])
         return self.policies[-1].act(cells, player, opponents, rounds)
 
     def __str__(self):
