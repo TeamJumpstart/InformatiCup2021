@@ -1,6 +1,12 @@
 from heuristics.heuristic import Heuristic
 from environments.simulator import Spe_edSimulator
 
+# Reorder actions to hit early out condition as fast as possible
+# change_nothing first, as it's the most common action
+# turn_* before speed_up, as this leads to longer paths
+# slow_down before speed_up, as it terminates earlier.
+ordered_actions = ("change_nothing", "turn_left", "turn_right", "slow_down", "speed_up")
+
 
 class PathLengthHeuristic(Heuristic):
     """Performs a random probe run and evaluates length of the path."""
@@ -25,7 +31,7 @@ class PathLengthHeuristic(Heuristic):
             if path_length >= self.n_steps or expanded > self.expanded_node_limit:  # Maximum search depth reached
                 return path_length  # Early out
 
-            for action in ("change_nothing", "turn_left", "turn_right", "slow_down", "speed_up"):
+            for action in ordered_actions:
                 sub_sim = sim.step([action])
                 if not sub_sim.player.active:  # Backtrack
                     continue
