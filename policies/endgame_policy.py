@@ -9,8 +9,9 @@ from heuristics import PathLengthHeuristic
 
 def applyMorphology(cells, closing=0, opening=0, erosion=0, dilation=0):
     """ Applys morphological operations on the given cells and returns them.
-        Multiple operations and multiple iterations of the operation can be specified at once.
-        Operations are executed in the following order: [closing, opening, erosion, dilation].
+
+    Multiple operations and multiple iterations of the operation can be specified at once.
+    Operations are executed in the following order: [closing, opening, erosion, dilation].
     """
     # apply padding
     iterations = max(closing, opening, erosion, dilation)
@@ -69,7 +70,7 @@ def computeOccupiedCells(cells, players):
 def computePathLength(cells, players):
     """ Evaluates the 'PathLengthHeuristic' with constant parameters. """
     path_length_heuristic = PathLengthHeuristic(n_steps=200)
-    return path_length_heuristic.score(cells, players[0], players[1:], 0)
+    return path_length_heuristic.score(cells, players[0], [], 0)
 
 
 def tiebreakerFunc(env, remaining_actions, score_func=computeRegionSize, eval_func=max, morph_kwargs={}):
@@ -110,14 +111,14 @@ def tiebreakerFunc(env, remaining_actions, score_func=computeRegionSize, eval_fu
 
 
 class EndgamePolicy(Policy):
-    """ Provides a policy which can be used to master the endgame,
-        e.g. we are stuck in one cell and cannot interact with other players.
-        Tries to maximize the number of rounds that the policy survives until filling all available space.
+    """ Provides a policy which can be used to master the endgame.
 
-        An optimal or even satisfiable behavior is not guaranteed for any other circumstances.
+    In the case we are stuck in one region and cannot interact with other players,
+    it tries to maximize the number of rounds that the policy survives until filling all available space.
+    An optimal or even satisfiable behavior is not guaranteed for any other circumstances.
 
-        Args:
-            actions: specifies which actions are considered at all. Default: uses all actions except 'speed_up'.
+    Args:
+        actions: specifies which actions are considered at all. Default: uses all actions except 'speed_up'.
     """
     def __init__(self, actions=None):
         self.actions = [a for a in spe_ed.actions if a != "speed_up"] if actions is None else actions
@@ -139,7 +140,7 @@ class EndgamePolicy(Policy):
         # tie breaker: random walk
         remaining_actions, _ = tiebreakerFunc(env, remaining_actions, computePathLength, max)
 
-        # return remaining action
+        # Choose last of remaining actions, as it's more likely change_nothing which is to prefer in the endgame
         return remaining_actions[-1]
 
     def __str__(self):
