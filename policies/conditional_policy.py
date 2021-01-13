@@ -37,13 +37,13 @@ class ConditionalPolicy(Policy):
         """Execute the first policy, which condition satisfies its threshold. """
         for policy, condition, threshold in zip(self.policies, self.conditions, self.thresholds):
             if condition.score(cells, player, opponents, rounds) >= threshold:
-                print("execute", policy)
                 return policy.act(cells, player, opponents, rounds)
-        print("execute", self.policies[-1])
         return self.policies[-1].act(cells, player, opponents, rounds)
 
     def __str__(self):
         """Get readable representation."""
-        return f"ConditionalPolicy(policies={str(self.policies)}, \
-            conditions={str(self.conditions)}, \
-            thresholds={str(self.thresholds)})"
+        return "ConditionalPolicy(" + \
+            f"policies={str(self.policies)}, " + \
+            f"conditions={str(self.conditions)}, " + \
+            f"thresholds={self.thresholds}, " + \
+            ")"

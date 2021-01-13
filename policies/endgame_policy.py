@@ -144,4 +144,4 @@ class EndgamePolicy(Policy):
 
     def __str__(self):
         """Get readable representation."""
-        return f"EndgamePolicy(actions={str(self.actions)})"
+        return f"EndgamePolicy(actions={self.actions})"

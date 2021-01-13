@@ -10,4 +10,4 @@ class RandomHeuristic(Heuristic):
 
     def __str__(self):
         """Get readable representation."""
-        return "RandomHeuristic"
+        return "RandomHeuristic()"

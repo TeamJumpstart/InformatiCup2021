@@ -17,4 +17,6 @@ class OpponentDistanceHeuristic(Heuristic):
 
     def __str__(self):
         """Get readable representation."""
-        return f"OpponentDistanceHeuristic(dist_threshold={str(self.dist_threshold)})"
+        return "OpponentDistanceHeuristic(" + \
+            f"dist_threshold={self.dist_threshold}" + \
+            ")"

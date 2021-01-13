@@ -40,6 +40,7 @@ def labelCells(cells, players):
 
 
 def numOppInRegion(cells, players):
+    """ Compute number of opponents in the region the controlled player is in. """
     cells_lebelled = labelCells(cells, players)
     # Get the region each player is in
     regions = np.array([cells_lebelled[p.y, p.x] for p in players])
@@ -49,13 +50,16 @@ def numOppInRegion(cells, players):
 
 
 class EndgameConditionHeuristic(Heuristic):
-    """Returns a constant number."""
-    def __init__(self, value=1):
+    """ Evaluates the game state to decide if we are in a endgame state. """
+    def __init__(self):
         """Initialize EndgameConditionHeuristic."""
-        self.value = value
 
     def score(self, cells, player, opponents, rounds):
-        """Returns a constant number. """
+        """ Evaluates the given state to decide if we are in the endgame.
+
+        Computes the number of opponents in the current cell, as well as once with closing and opening operations.
+        It is very uncertain, that an enemy will enter our reagion at this point or we can leave the region.
+        """
         players = [player] + opponents
 
         num_opp_region = numOppInRegion(cells, players)
@@ -68,4 +72,4 @@ class EndgameConditionHeuristic(Heuristic):
 
     def __str__(self):
         """Get readable representation."""
-        return f"ConstantHeuristic({str(self.value)})"
+        return "EndgameConditionHeuristic()"

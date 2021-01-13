@@ -52,5 +52,7 @@ class RegionHeuristic(Heuristic):
 
     def __str__(self):
         """Get readable representation."""
-        return f"RegionHeuristic(closing_iterations={str(self.closing_iterations)}, \
-            include_opponent_regions={str(self.include_opponent_regions)})"
+        return "RegionHeuristic(" + \
+            f"closing_iterations={self.closing_iterations}, " + \
+            f"include_opponent_regions={self.include_opponent_regions}, " + \
+            ")"

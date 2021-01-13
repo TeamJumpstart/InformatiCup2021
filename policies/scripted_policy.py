@@ -24,4 +24,4 @@ class ScriptedPolicy(Policy):
 
     def __str__(self):
         """Get readable representation."""
-        return f"ScriptedPolicy(actions={str(self.actions)})"
+        return f"ScriptedPolicy(actions={self.actions})"
