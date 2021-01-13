@@ -184,13 +184,13 @@ if __name__ == "__main__":
         choices=['play', 'replay', 'render_logdir', 'plot', 'tournament', 'tournament-plot'],
         default="play"
     )
-    parser.add_argument('--show', action='store_true', help='Display game.')
+    parser.add_argument('--show', action='store_true', help='Display games using an updating matplotlib plot.')
     parser.add_argument('--render-file', type=str, default=None, help='File to render to. Should end with .mp4')
-    parser.add_argument('--sim', action='store_true', help='Use simulator.')
-    parser.add_argument('--log-file', type=str, default=None, help='Log file to load.')
-    parser.add_argument('--log-dir', type=str, default=None, help='Directory for logs.')
+    parser.add_argument('--sim', action='store_true', help='The simulator environment runs a local simulation of Spe_ed instead of using the webserver.')
+    parser.add_argument('--log-file', type=str, default=None, help='Path to a log file, used to load and replay games.')
+    parser.add_argument('--log-dir', type=str, default=None, help='Directory for storing or retrieving logs.')
     parser.add_argument(
-        '--t-config', type=str, default='./tournament/tournament_config.py', help='Tournament config file.'
+        '--t-config', type=str, default='./tournament/tournament_config.py', help='Path of the tournament config file containing which settings to run.'
     )
     parser.add_argument('--upload', action='store_true', help='Upload generated log to cloud server.')
     parser.add_argument('--fps', type=int, default=10, help='FPS for rendering.')
