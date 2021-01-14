@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import itertools as it
-from tqdm import tqdm
+from tqdm.auto import tqdm
 from pathlib import Path
 import multiprocessing as mp
 from environments.simulator import simulate
@@ -54,8 +54,11 @@ class TournamentEnv(SimulatedSpe_edEnv):
         }
 
 
-def play_game(env, policy_names, game_suffix, show=False, logger=None):
+def play_game(width, height, policies, policy_names, game_suffix, show=False, logger=None):
     """Simulate a single game with the given environment and policies."""
+    env = TournamentEnv(width, height, policies)
+    env.reset()
+
     if show and not env.render(screen_width=720, screen_height=720):
         return
     if logger is not None:  # Log initial state
@@ -92,33 +95,27 @@ def run_tournament(show, log_dir, tournament_config_file):
     # load config file
     config = SourceFileLoader('tournament_config', tournament_config_file).load_module()
     # games with 2 to 6 players
-    with mp.Pool() as pool, tqdm(total=5, desc="Number of players(2-6)", position=0) as player_number_pbar:
-        for config.number_players in range(2, 7):
-            player_constellations = list(
-                it.combinations(config.policies, config.number_players)
-            )  # maybe with replacements
-            # games with different policy combinations
-            with tqdm(
-                total=len(player_constellations), desc="Combinations", position=config.number_players - 1
-            ) as constellation_pbar:
-                for constellation in player_constellations:
-                    game_data = []
-                    # games with different map size
-                    for (width, height) in config.width_height_pairs:
-                        # number of games to be played
-                        for game_number in range(config.number_games):
-                            policy_ids = [str(config.policies.index(pol)) for pol in constellation]
-                            game_suffix = f"_w{width}h{height}_{game_number}.json"
-                            # do not run games when log already exists
-                            if logger is not None and (directory / ("_".join(policy_ids) + game_suffix)).is_file():
-                                continue
-                            environment = TournamentEnv(width, height, constellation)
-                            environment.reset()
-                            game_data.append([policy_ids, game_suffix, environment])
-                    # parallelized execution using starmap (takes multiple parameters as opposed to map), async: faster
-                    # but potentially out of order
-                    pool.starmap_async(play_game, [(env, ids, suf, show, logger) for ids, suf, env in game_data]).get()
-                    constellation_pbar.update()
-            player_number_pbar.update()
-        if logger is not None:
-            logger.save_nick_names([str(pol) for pol in constellation])
+
+    with mp.Pool() as pool, tqdm(desc="Simulating games") as pbar:
+        total = 0
+        for number_players in range(2, 7):
+            for constellation in it.combinations(config.policies, number_players):
+                for (width, height) in config.width_height_pairs:
+                    for game_number in range(config.number_games):
+                        policy_ids = [str(config.policies.index(pol)) for pol in constellation]
+                        game_suffix = f"_w{width}h{height}_{game_number}.json"
+                        # do not run game when log already exists
+                        if logger is not None and (directory / ("_".join(policy_ids) + game_suffix)).is_file():
+                            continue
+
+                        pool.apply_async(
+                            play_game, (width, height, constellation, policy_ids, game_suffix, show, logger),
+                            callback=lambda _: pbar.update()
+                        )
+                        total += 1
+        pbar.reset(total)
+        pool.close()
+        pool.join()
+
+    if logger is not None:
+        logger.save_nick_names([str(pol) for pol in constellation])
