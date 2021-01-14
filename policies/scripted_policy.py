@@ -22,6 +22,6 @@ class ScriptedPolicy(Policy):
 
         return "change_nothing"
 
-    def __str__(self):
-        """Get readable representation."""
+    def __repr__(self):
+        """Get exact representation."""
         return f"ScriptedPolicy(actions={self.actions})"

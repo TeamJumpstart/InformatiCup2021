@@ -40,10 +40,10 @@ class HeuristicPolicy(Policy):
         # select action with the highest score
         return self.actions[np.argmax(scores)]
 
-    def __str__(self):
-        """Get readable representation."""
+    def __repr__(self):
+        """Get exact representation."""
         return "HeuristicPolicy(" + \
             f"heuristic={str(self.heuristic)}, " + \
             f"occupancy_map_depth={self.occupancy_map_depth}, " + \
-            f"actions={self.actions} " + \
+            f"actions={self.actions}, " + \
             ")"

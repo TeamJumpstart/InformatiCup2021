@@ -41,8 +41,8 @@ class ConditionalPolicy(Policy):
                 return policy.act(cells, player, opponents, rounds)
         return self.policies[-1].act(cells, player, opponents, rounds)
 
-    def __str__(self):
-        """Get readable representation."""
+    def __repr__(self):
+        """Get exact representation."""
         return "ConditionalPolicy(" + \
             f"policies={str(self.policies)}, " + \
             f"conditions={str(self.conditions)}, " + \

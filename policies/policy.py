@@ -20,6 +20,18 @@ class Policy(ABC):
         """
         pass
 
+    @abstractmethod
+    def __repr__(self):
+        """Get exact representation."""
+        pass
+
+    def __str__(self):
+        """Get readable representation.
+
+        Uses name if present, __repr__ otherwise
+        """
+        return self.name if hasattr(self, 'name') else repr(self)
+
 
 def load_named_policy(name):
     """Load a named policy by it's given name.
@@ -37,4 +49,5 @@ def load_named_policy(name):
         raise ValueError("There is no named policy '{name}'")
 
     pol = SourceFileLoader('tournament_config', str(policy_file)).load_module().pol
+    pol.name = name
     return pol

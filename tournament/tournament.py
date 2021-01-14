@@ -34,7 +34,7 @@ class TournamentEnv(SimulatedSpe_edEnv):
                 actions.append("change_nothing")
 
         # Perform simulation step
-        _, _, self.rounds = simulate(self.cells, self.players, self.rounds, actions)
+        _, _, self.rounds, _ = simulate(self.cells, self.players, self.rounds, actions)
 
         done = sum(1 for p in self.players if p.active) < 2
         if done:
@@ -91,10 +91,8 @@ def run_tournament(show, log_dir, tournament_config_file):
 
     # load config file
     config = SourceFileLoader('tournament_config', tournament_config_file).load_module()
-    # create processor pool for multiprocessing
-    pool = mp.Pool(mp.cpu_count())
     # games with 2 to 6 players
-    with tqdm(total=5, desc="Number of players(2-6)", position=0) as player_number_pbar:
+    with mp.Pool() as pool, tqdm(total=5, desc="Number of players(2-6)", position=0) as player_number_pbar:
         for config.number_players in range(2, 7):
             player_constellations = list(
                 it.combinations(config.policies, config.number_players)
@@ -109,13 +107,12 @@ def run_tournament(show, log_dir, tournament_config_file):
                     for (width, height) in config.width_height_pairs:
                         # number of games to be played
                         for game_number in range(config.number_games):
-                            policy_ids = [str(config.policies.index(c)) for c in constellation]
-                            log_file = directory / "_".join(policy_ids)
+                            policy_ids = [str(config.policies.index(pol)) for pol in constellation]
                             game_suffix = f"_w{width}h{height}_{game_number}.json"
                             # do not run games when log already exists
-                            if logger is not None and Path(log_file.as_posix() + game_suffix).is_file():
+                            if logger is not None and (directory / ("_".join(policy_ids) + game_suffix)).is_file():
                                 continue
-                            environment = TournamentEnv(width, height, [c["pol"] for c in constellation])
+                            environment = TournamentEnv(width, height, constellation)
                             environment.reset()
                             game_data.append([policy_ids, game_suffix, environment])
                     # parallelized execution using starmap (takes multiple parameters as opposed to map), async: faster
@@ -124,6 +121,4 @@ def run_tournament(show, log_dir, tournament_config_file):
                     constellation_pbar.update()
             player_number_pbar.update()
         if logger is not None:
-            logger.save_nick_names([c["name"] for c in constellation])
-
-    pool.close()
+            logger.save_nick_names([str(pol) for pol in constellation])

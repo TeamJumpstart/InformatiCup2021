@@ -35,6 +35,6 @@ class RandomPolicy(Policy):
 
         return action
 
-    def __str__(self):
-        """Get readable representation."""
-        return "RandomPolicy()"
+    def __repr__(self):
+        """Get exact representation."""
+        return f"RandomPolicy(p={self.p})"

@@ -151,6 +151,6 @@ class EndgamePolicy(Policy):
         # Choose last of remaining actions, as it's more likely change_nothing which is to prefer in the endgame
         return remaining_actions[-1]
 
-    def __str__(self):
-        """Get readable representation."""
+    def __repr__(self):
+        """Get exact representation."""
         return f"EndgamePolicy(actions={self.actions})"

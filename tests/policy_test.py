@@ -134,8 +134,15 @@ class TestNamedPolicies(unittest.TestCase):
         self.assertEqual(type(pol), policies.HeuristicPolicy)
 
     def test_new_instances(self):
-        """Named polciies should be new instances."""
+        """Named polcies should be new instances."""
         pol1 = policies.load_named_policy("Adam")
         pol2 = policies.load_named_policy("Adam")
 
         self.assertFalse(pol1 is pol2)
+
+    def test_name(self):
+        """Named polcies have their proper names."""
+        pol = policies.load_named_policy("Adam")
+
+        self.assertEqual(str(pol), "Adam")
+        self.assertEqual(repr(pol)[:20], "HeuristicPolicy(heur")  # ...

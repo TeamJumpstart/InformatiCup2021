@@ -37,6 +37,6 @@ class MazeWalkerPolicy(Policy):
 
         return "change_nothing"  # We're surrounded
 
-    def __str__(self):
-        """Get readable representation."""
+    def __repr__(self):
+        """Get exact representation."""
         return "MazeWalkerPolicy()"
