@@ -4,7 +4,6 @@ from policies.random_policy import RandomPolicy
 from policies.scripted_policy import ScriptedPolicy
 from policies.spiral_policy import SpiralPolicy
 from policies.circle_policy import CirclePolicy
-from policies.futuresteps_policy import FutureStepsPolicy
 from policies.heuristic_policy import HeuristicPolicy
 from policies.endgame_policy import EndgamePolicy
 from policies.conditional_policy import ConditionalPolicy
@@ -16,7 +15,6 @@ __all__ = [
     "ScriptedPolicy",
     "SpiralPolicy",
     "CirclePolicy",
-    "FutureStepsPolicy",
     "HeuristicPolicy",
     "EndgamePolicy",
     "ConditionalPolicy",
