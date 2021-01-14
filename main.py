@@ -6,8 +6,8 @@ from tqdm import tqdm
 from environments import SimulatedSpe_edEnv, WebsocketEnv
 from environments.logging import Spe_edLogger, CloudUploader
 from environments.spe_ed import SavedGame
-from policies import RandomPolicy, HeuristicPolicy
-from heuristics import PathLengthHeuristic, RandomHeuristic, CompositeHeuristic, RegionHeuristic, OpponentDistanceHeuristic
+from policies import HeuristicPolicy, load_named_policy
+from heuristics import PathLengthHeuristic
 from tournament.tournament import run_tournament
 import os
 import logging
@@ -234,17 +234,7 @@ if __name__ == "__main__":
             env = WebsocketEnv(os.environ["URL"], os.environ["KEY"])
 
         # Create policy
-        pol = HeuristicPolicy(
-            CompositeHeuristic(
-                [
-                    PathLengthHeuristic(20),
-                    RegionHeuristic(),
-                    OpponentDistanceHeuristic(dist_threshold=16),
-                    RandomHeuristic(),
-                ],
-                weights=[20, 1, 1e-3, 1e-4]
-            )
-        )
+        pol = load_named_policy("Adam")
 
         repeat = not args.show and args.render_file is None
 

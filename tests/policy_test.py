@@ -124,3 +124,18 @@ class TestHeuristicPolicy(unittest.TestCase):
             )
         )
         run_policy(env, pol)
+
+
+class TestNamedPolicies(unittest.TestCase):
+    def test_loading(self):
+        """Adam should be a heuristicPolicy."""
+        pol = policies.load_named_policy("Adam")
+
+        self.assertEqual(type(pol), policies.HeuristicPolicy)
+
+    def test_new_instances(self):
+        """Named polciies should be new instances."""
+        pol1 = policies.load_named_policy("Adam")
+        pol2 = policies.load_named_policy("Adam")
+
+        self.assertFalse(pol1 is pol2)
