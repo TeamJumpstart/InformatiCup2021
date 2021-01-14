@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 yapf = "*"
 flake8 = "*"
+flake8-docstrings = "*"
 
 [packages]
 numpy = "!=1.19.4"
