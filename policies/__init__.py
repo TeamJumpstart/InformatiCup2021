@@ -1,4 +1,5 @@
 from policies.policy import Policy, load_named_policy
+from policies.action_search import ActionSearchPolicy
 from policies.mazewalker_policy import MazeWalkerPolicy
 from policies.random_policy import RandomPolicy
 from policies.scripted_policy import ScriptedPolicy
@@ -11,6 +12,7 @@ from policies.conditional_policy import ConditionalPolicy
 __all__ = [
     "Policy",
     "load_named_policy",
+    "ActionSearchPolicy",
     "MazeWalkerPolicy",
     "RandomPolicy",
     "ScriptedPolicy",
