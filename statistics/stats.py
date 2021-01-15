@@ -64,8 +64,9 @@ def get_win_rate(policy, stats, number_of_players=None, matchup_opponent=None, g
                                         (relevant_games["height"] == grid_size[1])]
     if len(relevant_games) == 0:
         return None
-    return len([winner for winner in relevant_games["winner"] if winner is not None and winner == policy]
-              ) / len(relevant_games)
+
+    won = (relevant_games['winner'] == policy).agg(['mean', 'count', 'std'])
+    return won["mean"], won["count"], won["std"]
 
 
 def create_matchup_stats(policy_names, policy_nick_names, stats, csv_file):
