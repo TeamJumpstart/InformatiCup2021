@@ -22,6 +22,33 @@ def plot_win_rate_over_time(output_file, stats):
     plt.close()
 
 
+def plot_n_players(output_file, stats, cutoff_date=None):
+    plt.figure()
+    ax = plt.subplot(1, 1, 1)
+
+    if cutoff_date is not None:
+        stats = stats[stats['date'] >= cutoff_date]
+
+    n_players = stats['names'].apply(len)
+
+    played = np.array([(n_players == n).agg(['mean', 'count', 'std']) for n in range(2, 7)])
+    mean, count, std = played[:, 0], played[:, 1], played[:, 2]
+
+    # Compute confidence interval
+    conf = 1.96 * std / np.sqrt(count)
+
+    plt.bar(np.arange(2, 7), mean, yerr=conf)
+    ax.axhline(1 / 5, color="black", linestyle="dashed", label="uniform distribution")
+
+    plt.xlabel("number of players")
+    plt.ylabel("ratio of logged games")
+    ax.legend(loc="lower right")
+    plt.tight_layout(pad=0)
+
+    plt.savefig(output_file)
+    plt.close()
+
+
 def create_plots(log_dir, stats_file):
     # Load statistics
     stats = fetch_statistics(log_dir, stats_file)
@@ -31,7 +58,10 @@ def create_plots(log_dir, stats_file):
     plot_dir.mkdir(exist_ok=True)
 
     # Create plots
-    plot_win_rate_over_time(plot_dir / "win_rate.pdf", stats)
+    for ext in ("png", "pdf"):
+        plot_win_rate_over_time(plot_dir / f"win_rate.{ext}", stats)
+        plot_n_players(plot_dir / f"n_players.{ext}", stats)
+        plot_n_players(plot_dir / f"n_players_2021.{ext}", stats, cutoff_date='2021-01-01')
 
 
 def plot_tournament_win_rates(
@@ -57,8 +87,8 @@ def plot_tournament_win_rates(
     plt.bar(policy_nick_names, mean, yerr=conf)
     plt.xlabel("policy")
     plt.ylabel("win rate")
+    plt.tight_layout(pad=0)
 
-    plt.tight_layout()
     plt.savefig(output_file)
     plt.close()
 
@@ -86,10 +116,7 @@ def create_tournament_plots(log_dir, stats_dir):
     plot_tournament_win_rates(
         policy_names, policy_nick_names, stats, plot_dir / "win_rate_large.png", grid_size=(70, 70)
     )
-    plot_tournament_win_rates(
-        policy_names, policy_nick_names, stats, plot_dir / "win_rate_1v1.png", number_of_players=2
-    )
-    if len(policy_names) >= 6:
+    for p in range(2, min(7, len(policy_names) + 1)):
         plot_tournament_win_rates(
-            policy_names, policy_nick_names, stats, plot_dir / "win_rate_6p.png", number_of_players=6
+            policy_names, policy_nick_names, stats, plot_dir / f"win_rate_{p}p.png", number_of_players=p
         )
