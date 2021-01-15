@@ -1,14 +1,63 @@
 import matplotlib.pyplot as plt
-import itertools as it
 import logging
 import numpy as np
 from tqdm.auto import tqdm
 from pathlib import Path
+from uuid import uuid4
+import json
 import multiprocessing as mp
-from environments.simulator import simulate
-from environments.simulator import SimulatedSpe_edEnv
-from environments.logging import TournamentLogger
+import pandas as pd
+from environments.spe_ed import SavedGame
+from environments.simulator import simulate, SimulatedSpe_edEnv
 from importlib.machinery import SourceFileLoader
+
+
+def init_stats_lock(l):
+    """Helper to pass the lock to sub processes."""
+    global stats_lock
+    stats_lock = l
+
+
+class TournamentLogger():
+    def __init__(self, log_dir, write_logs):
+        self.log_dir = Path(log_dir)
+        self.csv_file = self.log_dir.parent / "statistics.csv"
+        self.log_dir.mkdir(parents=True, exist_ok=True)
+        self.write_logs = write_logs
+
+    def log(self, states):
+        """Handle the logging of a completed tournament game with a set of different policies.
+
+        Args:
+            states: List of game states in form of parsed json.
+            policy_ids: The used policy IDs
+        """
+        log_file = self.log_dir / f"{uuid4().hex}.json"
+
+        # Write log files
+        if self.write_logs:
+            with open(log_file, "w") as f:
+                json.dump(states, f, separators=(',', ':'))
+
+        # Append new statisics
+        game = SavedGame(states)
+        df = pd.DataFrame(
+            [
+                (
+                    log_file.name[:-5],  # name of game
+                    game.rounds,  # rounds
+                    game.winner.name if game.winner is not None else None,  # winner
+                    game.names[game.you - 1] if game.you is not None else None,  # you
+                    game.names,  # names
+                    game.width,
+                    game.height,
+                )
+            ],
+            columns=["uuid", "rounds", "winner", "you", "names", "width", "height"]
+        )
+
+        with stats_lock:  # Ensure only one process is writing
+            df.to_csv(self.csv_file, mode='a', header=not self.csv_file.exists(), index=False)
 
 
 class TournamentEnv(SimulatedSpe_edEnv):
@@ -98,11 +147,15 @@ def run_tournament(show, log_dir, tournament_config_file):
     if log_dir is not None:
         directory = Path(log_dir)
         directory.mkdir(parents=True, exist_ok=True)
-        logger = TournamentLogger(log_dir, config.policies)
+        logger = TournamentLogger(log_dir, config.write_logs)
     else:
         logger = None
 
-    with mp.Pool() as pool, tqdm(desc="Simulating games", total=config.n_games) as pbar:
+    with mp.Pool(
+        initializer=init_stats_lock,  # Pass the stats lock to all spawned subprocesses
+        initargs=(mp.Lock(), )
+    ) as pool, tqdm(desc="Simulating games", total=config.n_games) as pbar:
+
         for _ in range(config.n_games):
             n_players = np.random.choice(5, p=config.n_players_distribution) + 2
             width = np.random.randint(config.min_size, config.max_size + 1)

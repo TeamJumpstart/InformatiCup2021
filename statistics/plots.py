@@ -131,7 +131,7 @@ def plot_tournament_win_rates(
 
 def create_tournament_plots(log_dir, stats_dir):
     # Load statistics
-    stats = fetch_statistics(log_dir, stats_dir / "statistics.csv", key_column='matchup')
+    stats = fetch_statistics(log_dir, stats_dir / "statistics.csv", key_column='uuid')
 
     # Create output folder
     plot_dir = stats_dir / "plots"
