@@ -54,7 +54,7 @@ class TournamentEnv(SimulatedSpe_edEnv):
         }
 
 
-def play_game(width, height, policies, policy_names, game_suffix, show=False, logger=None):
+def play_game(width, height, policies, game_number, show=False, logger=None):
     """Simulate a single game with the given environment and policies."""
     env = TournamentEnv(width, height, policies)
     env.reset()
@@ -74,7 +74,7 @@ def play_game(width, height, policies, policy_names, game_suffix, show=False, lo
             states.append(env.game_state())
 
     if logger is not None:  # log states together with a mapping of player_id to policy
-        logger.log(states, policy_names, game_suffix)
+        logger.log(states, policies, width, height, game_number)
     if show:  # Show final state
         while True:
             if not env.render(screen_width=720, screen_height=720):
@@ -84,38 +84,33 @@ def play_game(width, height, policies, policy_names, game_suffix, show=False, lo
 
 def run_tournament(show, log_dir, tournament_config_file):
     """Run a sequence of games in different combinations of given policies and log their results."""
+    # load config file
+    config = SourceFileLoader('tournament_config', tournament_config_file).load_module()
+
     # Create logger
     if log_dir is not None:
         directory = Path(log_dir)
         directory.mkdir(parents=True, exist_ok=True)
-        logger = TournamentLogger(log_dir)
+        logger = TournamentLogger(log_dir, config.policies)
     else:
         logger = None
 
-    # load config file
-    config = SourceFileLoader('tournament_config', tournament_config_file).load_module()
-    # games with 2 to 6 players
-
     with mp.Pool() as pool, tqdm(desc="Simulating games") as pbar:
         total = 0
-        for number_players in range(2, 7):
-            for constellation in it.combinations(config.policies, number_players):
+        for number_players in range(2, 7):  # games with 2 to 6 players
+            for constellation in it.combinations(config.policies, number_players):  # All player combinations
                 for (width, height) in config.width_height_pairs:
                     for game_number in range(config.number_games):
-                        policy_ids = [str(config.policies.index(pol)) for pol in constellation]
-                        game_suffix = f"_w{width}h{height}_{game_number}.json"
                         # do not run game when log already exists
-                        if logger is not None and (directory / ("_".join(policy_ids) + game_suffix)).is_file():
+                        if logger is not None and logger.logfile_for(constellation, width, height,
+                                                                     game_number).is_file():
                             continue
 
                         pool.apply_async(
-                            play_game, (width, height, constellation, policy_ids, game_suffix, show, logger),
+                            play_game, (width, height, constellation, game_number, show, logger),
                             callback=lambda _: pbar.update()
                         )
                         total += 1
         pbar.reset(total)
         pool.close()
         pool.join()
-
-    if logger is not None:
-        logger.save_nick_names([str(pol) for pol in constellation])

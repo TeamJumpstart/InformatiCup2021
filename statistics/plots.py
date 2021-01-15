@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 from pathlib import Path
+from environments.logging import TournamentLogger
 from visualization import WinRateAx
-from statistics.stats import fetch_statistics, read_name_mapping, get_win_rate, create_matchup_stats
+from statistics.stats import fetch_statistics, get_win_rate, create_matchup_stats
 import numpy as np
 
 
@@ -58,10 +59,10 @@ def create_tournament_plots(log_dir, stats_dir):
     plot_dir.mkdir(exist_ok=True)
 
     # Create plots of matchup stats, overall win rate of each policy
-    policy_nick_names = list(read_name_mapping(log_dir).values())
     policy_names = np.unique(np.concatenate(stats['names'].values).flat)
+    name_mapping = TournamentLogger.load_name_mapping(log_dir, policy_names)
+    policy_nick_names = [str(name_mapping[str(pol)]) for pol in policy_names]
     create_matchup_stats(policy_names, policy_nick_names, stats, stats_dir / "matchup_statistics.csv")
-    print(policy_nick_names)
 
     plot_tournament_win_rates(policy_names, policy_nick_names, stats, plot_dir / "win_rate.png")
     plot_tournament_win_rates(

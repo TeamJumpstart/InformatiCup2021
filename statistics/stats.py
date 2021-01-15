@@ -1,6 +1,5 @@
 from pathlib import Path
 import pandas as pd
-import json
 from tqdm import tqdm
 from environments.spe_ed import SavedGame
 from statistics.log_files import get_log_files
@@ -41,12 +40,6 @@ def fetch_statistics(log_dir, csv_file, key_column='date'):
         parse_dates=["date"] if key_column == "date" else None,
         converters={"names": lambda x: x.strip("[]").replace("'", "").split(", ")}
     )
-
-
-def read_name_mapping(log_dir):
-    with open(log_dir / "_name_mapping.json") as f:
-        name_mapping = json.load(f)
-    return name_mapping
 
 
 def get_win_rate(policy, stats, number_of_players=None, matchup_opponent=None, grid_size=None):

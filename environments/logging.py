@@ -52,23 +52,47 @@ class CloudUploader():
 
 
 class TournamentLogger():
-    def __init__(self, log_dir="logs/"):
+    def __init__(self, log_dir, policies):
         self.log_dir = Path(log_dir)
         self.log_dir.mkdir(parents=True, exist_ok=True)
+        self.name_mapping = TournamentLogger.load_name_mapping(self.log_dir, policies)
 
-    def log(self, states, policy_ids, game_suffix):
+    def logfile_for(self, policies, width, height, game_number):
+        policy_ids = "_".join(str(self.name_mapping[str(pol)]) for pol in policies)
+        return self.log_dir / f"{policy_ids}_w{width}h{height}_{game_number}.json"
+
+    def log(self, states, policies, width, height, game_number):
         """Handle the logging of a completed tournament game with a set of different policies.
 
         Args:
             states: List of game states in form of parsed json.
             policy_ids: The used policy IDs
         """
-        combined_name = "_".join(policy_ids)
-        log_file = self.log_dir / f"{combined_name}{game_suffix}"
+        log_file = self.logfile_for(policies, width, height, game_number)
         with open(log_file, "w") as f:
             json.dump(states, f, separators=(',', ':'))
 
-    def save_nick_names(self, nick_names):
-        name_mapping = {i: nick_names[i] for i in range(len(nick_names))}
-        with open(self.log_dir / "_name_mapping.json", "w") as f:
-            json.dump(name_mapping, f, separators=(',', ':'))
+    @staticmethod
+    def load_name_mapping(log_dir, policies):
+        name_mapping_file = log_dir / "_name_mapping.json"
+
+        # Load current mapping
+        if name_mapping_file.exists():
+            with open(name_mapping_file, "r") as f:
+                name_mapping = json.load(f)
+        else:
+            name_mapping = {}
+
+        # Update missing entries
+        changed = False
+        for pol in policies:
+            if str(pol) not in name_mapping:
+                name_mapping[str(pol)] = len(name_mapping)
+                changed = True
+
+        # Write back
+        if changed:
+            with open(name_mapping_file, "w") as f:
+                json.dump(name_mapping, f, indent=4)
+
+        return name_mapping
