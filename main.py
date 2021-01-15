@@ -191,7 +191,11 @@ if __name__ == "__main__":
     elif args.mode == 'replay':
         show_logfile(args.log_file)
     elif args.mode == 'tournament':
-        run_tournament(args.show, args.log_dir, args.t_config)
+        from statistics import create_tournament_plots
+
+        log_dir = Path(args.log_dir)
+        run_tournament(args.show, log_dir, args.t_config)
+        create_tournament_plots(log_dir, log_dir.parent)
     elif args.mode == 'tournament-plot':
         from statistics import create_tournament_plots
 

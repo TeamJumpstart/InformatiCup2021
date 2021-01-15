@@ -2,12 +2,11 @@ from policies import RandomPolicy, SpiralPolicy, load_named_policy
 
 # participating policies with short nick names
 policies = [
-    load_named_policy("Adam"),
-    RandomPolicy(),
+    load_named_policy("AdamV2"),
+    load_named_policy("AdamV2+V"),
     SpiralPolicy(),
-    load_named_policy("PathLength"),
     load_named_policy("Region"),
-    load_named_policy("OppDist"),
+    load_named_policy("Clark"),
 ]
 min_size = 41  # Observed server dimensions
 max_size = 80

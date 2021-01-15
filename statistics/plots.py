@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 from pathlib import Path
-from environments.logging import TournamentLogger
 from visualization import WinRateAx
 from statistics.stats import fetch_statistics, get_win_rate, create_matchup_stats
 import numpy as np
