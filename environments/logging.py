@@ -2,6 +2,7 @@ from datetime import datetime
 import json
 import logging
 from pathlib import Path
+from uuid import uuid4
 import owncloud
 
 
@@ -57,18 +58,14 @@ class TournamentLogger():
         self.log_dir.mkdir(parents=True, exist_ok=True)
         self.name_mapping = TournamentLogger.load_name_mapping(self.log_dir, policies)
 
-    def logfile_for(self, policies, width, height, game_number):
-        policy_ids = "_".join(str(self.name_mapping[str(pol)]) for pol in policies)
-        return self.log_dir / f"{policy_ids}_w{width}h{height}_{game_number}.json"
-
-    def log(self, states, policies, width, height, game_number):
+    def log(self, states):
         """Handle the logging of a completed tournament game with a set of different policies.
 
         Args:
             states: List of game states in form of parsed json.
             policy_ids: The used policy IDs
         """
-        log_file = self.logfile_for(policies, width, height, game_number)
+        log_file = self.log_dir / f"{uuid4().hex}.json"
         with open(log_file, "w") as f:
             json.dump(states, f, separators=(',', ':'))
 

@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 import pandas as pd
 from tqdm import tqdm
@@ -16,7 +17,11 @@ def fetch_statistics(log_dir, csv_file, key_column='date'):
         # Process new log files
         results = []
         for log_file in tqdm(new_log_files, desc="Parsing new log files"):
-            game = SavedGame.load(log_file)
+            try:
+                game = SavedGame.load(log_file)
+            except Exception:
+                logging.exception(f"Failed to load {log_file}")
+                continue
 
             results.append(
                 (
@@ -62,8 +67,6 @@ def get_win_rate(policy, stats, number_of_players=None, matchup_opponent=None, g
     if grid_size is not None:
         relevant_games = relevant_games[(relevant_games["width"] == grid_size[0]) &
                                         (relevant_games["height"] == grid_size[1])]
-    if len(relevant_games) == 0:
-        return None
 
     won = (relevant_games['winner'] == policy).agg(['mean', 'count', 'std'])
     return won["mean"], won["count"], won["std"]

@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import itertools as it
+import logging
+import numpy as np
 from tqdm.auto import tqdm
 from pathlib import Path
 import multiprocessing as mp
@@ -54,38 +56,43 @@ class TournamentEnv(SimulatedSpe_edEnv):
         }
 
 
-def play_game(width, height, policies, game_number, show=False, logger=None):
+def play_game(width, height, policies, show=False, logger=None):
     """Simulate a single game with the given environment and policies."""
-    env = TournamentEnv(width, height, policies)
-    env.reset()
-
-    if show and not env.render(screen_width=720, screen_height=720):
-        return
-    if logger is not None:  # Log initial state
-        states = [env.game_state()]
-
-    done = False
-    while not done:
-        done = env.step()
+    try:
+        env = TournamentEnv(width, height, policies)
+        env.reset()
 
         if show and not env.render(screen_width=720, screen_height=720):
             return
-        if logger is not None:
-            states.append(env.game_state())
+        if logger is not None:  # Log initial state
+            states = [env.game_state()]
 
-    if logger is not None:  # log states together with a mapping of player_id to policy
-        logger.log(states, policies, width, height, game_number)
-    if show:  # Show final state
-        while True:
-            if not env.render(screen_width=720, screen_height=720):
+        done = False
+        while not done:
+            done = env.step()
+
+            if show and not env.render(screen_width=720, screen_height=720):
                 return
-            plt.pause(0.01)  # Sleep
+            if logger is not None:
+                states.append(env.game_state())
+
+        if logger is not None:  # log states together with a mapping of player_id to policy
+            logger.log(states)
+        if show:  # Show final state
+            while True:
+                if not env.render(screen_width=720, screen_height=720):
+                    return
+                plt.pause(0.01)  # Sleep
+    except Exception:
+        logging.exception("Error during simulation")
 
 
 def run_tournament(show, log_dir, tournament_config_file):
     """Run a sequence of games in different combinations of given policies and log their results."""
     # load config file
     config = SourceFileLoader('tournament_config', tournament_config_file).load_module()
+    if len(config.policies) < 6:
+        raise ValueError("Must provide at least 6 policies")
 
     # Create logger
     if log_dir is not None:
@@ -95,22 +102,13 @@ def run_tournament(show, log_dir, tournament_config_file):
     else:
         logger = None
 
-    with mp.Pool() as pool, tqdm(desc="Simulating games") as pbar:
-        total = 0
-        for number_players in range(2, 7):  # games with 2 to 6 players
-            for constellation in it.combinations(config.policies, number_players):  # All player combinations
-                for (width, height) in config.width_height_pairs:
-                    for game_number in range(config.number_games):
-                        # do not run game when log already exists
-                        if logger is not None and logger.logfile_for(constellation, width, height,
-                                                                     game_number).is_file():
-                            continue
+    with mp.Pool() as pool, tqdm(desc="Simulating games", total=config.n_games) as pbar:
+        for _ in range(config.n_games):
+            n_players = np.random.choice(5, p=config.n_players_distribution) + 2
+            width = np.random.randint(config.min_size, config.max_size + 1)
+            height = np.random.randint(config.min_size, config.max_size + 1)
+            constellation = np.random.choice(config.policies, size=n_players, replace=False)
 
-                        pool.apply_async(
-                            play_game, (width, height, constellation, game_number, show, logger),
-                            callback=lambda _: pbar.update()
-                        )
-                        total += 1
-        pbar.reset(total)
+            pool.apply_async(play_game, (width, height, constellation, show, logger), callback=lambda _: pbar.update())
         pool.close()
         pool.join()

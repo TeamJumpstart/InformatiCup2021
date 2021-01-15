@@ -9,9 +9,8 @@ policies = [
     load_named_policy("Region"),
     load_named_policy("OppDist"),
 ]
-# different map sizes to be played
-width_height_pairs = [
-    (30, 30), (50, 50)
-]  # or use randomly generated ranges: [(randint(20,51), randint(20,51)), (randint(50, 101), randint(50, 101))]
-# number of games to be played for each constellation
-number_games = 2
+min_size = 41  # Observed server dimensions
+max_size = 80
+n_players_distribution = [0.14, 0.2, 0.22, 0.22, 0.22]  # Estimated server distribution
+
+n_games = 500
