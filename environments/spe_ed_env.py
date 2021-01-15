@@ -13,7 +13,7 @@ class Spe_edEnv(gym.Env):
         self.height = height
 
         # Copy of game state
-        self.cells = np.empty((self.width, self.height), dtype=np.int8)
+        self.cells = np.empty((self.height, self.width), dtype=np.int8)
         self.players = []
         self.controlled_player = None
         self.rounds = 1
