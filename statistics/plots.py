@@ -4,6 +4,7 @@ from environments.logging import TournamentLogger
 from visualization import WinRateAx
 from statistics.stats import fetch_statistics, get_win_rate, create_matchup_stats
 import numpy as np
+import seaborn as sns
 
 
 def plot_win_rate_over_time(output_file, stats):
@@ -49,6 +50,38 @@ def plot_n_players(output_file, stats, cutoff_date=None):
     plt.close()
 
 
+def plot_grid_size(output_file, stats):
+    plt.figure(figsize=(6.4 * 2, 4.8))
+
+    plt.subplot(1, 2, 1)
+    plt.hist(stats['width'], density=True)
+    plt.xlabel("width")
+    plt.ylabel("density")
+
+    plt.subplot(1, 2, 2)
+    plt.hist(stats['height'], density=True)
+    plt.xlabel("height")
+    plt.ylabel("density")
+
+    plt.tight_layout(pad=0)
+
+    plt.savefig(output_file)
+    plt.close()
+
+
+def plot_grid_size_correlation(output_file, stats, include_n_players=False):
+    data = stats[['width', 'height']].copy()
+    if include_n_players:
+        data['n_players'] = stats['names'].apply(len)
+
+    sns.pairplot(data, kind='hist', diag_kws={'bins': 20}, plot_kws={'bins': 20})
+
+    plt.tight_layout(pad=0)
+
+    plt.savefig(output_file)
+    plt.close()
+
+
 def create_plots(log_dir, stats_file):
     # Load statistics
     stats = fetch_statistics(log_dir, stats_file)
@@ -62,6 +95,9 @@ def create_plots(log_dir, stats_file):
         plot_win_rate_over_time(plot_dir / f"win_rate.{ext}", stats)
         plot_n_players(plot_dir / f"n_players.{ext}", stats)
         plot_n_players(plot_dir / f"n_players_2021.{ext}", stats, cutoff_date='2021-01-01')
+        plot_grid_size(plot_dir / f"grid_size.{ext}", stats)
+        plot_grid_size_correlation(plot_dir / f"grid_size_corr.{ext}", stats)
+        plot_grid_size_correlation(plot_dir / f"grid_size_n_players_corr.{ext}", stats, include_n_players=True)
 
 
 def plot_tournament_win_rates(
