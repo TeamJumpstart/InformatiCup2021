@@ -2,7 +2,7 @@ import numpy as np
 from environments import spe_ed, Spe_edSimulator
 
 
-def occupancy_map(cells, opponents, rounds, depth=3):
+def occupancy_map(cells, opponents, rounds, depth=3, death_discount=1):
     """Compute occupancy probabilities in presence of opponents for each cell.
 
     Assumes actions of opponents to be uniformly distributed.
@@ -23,10 +23,12 @@ def occupancy_map(cells, opponents, rounds, depth=3):
         for a in spe_ed.actions:
             sub_sim = sim.step([a])
             sub_probability = probability / N_actions  # Assume uniform distribution
+            if not sub_sim.player.active:
+                sub_probability *= death_discount
 
             probs += (sim.cells != sub_sim.cells) * sub_probability
 
-            if level < depth and sub_sim.players[0].active:
+            if level < depth and sub_sim.player.active:
                 _occupancy_recursion(sub_sim, sub_probability, level + 1)
 
         # Update occupancy
