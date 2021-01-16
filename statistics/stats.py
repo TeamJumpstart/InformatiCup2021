@@ -76,24 +76,14 @@ def get_win_rate(policy, stats, number_of_players=None, matchup_opponent=None, g
     return won["mean"], won["count"], won["std"]
 
 
-def create_matchup_stats(policy_names, policy_nick_names, stats, csv_file):
-    '''Creates a matchup table and saves it as a csv.
+def normalize_winrate(winrate, baseline):
+    adjusted = winrate.copy()
 
-    Args:
-            policy_names: full name of policy
-            policy_nick_names: policy nick names
-            stats: pandas df of statistics from fetch_statistics
-            csv_file: path to csv
+    # Scale winrates below baseline to [0, 0.5]
+    mask_lesser = winrate <= baseline
+    adjusted[mask_lesser] = winrate[mask_lesser] / baseline / 2
 
-    '''
-    matchup_win_rates = []
-    for policy_name in policy_names:
-        policy_matchups = []
-        for opponent_policy in policy_names:
-            policy_matchups.append(get_win_rate(policy_name, stats, matchup_opponent=opponent_policy))
-        matchup_win_rates.append(policy_matchups)
-    df = pd.DataFrame(
-        [[policy_nick_names[i], policy_names[i]] + matchup_win_rates[i] for i in range(len(policy_names))],
-        columns=["Policy short", "Policy full"] + [f"vs{nick}" for nick in policy_nick_names]
-    )
-    df.to_csv(csv_file, mode='w', index=False)
+    mask_greater = winrate > baseline
+    adjusted[mask_greater] = ((winrate[mask_greater] - baseline) / (1 - baseline) + 1) / 2
+
+    return adjusted

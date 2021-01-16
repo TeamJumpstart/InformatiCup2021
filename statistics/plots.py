@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from pathlib import Path
 from visualization import WinRateAx
-from statistics.stats import fetch_statistics, get_win_rate, create_matchup_stats
+from statistics.stats import fetch_statistics, get_win_rate, normalize_winrate
 import numpy as np
 import seaborn as sns
 
@@ -128,6 +128,46 @@ def plot_tournament_win_rates(
     plt.close()
 
 
+def plot_matchups(policy_names, policy_nick_names, stats, output_file):
+    """Create a matchup table.
+
+    Args:
+            policy_names: full name of policy
+            policy_nick_names: policy nick names
+            stats: pandas df of statistics from fetch_statistics
+            output_file: File to save figure to
+    """
+    matchup_win_rates = []
+    for policy_name in policy_names:
+        policy_matchups = [
+            get_win_rate(policy_name, stats, matchup_opponent=opponent_policy) for opponent_policy in policy_names
+        ]
+        matchup_win_rates.append([x[0] if x is not None else np.nan for x in policy_matchups])
+    matchup_win_rates = np.array(matchup_win_rates)
+
+    baseline_winrate = np.mean(1 / stats["names"].map(len))
+
+    ax = sns.heatmap(
+        normalize_winrate(matchup_win_rates, baseline_winrate),
+        mask=np.isnan(matchup_win_rates),
+        vmin=0,
+        vmax=1,
+        xticklabels=policy_nick_names,
+        yticklabels=policy_nick_names,
+        square=True,
+        cmap="seismic",
+        cbar_kws={'label': 'normalized win rate'},
+    )
+    ax.set_title('vs.', y=1, x=-0.05)
+    ax.set_facecolor('black')
+    plt.yticks(va="center")
+    plt.tick_params(axis='both', which='major', labelbottom=False, bottom=False, top=False, labeltop=True, left=False)
+    plt.tight_layout(pad=0)
+
+    plt.savefig(output_file)
+    plt.close()
+
+
 def create_tournament_plots(log_dir, stats_dir):
     # Load statistics
     stats = fetch_statistics(log_dir, stats_dir / "statistics.csv", key_column='uuid')
@@ -139,7 +179,8 @@ def create_tournament_plots(log_dir, stats_dir):
     # Create plots of matchup stats, overall win rate of each policy
     policy_names = np.unique(np.concatenate(stats['names'].values).flat)
     policy_nick_names = [name if len(name) <= 10 else name[:8] + "..." for name in policy_names]
-    create_matchup_stats(policy_names, policy_nick_names, stats, stats_dir / "matchup_statistics.csv")
+
+    plot_matchups(policy_names, policy_nick_names, stats, plot_dir / "matchups.png")
 
     plot_tournament_win_rates(policy_names, policy_nick_names, stats, plot_dir / "win_rate.png")
     plot_tournament_win_rates(
