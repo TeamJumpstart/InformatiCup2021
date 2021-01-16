@@ -143,13 +143,13 @@ def create_tournament_plots(log_dir, stats_dir):
 
     plot_tournament_win_rates(policy_names, policy_nick_names, stats, plot_dir / "win_rate.png")
     plot_tournament_win_rates(
-        policy_names, policy_nick_names, stats, plot_dir / "win_rate_small.png", grid_size=(30, 30)
+        policy_names, policy_nick_names, stats, plot_dir / "win_rate_small.png", grid_size="small"
     )
     plot_tournament_win_rates(
-        policy_names, policy_nick_names, stats, plot_dir / "win_rate_medium.png", grid_size=(50, 50)
+        policy_names, policy_nick_names, stats, plot_dir / "win_rate_medium.png", grid_size="medium"
     )
     plot_tournament_win_rates(
-        policy_names, policy_nick_names, stats, plot_dir / "win_rate_large.png", grid_size=(70, 70)
+        policy_names, policy_nick_names, stats, plot_dir / "win_rate_large.png", grid_size="large"
     )
     for p in range(2, min(7, len(policy_names) + 1)):
         plot_tournament_win_rates(

@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from environments.spe_ed import SavedGame
@@ -54,7 +55,7 @@ def get_win_rate(policy, stats, number_of_players=None, matchup_opponent=None, g
             policy: full name of policy
             stats: pandas df of statistics from fetch_statistics
             matchup_opponent: full name of policy to compare against
-            grid_size: width-height tuple
+            grid_size: "small", "medium" or "large"
 
     '''
     relevant_games = stats[stats["names"].apply(lambda x: policy in x)]
@@ -65,8 +66,11 @@ def get_win_rate(policy, stats, number_of_players=None, matchup_opponent=None, g
             return None
         relevant_games = relevant_games[relevant_games["names"].str.contains(matchup_opponent, regex=False)]
     if grid_size is not None:
-        relevant_games = relevant_games[(relevant_games["width"] == grid_size[0]) &
-                                        (relevant_games["height"] == grid_size[1])]
+        relevant_games = relevant_games[pd.cut(
+            relevant_games["width"] * relevant_games["height"],
+            bins=[1681, 3132, 4030, 6400],  # 1/3 and 2/3 quantile of size distribution
+            labels=["small", "medium", "large"]
+        ) == grid_size]
 
     won = (relevant_games['winner'] == policy).agg(['mean', 'count', 'std'])
     return won["mean"], won["count"], won["std"]
