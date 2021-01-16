@@ -38,7 +38,7 @@ def play(env, pol, show=False, render_file=None, fps=10, logger=None, silent=Fal
     done = False
     with tqdm(disable=not silent) as pbar:
         while not done:
-            action = pol.act(*obs)
+            action = pol.act(*obs) if env.controlled_player.active else "change_nothing"
             obs, reward, done, _ = env.step(action)
 
             if show and not env.render(screen_width=720, screen_height=720):
