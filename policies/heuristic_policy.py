@@ -26,7 +26,8 @@ class HeuristicPolicy(Policy):
     def act(self, cells, player, opponents, rounds):
         """Chooses action based on weighted heuristic scores."""
         scores = np.zeros(len(self.actions), dtype=np.float32)
-        occ_map = occupancy_map(cells, opponents, rounds, self.occupancy_map_depth)
+        if self.occupancy_map_depth > 0:  # Only compute occupancy if required
+            occ_map = occupancy_map(cells, opponents, rounds, self.occupancy_map_depth)
         cur_state = Spe_edSimulator(cells, [player], rounds)
 
         for a, action in enumerate(self.actions):
@@ -35,7 +36,8 @@ class HeuristicPolicy(Policy):
             # evaluate the heuristic, if the player is active
             if next_state.player.active:
                 scores[a] = self.heuristic.score(next_state.cells, next_state.player, opponents, next_state.rounds)
-                scores[a] *= prod(1 - occ_map[y, x] for x, y in next_state.changed)
+                if self.occupancy_map_depth > 0:  # Factor in occupancy of newly occupied cells
+                    scores[a] *= prod(1 - occ_map[y, x] for x, y in next_state.changed)
 
         # select action with the highest score
         return self.actions[np.argmax(scores)]
