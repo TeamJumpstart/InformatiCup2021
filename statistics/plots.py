@@ -4,6 +4,7 @@ from visualization import WinRateAx
 from statistics.stats import fetch_statistics, get_win_rate, normalize_winrate
 import numpy as np
 import seaborn as sns
+import pandas as pd
 
 
 def plot_win_rate_over_time(output_file, stats):
@@ -168,6 +169,14 @@ def plot_matchups(policy_names, policy_nick_names, stats, output_file):
     plt.close()
 
 
+def plot_policy_times(stats_dir, output_file):
+    sns.boxplot(x="policy", y="time", data=pd.read_csv(stats_dir / r"times.csv"))
+    plt.tight_layout(pad=0)
+
+    plt.savefig(output_file)
+    plt.close()
+
+
 def create_tournament_plots(log_dir, stats_dir):
     # Load statistics
     stats = fetch_statistics(log_dir, stats_dir / "statistics.csv", key_column='uuid')
@@ -196,3 +205,5 @@ def create_tournament_plots(log_dir, stats_dir):
         plot_tournament_win_rates(
             policy_names, policy_nick_names, stats, plot_dir / f"win_rate_{p}p.png", number_of_players=p
         )
+
+    plot_policy_times(stats_dir, plot_dir / "policy_times.png")

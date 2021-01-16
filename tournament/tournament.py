@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import logging
+import time
 import numpy as np
 from tqdm.auto import tqdm
 from pathlib import Path
@@ -25,7 +26,7 @@ class TournamentLogger():
         self.log_dir.mkdir(parents=True, exist_ok=True)
         self.write_logs = write_logs
 
-    def log(self, states):
+    def log(self, states, execution_times):
         """Handle the logging of a completed tournament game with a set of different policies.
 
         Args:
@@ -41,7 +42,7 @@ class TournamentLogger():
 
         # Append new statisics
         game = SavedGame(states)
-        df = pd.DataFrame(
+        df_stats = pd.DataFrame(
             [
                 (
                     log_file.name[:-5],  # name of game
@@ -55,9 +56,14 @@ class TournamentLogger():
             ],
             columns=["uuid", "rounds", "winner", "you", "names", "width", "height"]
         )
+        times_file = self.csv_file.parent / "times.csv"
+        df_times = pd.DataFrame(
+            [(pol, t) for pol, times in execution_times.items() for t in times], columns=["policy", "time"]
+        )
 
         with stats_lock:  # Ensure only one process is writing
-            df.to_csv(self.csv_file, mode='a', header=not self.csv_file.exists(), index=False)
+            df_stats.to_csv(self.csv_file, mode='a', header=not self.csv_file.exists(), index=False)
+            df_times.to_csv(times_file, mode='a', header=not times_file.exists(), index=False)
 
 
 class TournamentEnv(SimulatedSpe_edEnv):
@@ -72,6 +78,7 @@ class TournamentEnv(SimulatedSpe_edEnv):
         """
         SimulatedSpe_edEnv.__init__(self, width, height, policies[1:])
         self.policies = policies
+        self.execution_times = {str(pol): [] for pol in policies}
 
     def step(self):
         """TODO."""
@@ -80,7 +87,10 @@ class TournamentEnv(SimulatedSpe_edEnv):
             if player.active:
                 policy = self.policies[player.player_id - 1]
                 obs = self._get_obs(player)
+
+                start_time = time.time()  # Measure policy time
                 actions.append(policy.act(*obs))
+                self.execution_times[str(policy)].append(time.time() - start_time)
             else:
                 actions.append("change_nothing")
 
@@ -126,7 +136,7 @@ def play_game(width, height, policies, show=False, logger=None):
                 states.append(env.game_state())
 
         if logger is not None:  # log states together with a mapping of player_id to policy
-            logger.log(states)
+            logger.log(states, env.execution_times)
         if show:  # Show final state
             while True:
                 if not env.render(screen_width=720, screen_height=720):
