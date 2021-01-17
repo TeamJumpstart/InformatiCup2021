@@ -21,31 +21,38 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S',
 )
 
+default_window_size = (720, 720)
 
-def play(env, pol, show=False, render_file=None, fps=10, logger=None, silent=True):
+
+def play(env, pol, show=False, render_file=None, fps=10, logger=None, silent=True, window_size=default_window_size):
     obs = env.reset()
 
-    if show and not env.render(screen_width=720, screen_height=720):
+    if show and not env.render(screen_width=window_size[0], screen_height=window_size[1]):
         return
     if render_file is not None:  # Initialize video writer
         from imageio_ffmpeg import write_frames
 
-        writer = write_frames(render_file, (720, 720), fps=fps, codec="libx264", quality=8)
+        writer = write_frames(render_file, window_size, fps=fps, codec="libx264", quality=8)
         writer.send(None)  # seed the generator
-        writer.send(env.render(mode="rgb_array", screen_width=720, screen_height=720).copy(order='C'))
+        writer.send(
+            env.render(mode="rgb_array", screen_width=window_size[0], screen_height=window_size[1]).copy(order='C')
+        )
     if logger is not None:  # Log initial state
         states = [env.game_state()]
 
     done = False
     with tqdm(disable=silent) as pbar:
         while not done:
-            action = pol.act(*obs) if env.controlled_player.active else "change_nothing"
+            action = pol.act(*obs)
             obs, reward, done, _ = env.step(action)
 
-            if show and not env.render(screen_width=720, screen_height=720):
+            if show and not env.render(screen_width=window_size[0], screen_height=window_size[1]):
                 return
             if render_file is not None:
-                writer.send(env.render(mode="rgb_array", screen_width=720, screen_height=720).copy(order='C'))
+                writer.send(
+                    env.render(mode="rgb_array", screen_width=window_size[0],
+                               screen_height=window_size[1]).copy(order='C')
+                )
             if logger is not None:
                 states.append(env.game_state())
             pbar.update()
@@ -57,12 +64,12 @@ def play(env, pol, show=False, render_file=None, fps=10, logger=None, silent=Tru
     if show:
         # Show final state
         while True:
-            if not env.render(screen_width=720, screen_height=720):
+            if not env.render(screen_width=window_size[0], screen_height=window_size[1]):
                 return
             plt.pause(0.01)  # Sleep
 
 
-def show_logfile(log_file):
+def show_logfile(log_file, window_size=default_window_size):
     """Render logfile to mp4"""
     from visualization import Spe_edAx
     from matplotlib.widgets import Slider
@@ -82,7 +89,7 @@ def show_logfile(log_file):
     game = SavedGame.load(log_file)
     game.move_controlled_player_to_front()
 
-    fig = plt.figure(figsize=(720 / 100, 720 / 100), dpi=100)
+    fig = plt.figure(figsize=(window_size[0] / 100, window_size[1] / 100), dpi=100)
     ax1 = plt.subplot(1, 1, 1)
     viewer = Spe_edAx(fig, ax1, game.cell_states[0], game.player_states[0])
 
@@ -100,7 +107,7 @@ def show_logfile(log_file):
     plt.show()
 
 
-def render_logfile(log_file, fps=10, silent=False):
+def render_logfile(log_file, fps=10, silent=False, window_size=default_window_size):
     """Render logfile to mp4.
 
     Resulting .mp4 is placed alongside the .json file.
@@ -123,7 +130,7 @@ def render_logfile(log_file, fps=10, silent=False):
     game.move_controlled_player_to_front()
 
     fig = plt.figure(
-        figsize=(720 / 100, 720 / 100),
+        figsize=(window_size[0] / 100, window_size[1] / 100),
         dpi=100,
         tight_layout=True,
     )
@@ -136,7 +143,7 @@ def render_logfile(log_file, fps=10, silent=False):
             viewer.update(game.cell_states[i], game.player_states[i])
             fig.canvas.draw()
 
-            frame = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8).reshape(720, 720, 3)
+            frame = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8).reshape(window_size[0], window_size[1], 3)
             yield frame
 
     # Render video to temp file
