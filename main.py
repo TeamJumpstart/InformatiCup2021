@@ -1,5 +1,6 @@
 import argparse
 import time
+import multiprocessing as mp
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
@@ -21,7 +22,7 @@ logging.basicConfig(
 )
 
 
-def play(env, pol, show=False, render_file=None, fps=10, logger=None, silent=False):
+def play(env, pol, show=False, render_file=None, fps=10, logger=None, silent=True):
     obs = env.reset()
 
     if show and not env.render(screen_width=720, screen_height=720):
@@ -36,7 +37,7 @@ def play(env, pol, show=False, render_file=None, fps=10, logger=None, silent=Fal
         states = [env.game_state()]
 
     done = False
-    with tqdm(disable=not silent) as pbar:
+    with tqdm(disable=silent) as pbar:
         while not done:
             action = pol.act(*obs) if env.controlled_player.active else "change_nothing"
             obs, reward, done, _ = env.step(action)
@@ -99,8 +100,16 @@ def show_logfile(log_file):
     plt.show()
 
 
-def render_logfile(log_file, fps=10):
-    """Render logfile to mp4"""
+def render_logfile(log_file, fps=10, silent=False):
+    """Render logfile to mp4.
+
+    Resulting .mp4 is placed alongside the .json file.
+
+    Args:
+        log_file: Log file to render.
+        fps: FPS of generated video.
+        silent: Show no progress bar.
+    """
     from visualization import Spe_edAx, render_video
     from imageio_ffmpeg import get_ffmpeg_exe
     import subprocess
@@ -123,7 +132,7 @@ def render_logfile(log_file, fps=10):
 
     def frames():
         """Draw all game states"""
-        for i in tqdm(range(len(game.cell_states)), desc=f"Rendering {log_file.name}"):
+        for i in tqdm(range(len(game.cell_states)), desc=f"Rendering {log_file.name}", disable=silent):
             viewer.update(game.cell_states[i], game.player_states[i])
             fig.canvas.draw()
 
@@ -174,6 +183,9 @@ if __name__ == "__main__":
     )
     parser.add_argument('--upload', action='store_true', help='Upload generated log to cloud server.')
     parser.add_argument('--fps', type=int, default=10, help='FPS for rendering.')
+    parser.add_argument(
+        '--cores', type=int, default=None, help='Number of cores for multiprocessing, default uses all.'
+    )
     args = parser.parse_args()
 
     if args.mode == 'render_logdir':
@@ -182,19 +194,27 @@ if __name__ == "__main__":
             logging.error(f"{log_dir} is not a directory")
             quit(1)
 
+        log_files = []
         for log_file in log_dir.iterdir():
             if not log_file.name.endswith(".json"):
                 continue
             if (log_dir / (log_file.name[:-5] + ".mp4")).exists():
                 continue
-            render_logfile(log_file, fps=args.fps)
+            log_files.append(log_file)
+
+        with mp.Pool(args.cores) as pool, tqdm(desc="Rendering games", total=len(log_files)) as pbar:
+            for log_file in log_files:
+                pool.apply_async(render_logfile, (log_file, args.fps, True), callback=lambda _: pbar.update())
+            pool.close()
+            pool.join()
+
     elif args.mode == 'replay':
         show_logfile(args.log_file)
     elif args.mode == 'tournament':
         from statistics import create_tournament_plots
 
         log_dir = Path(args.log_dir)
-        run_tournament(args.show, log_dir, args.t_config)
+        run_tournament(args.show, log_dir, args.t_config, args.cores)
         create_tournament_plots(log_dir, log_dir.parent)
     elif args.mode == 'tournament-plot':
         from statistics import create_tournament_plots

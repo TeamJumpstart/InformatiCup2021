@@ -146,7 +146,7 @@ def play_game(width, height, policies, show=False, logger=None):
         logging.exception("Error during simulation")
 
 
-def run_tournament(show, log_dir, tournament_config_file):
+def run_tournament(show, log_dir, tournament_config_file, cores=None):
     """Run a sequence of games in different combinations of given policies and log their results."""
     # load config file
     config = SourceFileLoader('tournament_config', tournament_config_file).load_module()
@@ -162,6 +162,7 @@ def run_tournament(show, log_dir, tournament_config_file):
         logger = None
 
     with mp.Pool(
+        cores,
         initializer=init_stats_lock,  # Pass the stats lock to all spawned subprocesses
         initargs=(mp.Lock(), )
     ) as pool, tqdm(desc="Simulating games", total=config.n_games) as pbar:
