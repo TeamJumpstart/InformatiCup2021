@@ -6,7 +6,6 @@ import requests
 import time
 import websockets
 import numpy as np
-from tqdm import tqdm
 from environments.spe_ed import Player
 from environments.spe_ed_env import Spe_edEnv
 
@@ -25,8 +24,9 @@ class WebsocketEnv(Spe_edEnv):
 
         self.url = url
         self.key = key
+        logging.info("Syncingserver time...")
         self.rtt, self.time_offset = measure_server_time(time_url, n_probes=10)
-        logging.info("RTT: {}, time offset: {time_offset}")
+        logging.info(f"RTT: {self.rtt}, time offset: {self.time_offset}")
 
     def reset(self):
         """Build connection, save state, and return observation."""
@@ -106,7 +106,7 @@ def measure_server_time(time_url='https://msoll.de/spe_ed_time', n_probes=10):
     time_deltas = []
     time_offsets = []
     last_server_time = None
-    for _ in tqdm(range(10), desc="Measuring roundtrip time"):
+    for _ in range(n_probes):
         data = requests.get(time_url).json()
         now = time.time()
 
