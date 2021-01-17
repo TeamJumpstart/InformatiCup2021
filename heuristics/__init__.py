@@ -7,7 +7,6 @@ from heuristics.voronoi_heuristic import VoronoiHeuristic
 from heuristics.randomprobing_heuristic import RandomProbingHeuristic
 from heuristics.pathlength_heuristic import PathLengthHeuristic
 from heuristics.composite_heuristic import CompositeHeuristic
-from heuristics.endgame_condition_heuristic import EndgameConditionHeuristic
 
 __all__ = [
     "Heuristic",
@@ -19,5 +18,4 @@ __all__ = [
     "RandomProbingHeuristic",
     "PathLengthHeuristic",
     "CompositeHeuristic",
-    "EndgameConditionHeuristic",
 ]
