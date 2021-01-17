@@ -26,7 +26,7 @@ class WebsocketEnv(Spe_edEnv):
         self.url = url
         self.key = key
         self.rtt, self.time_offset = measure_server_time(time_url, n_probes=10)
-        print("RTT: {}, time offset: {time_offset}")
+        logging.info("RTT: {}, time offset: {time_offset}")
 
     def reset(self):
         """Build connection, save state, and return observation."""
