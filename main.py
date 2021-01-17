@@ -270,7 +270,7 @@ if __name__ == "__main__":
             env = WebsocketEnv(os.environ["URL"], os.environ["KEY"], os.environ["TIME_URL"])
 
         # Create policy
-        pol = load_named_policy("Garruk")
+        pol = load_named_policy("GarrukV3")
 
         while True:
             try:
