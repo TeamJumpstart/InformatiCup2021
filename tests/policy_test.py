@@ -20,22 +20,6 @@ class TestCirclePolicy(unittest.TestCase):
         run_policy(env, pol)
 
 
-class TestFutureStepsPolicy(unittest.TestCase):
-    def test_execution(self):
-        """Executing the policy should not throw any error."""
-        env = SimulatedSpe_edEnv(5, 5, [policies.FutureStepsPolicy() for _ in range(5)])
-        pol = policies.FutureStepsPolicy()
-
-        run_policy(env, pol)
-
-    def test_execution_dynamic(self):
-        """Executing the policy should not throw any error."""
-        env = SimulatedSpe_edEnv(5, 5, [policies.FutureStepsPolicy(dynamic=True) for _ in range(5)])
-        pol = policies.FutureStepsPolicy(dynamic=True)
-
-        run_policy(env, pol)
-
-
 class TestMazeWalkerPolicy(unittest.TestCase):
     def test_execution(self):
         """Executing the policy should not throw any error."""

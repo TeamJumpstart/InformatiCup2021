@@ -54,18 +54,21 @@ class WebsocketEnv(Spe_edEnv):
         """Wait for received game state and save state in class attributes."""
         state = json.loads(await self.websocket.recv())
         self.__game_state = state
-        deadline = datetime.strptime(state['deadline'], "%Y-%m-%dT%H:%M:%S%z").timestamp() + self.time_offset
-        available_time = deadline - time.time()
+        self.done = not state["running"]
+
+        if not self.done:
+            deadline = datetime.strptime(state['deadline'], "%Y-%m-%dT%H:%M:%S%z").timestamp() + self.time_offset
+            available_time = deadline - time.time()
+
         self.players = [Player.from_json(player_id, player_data) for player_id, player_data in state["players"].items()]
         self.width = state["width"]
         self.height = state["height"]
         self.cells = np.array(state["cells"])
         self.controlled_player = [player for player in self.players if int(player.player_id) == state["you"]][0]
-        self.done = not state["running"]
 
         logging.info(
-            f"Client received state (active={self.controlled_player.active}, running={state['running']}, " +
-            f"time={available_time:.02f})"
+            f"Client received state (active={self.controlled_player.active}, running={not self.done}" +
+            (f", time={available_time:.02f})" if not self.done else ")")
         )
 
         if self.done:  # Close connection if done
