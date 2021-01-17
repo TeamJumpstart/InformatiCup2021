@@ -6,7 +6,7 @@ import numpy as np
 
 class RegionHeuristic(Heuristic):
     """TODO."""
-    def __init__(self, closing_iterations=0, include_opponent_regions=True):
+    def __init__(self, closing_iterations=0, opening_iterations=0, include_opponent_regions=True):
         """Initialize RegionHeuristic.
 
         Args:
@@ -16,12 +16,14 @@ class RegionHeuristic(Heuristic):
         """
         self.closing_iterations = closing_iterations
         self.include_opponent_regions = include_opponent_regions
+        self.opening_iterations = opening_iterations
 
     def score(self, cells, player, opponents, rounds, deadline):
         """Compute the relative size of the region we're in."""
         # close all 1 cell wide openings aka "articulating points"
-        if self.closing_iterations:
+        if self.closing_iterations or self.opening_iterations:
             cells = morphology.binary_closing(cells, iterations=self.closing_iterations)
+            cells = morphology.binary_closing(cells, iterations=self.opening_iterations)
 
         players = [player] + opponents
 
