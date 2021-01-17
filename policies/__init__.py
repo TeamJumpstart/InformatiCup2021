@@ -8,12 +8,14 @@ from policies.circle_policy import CirclePolicy
 from policies.heuristic_policy import HeuristicPolicy
 from policies.endgame_policy import EndgamePolicy
 from policies.conditional_policy import ConditionalPolicy
+from policies.maximin_search import Maximin_SearchPolicy
 
 __all__ = [
     "Policy",
     "load_named_policy",
     "ActionSearchPolicy",
     "MazeWalkerPolicy",
+    "Maximin_SearchPolicy",
     "RandomPolicy",
     "ScriptedPolicy",
     "SpiralPolicy",
