@@ -57,8 +57,8 @@ class WebsocketEnv(Spe_edEnv):
         self.done = not state["running"]
 
         if not self.done:
-            deadline = datetime.strptime(state['deadline'], "%Y-%m-%dT%H:%M:%S%z").timestamp() + self.time_offset
-            self.time_limit = deadline - time.time()
+            self.deadline = datetime.strptime(state['deadline'], "%Y-%m-%dT%H:%M:%S%z").timestamp() + self.time_offset
+            self.time_limit = self.deadline - time.time()
 
         self.players = [Player.from_json(player_id, player_data) for player_id, player_data in state["players"].items()]
         self.width = state["width"]
@@ -87,7 +87,8 @@ class WebsocketEnv(Spe_edEnv):
     async def send_action(self, action):
         """Wait for send action."""
         await self.websocket.send(json.dumps({"action": action}))
-        logging.info(f"Client sent action {action}")
+        elapsed_time = time.time() + self.time_limit - self.deadline
+        logging.info(f"Client sent action {action}, took {elapsed_time:.02f}s ({elapsed_time/self.time_limit:.02%})")
 
     def game_state(self):
         """Get current game state as dict."""
