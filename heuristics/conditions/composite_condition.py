@@ -30,7 +30,6 @@ class CompositeCondition(Condition):
             score = self.logical_op(
                 score, self.compare_op(condition.score(cells, player, opponents, rounds), threshold)
             )
-
         return score
 
     def __str__(self):

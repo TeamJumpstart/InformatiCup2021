@@ -8,7 +8,7 @@ class OpponentsInPlayerRegionCondition(Condition):
     """Returns number of opponents in the players region."""
     def __init__(self, closing=0):
         """Initialize OpponentsInPlayerRegionCondition. """
-        self.closing = closing
+        self.closing_iterations = closing
 
     def score(self, cells, player, opponents, rounds):
         """Return number of opponents in own region."""
@@ -30,7 +30,8 @@ class OpponentsInPlayerRegionCondition(Condition):
         # Get the region each player is in
         regions = np.array([labelled[p.y, p.x] for p in players])
 
-        return np.sum(regions == player.player_id)
+        # return number of opponents
+        return np.sum(regions == regions[0]) - 1
 
     def __str__(self):
         """Get readable representation."""
