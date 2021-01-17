@@ -1,3 +1,4 @@
+import time
 from policies.policy import Policy
 
 
@@ -34,12 +35,14 @@ class ConditionalPolicy(Policy):
                     f"Number of conditions {str(conditions)} does mot match number of thresholds {str(thresholds)}."
                 )
 
-    def act(self, cells, player, opponents, rounds):
+    def act(self, cells, player, opponents, rounds, deadline):
         """Execute the first policy, whose condition satisfies its threshold."""
         for policy, condition, threshold in zip(self.policies, self.conditions, self.thresholds):
+            if time.time() >= deadline:  # Run fallback policy
+                break
             if condition.score(cells, player, opponents, rounds) >= threshold:
-                return policy.act(cells, player, opponents, rounds)
-        return self.policies[-1].act(cells, player, opponents, rounds)
+                return policy.act(cells, player, opponents, rounds, deadline)
+        return self.policies[-1].act(cells, player, opponents, rounds, deadline)
 
     def __repr__(self):
         """Get exact representation."""

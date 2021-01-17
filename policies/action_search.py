@@ -19,7 +19,7 @@ class ActionSearchPolicy(Policy):
         self.depth_limit = depth_limit
         self.expanded_node_limit = expanded_node_limit
 
-    def act(self, cells, player, opponents, rounds):
+    def act(self, cells, player, opponents, rounds, deadline):
         """Search action sequence based on heuristic scores."""
         states = PriorityQueue()
         states.put((0, [], Spe_edSimulator(cells, [player], rounds)))  # Current state as inital

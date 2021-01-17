@@ -15,7 +15,7 @@ class ScriptedPolicy(Policy):
         """
         self.actions = actions
 
-    def act(self, cells, player, opponents, rounds):
+    def act(self, cells, player, opponents, rounds, deadline):
         """Choose action according to plan."""
         if rounds - 1 < len(self.actions):
             return self.actions[rounds - 1]

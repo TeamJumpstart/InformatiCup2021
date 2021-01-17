@@ -68,7 +68,7 @@ class TournamentLogger():
 
 class TournamentEnv(SimulatedSpe_edEnv):
     """TODO."""
-    def __init__(self, width, height, policies, seed=None):
+    def __init__(self, width, height, policies, seed=None, time_limit=5):
         """Initialize TournamentEnv.
 
         Args:
@@ -76,7 +76,7 @@ class TournamentEnv(SimulatedSpe_edEnv):
             policies: TODO
             seed: TODO
         """
-        SimulatedSpe_edEnv.__init__(self, width, height, policies[1:])
+        SimulatedSpe_edEnv.__init__(self, width, height, policies[1:], time_limit=time_limit)
         self.policies = policies
         self.execution_times = {str(pol): [] for pol in policies}
 
@@ -96,6 +96,7 @@ class TournamentEnv(SimulatedSpe_edEnv):
 
         # Perform simulation step
         _, _, self.rounds, _ = simulate(self.cells, self.players, self.rounds, actions)
+        self.deadline = time.time() + self.time_limit
 
         done = sum(1 for p in self.players if p.active) < 2
         if done:

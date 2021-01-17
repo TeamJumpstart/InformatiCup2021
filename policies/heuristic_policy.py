@@ -23,7 +23,7 @@ class HeuristicPolicy(Policy):
         self.occupancy_map_depth = occupancy_map_depth
         self.actions = spe_ed.actions if actions is None else actions
 
-    def act(self, cells, player, opponents, rounds):
+    def act(self, cells, player, opponents, rounds, deadline):
         """Chooses action based on weighted heuristic scores."""
         scores = np.zeros(len(self.actions), dtype=np.float32)
         if self.occupancy_map_depth > 0:  # Only compute occupancy if required

@@ -1,3 +1,4 @@
+import time
 import numpy as np
 from environments.spe_ed import Player, directions
 from environments.spe_ed_env import Spe_edEnv
@@ -49,11 +50,12 @@ def simulate(cells, players, rounds, actions):
 
 
 class SimulatedSpe_edEnv(Spe_edEnv):
-    def __init__(self, width, height, opponent_policies, seed=None):
+    def __init__(self, width, height, opponent_policies, seed=None, time_limit=5):
         Spe_edEnv.__init__(self, width, height)
 
         self.opponent_policies = opponent_policies
         self.seed(seed)
+        self.time_limit = time_limit
 
     def step(self, action):
         # Gather actions for all players (do this before game state changes)
@@ -68,6 +70,7 @@ class SimulatedSpe_edEnv(Spe_edEnv):
 
         # Perform simulation step
         _, _, self.rounds, _ = simulate(self.cells, self.players, self.rounds, actions)
+        self.deadline = time.time() + self.time_limit
 
         done = sum(1 for p in self.players if p.active) < 2
         reward = 1 if done and self.controlled_player.active else 0
@@ -105,6 +108,7 @@ class SimulatedSpe_edEnv(Spe_edEnv):
                 )
             )
         self.controlled_player = self.players[0]  # Control first player
+        self.deadline = time.time() + self.time_limit
 
         return self._get_obs(self.controlled_player)
 

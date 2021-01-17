@@ -10,7 +10,7 @@ class SpiralPolicy(Policy):
         """Initialize MazeWalkerPolicy."""
         self.clockwise = True
 
-    def act(self, cells, player, opponents, round):
+    def act(self, cells, player, opponents, round, deadline):
         """TODO."""
         # directions - relative to player direction
         forward = player.direction

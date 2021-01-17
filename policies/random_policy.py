@@ -23,7 +23,7 @@ class RandomPolicy(Policy):
             raise ValueError(f"Number of probabilities {p} does mot match number of actions {actions}")
         self.p = p
 
-    def act(self, cells, player, opponents, rounds):
+    def act(self, cells, player, opponents, rounds, deadline):
         """Choose action randomly."""
         action = self.rng.choice(actions, p=self.p)
 

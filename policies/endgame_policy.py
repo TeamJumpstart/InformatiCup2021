@@ -130,7 +130,7 @@ class EndgamePolicy(Policy):
         """
         self.actions = [a for a in spe_ed.actions if a != "speed_up"] if actions is None else actions
 
-    def act(self, cells, player, opponents, rounds):
+    def act(self, cells, player, opponents, rounds, deadline):
         """TODO."""
         env = Spe_edSimulator(cells, [player], rounds)
         remaining_actions = self.actions

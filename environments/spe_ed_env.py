@@ -69,7 +69,8 @@ class Spe_edEnv(gym.Env):
         occupancy.setflags(write=False)  # Prevent accidentally writing
         you = player
         opponents = [p for p in self.players if p.active and p.player_id != player.player_id]
-        return Cells(occupancy), you, opponents, self.rounds
+        deadline = self.deadline - 0.5  # Add safety margin of 0.5s
+        return Cells(occupancy), you, opponents, self.rounds, deadline
 
     def game_state(self):
         """Get current game state as dict."""

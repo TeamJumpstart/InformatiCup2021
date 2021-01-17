@@ -6,7 +6,7 @@ from importlib.machinery import SourceFileLoader
 class Policy(ABC):
     """Abstract base class for all policies."""
     @abstractmethod
-    def act(self, cells, you, opponents, rounds):
+    def act(self, cells, you, opponents, rounds, deadline):
         """Produce an action for a given game state.
 
         Args:
@@ -14,7 +14,7 @@ class Policy(ABC):
             you: Controlled player
             opponents: List of other active players
             rounds: Number of this round. Starts with 1, thus `rounds % 6 == 0` indicates a jump.
-
+            deadline: A deadline after which the policy must return immediately.
         Returns:
             Selected action, one of `environments.spe_ed.directions`
         """
