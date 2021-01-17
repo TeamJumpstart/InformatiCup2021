@@ -12,7 +12,7 @@ class ConditionalPolicy(Policy):
 
         Args:
             policies: List of 'Policy's. Provide at least one policy to execute.
-            conditions: List of 'Heuristic's. Should be a list with lenght one less than policies.
+            conditions: List of 'Conditions's. Should be a list with lenght one less than policies.
             thresholds: List of floats. Length should match conditions.
         """
         self.policies = policies
