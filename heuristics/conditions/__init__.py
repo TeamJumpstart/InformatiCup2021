@@ -11,4 +11,5 @@ __all__ = [
     "RoundsCondition",
     "OpponentsInPlayerRegionCondition",
     "PlayerInBiggestRegionCondition",
+    "OccupiedCellsCondition",
 ]
