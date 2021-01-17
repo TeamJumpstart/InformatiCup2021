@@ -19,7 +19,8 @@ docker run -e URL="wss://msoll.de/spe_ed" -e KEY="your_key" spe_ed
 This will start a websocket client, that connects to the server and selects an action, whenever a new state is transmitted by the server.
 
 ```
-usage: main.py [-h] [--show] [--render-file RENDER_FILE] [--sim] [--log-file LOG_FILE] [--log-dir LOG_DIR] [--t-config T_CONFIG] [--upload] [--fps FPS] [{play,replay,render_logdir,plot,tournament,tournament-plot}]
+usage: main.py [-h] [--show] [--render-file RENDER_FILE] [--sim] [--log-file LOG_FILE] [--log-dir LOG_DIR] [--t-config T_CONFIG] [--upload] [--fps FPS] [--cores CORES]
+               [{play,replay,render_logdir,plot,tournament,tournament-plot}]
 
 spe_ed
 
@@ -35,9 +36,10 @@ optional arguments:
   --log-file LOG_FILE   Path to a log file, used to load and replay games.
   --log-dir LOG_DIR     Directory for storing or retrieving logs.
   --t-config T_CONFIG   Path of the tournament config file containing which settings to run.
-  --upload              Upload generated log to a cloud server.
-  --fps FPS             FramesPerSecond used for rendering.
-  ```
+  --upload              Upload generated log to cloud server.
+  --fps FPS             FPS for rendering.
+  --cores CORES         Number of cores for multiprocessing, default uses all.
+```
 
 ### Extensions
 
