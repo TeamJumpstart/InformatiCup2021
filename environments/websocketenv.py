@@ -1,25 +1,32 @@
+import asyncio
+from datetime import datetime, timedelta
+import json
+import logging
+import requests
+import time
+import websockets
 import numpy as np
+from tqdm import tqdm
 from environments.spe_ed import Player
 from environments.spe_ed_env import Spe_edEnv
-import asyncio
-import json
-import websockets
-import logging
 
 
 class WebsocketEnv(Spe_edEnv):
     """TODO."""
-    def __init__(self, url, key):
+    def __init__(self, url, key, time_url):
         """Initialize WebsocketEnv.
 
         Args:
             url: Websocket URL of the server
             key: API key
+            time_url: URL of time server
         """
         Spe_edEnv.__init__(self, 40, 40)  # Dummy dimensions
 
         self.url = url
         self.key = key
+        self.rtt, self.time_offset = measure_server_time(time_url, n_probes=10)
+        print("RTT: {}, time offset: {time_offset}")
 
     def reset(self):
         """Build connection, save state, and return observation."""
@@ -47,7 +54,8 @@ class WebsocketEnv(Spe_edEnv):
         """Wait for received game state and save state in class attributes."""
         state = json.loads(await self.websocket.recv())
         self.__game_state = state
-
+        deadline = datetime.strptime(state['deadline'], "%Y-%m-%dT%H:%M:%S%z").timestamp() + self.time_offset
+        available_time = deadline - time.time()
         self.players = [Player.from_json(player_id, player_data) for player_id, player_data in state["players"].items()]
         self.width = state["width"]
         self.height = state["height"]
@@ -55,7 +63,10 @@ class WebsocketEnv(Spe_edEnv):
         self.controlled_player = [player for player in self.players if int(player.player_id) == state["you"]][0]
         self.done = not state["running"]
 
-        logging.info(f"Client received state (active={self.controlled_player.active}, running={state['running']})")
+        logging.info(
+            f"Client received state (active={self.controlled_player.active}, running={state['running']}, " +
+            f"time={available_time:.02f})"
+        )
 
         if self.done:  # Close connection if done
             await self.websocket.close()
@@ -78,3 +89,32 @@ class WebsocketEnv(Spe_edEnv):
     def game_state(self):
         """Get current game state as dict."""
         return self.__game_state
+
+
+def measure_server_time(time_url='https://msoll.de/spe_ed_time', n_probes=10):
+    """Measures roundtriptime time time diffference between local time and server time.
+
+    Transform server time to local time by adding `time_offset`.
+
+    Returns:
+        rtt: Roundtrip time is seconds (includign TLS handshake)
+        time_offset: Difference from server time to local time
+    """
+    time_deltas = []
+    time_offsets = []
+    last_server_time = None
+    for _ in tqdm(range(10), desc="Measuring roundtrip time"):
+        data = requests.get(time_url).json()
+        now = time.time()
+
+        # Parse servetime
+        server_time = (
+            datetime.strptime(data['time'], "%Y-%m-%dT%H:%M:%S%z") + timedelta(milliseconds=int(data['milliseconds']))
+        ).timestamp()
+        if last_server_time is not None:
+            time_deltas.append((server_time - last_server_time))
+
+        time_offsets.append(now - server_time)
+        last_server_time = server_time
+
+    return np.quantile(time_deltas, .9), np.mean(time_offsets)

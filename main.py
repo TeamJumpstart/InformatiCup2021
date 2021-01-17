@@ -263,7 +263,7 @@ if __name__ == "__main__":
         if args.sim:
             env = SimulatedSpe_edEnv(40, 40, [HeuristicPolicy(PathLengthHeuristic(10)) for _ in range(5)])
         else:
-            env = WebsocketEnv(os.environ["URL"], os.environ["KEY"])
+            env = WebsocketEnv(os.environ["URL"], os.environ["KEY"], os.environ["TIME_URL"])
 
         # Create policy
         pol = load_named_policy("Adam")
