@@ -58,7 +58,7 @@ class WebsocketEnv(Spe_edEnv):
 
         if not self.done:
             deadline = datetime.strptime(state['deadline'], "%Y-%m-%dT%H:%M:%S%z").timestamp() + self.time_offset
-            available_time = deadline - time.time()
+            self.time_limit = deadline - time.time()
 
         self.players = [Player.from_json(player_id, player_data) for player_id, player_data in state["players"].items()]
         self.width = state["width"]
@@ -68,7 +68,7 @@ class WebsocketEnv(Spe_edEnv):
 
         logging.info(
             f"Client received state (active={self.controlled_player.active}, running={not self.done}" +
-            (f", time={available_time:.02f})" if not self.done else ")")
+            (f", time={self.time_limit:.02f})" if not self.done else ")")
         )
 
         if self.done:  # Close connection if done

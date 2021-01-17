@@ -39,6 +39,7 @@ def play(env, pol, show=False, render_file=None, fps=10, logger=None, silent=Tru
         )
     if logger is not None:  # Log initial state
         states = [env.game_state()]
+        time_limits = []
 
     done = False
     with tqdm(disable=silent) as pbar:
@@ -55,10 +56,12 @@ def play(env, pol, show=False, render_file=None, fps=10, logger=None, silent=Tru
                 )
             if logger is not None:
                 states.append(env.game_state())
+                if hasattr(env, "time_limit"):
+                    time_limits.append(env.time_limit)
             pbar.update()
 
     if logger is not None:
-        logger.log(states)
+        logger.log(states, time_limits)
     if render_file is not None:
         writer.close()
     if show:

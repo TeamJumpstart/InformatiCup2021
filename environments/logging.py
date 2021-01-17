@@ -3,6 +3,7 @@ import json
 import logging
 from pathlib import Path
 import owncloud
+import pandas as pd
 
 
 class Spe_edLogger():
@@ -12,7 +13,7 @@ class Spe_edLogger():
 
         self.callbacks = callbacks
 
-    def log(self, states):
+    def log(self, states, time_limits):
         """Handle the logging of a completed game.
 
         Args:
@@ -21,6 +22,10 @@ class Spe_edLogger():
         log_file = self.log_dir / f"{datetime.now():%Y%m%d-%H%M%S}.json"
         with open(log_file, "w") as f:
             json.dump(states, f, separators=(',', ':'))
+
+        if len(time_limits) > 0:
+            time_file = self.log_file.parent / {self.log_file.name[:-5] + ".csv"}
+            pd.DataFrame([time_limits], columns=["time_limit"]).to_csv(time_file, index=False)
 
         # Handle callbacks
         for callback in self.callbacks:
