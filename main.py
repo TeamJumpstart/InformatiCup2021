@@ -197,6 +197,7 @@ if __name__ == "__main__":
     parser.add_argument(
         '--cores', type=int, default=None, help='Number of cores for multiprocessing, default uses all.'
     )
+    parser.add_argument('--repeat', type=bool, default=False, help='Play endlessly.')
     args = parser.parse_args()
 
     if args.mode == 'render_logdir':
@@ -271,8 +272,6 @@ if __name__ == "__main__":
         # Create policy
         pol = load_named_policy("Adam")
 
-        repeat = not args.show and args.render_file is None
-
         while True:
             try:
                 play(
@@ -282,11 +281,11 @@ if __name__ == "__main__":
                     render_file=args.render_file,
                     fps=args.fps,
                     logger=logger,
-                    silent=not repeat
+                    silent=args.repeat
                 )
             except Exception:
                 logging.exception("Exception during play")
                 time.sleep(60)  # Sleep for a bit and try again
 
-            if not repeat:
+            if not args.repeat:
                 break
