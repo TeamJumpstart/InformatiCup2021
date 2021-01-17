@@ -1,3 +1,4 @@
+import time
 from heuristics.heuristic import Heuristic
 import numpy as np
 from environments.simulator import Spe_edSimulator
@@ -20,7 +21,7 @@ class RandomProbingHeuristic(Heuristic):
         self.n_probes = n_probes
         self.rng = np.random.default_rng(seed)
 
-    def score(self, cells, player, opponents, rounds):
+    def score(self, cells, player, opponents, rounds, deadline):
         """Perform one recursive probe run with random actions and returns the number of steps survived."""
         def perform_probe_run(env):
             """Simulate the given environment for maximum of `n_steps` with valid random steps or
@@ -44,9 +45,12 @@ class RandomProbingHeuristic(Heuristic):
         for _ in range(self.n_probes):
             # perform a single probe run
             env = perform_probe_run(Spe_edSimulator(cells, [player], rounds))
-            probe_score = self.heuristic.score(env.cells, env.players[0], opponents, env.rounds)
+            probe_score = self.heuristic.score(env.cells, env.players[0], opponents, env.rounds, deadline)  # TODO
             # remember only the score of the best probe run
             score = max(probe_score, score)
+
+            if time.time() >= deadline:  # Check deadline
+                break
 
         # return the board state score value
         return score

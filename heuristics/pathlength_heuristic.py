@@ -1,3 +1,4 @@
+import time
 from heuristics.heuristic import Heuristic
 from environments.simulator import Spe_edSimulator
 
@@ -10,7 +11,7 @@ ordered_actions = ("change_nothing", "turn_left", "turn_right", "slow_down", "sp
 
 class PathLengthHeuristic(Heuristic):
     """Performs a random probe run and evaluates length of the path."""
-    def __init__(self, n_steps, expanded_node_limit=1000):
+    def __init__(self, n_steps):
         """Initialize PathLengthHeuristic.
 
         Args:
@@ -18,9 +19,8 @@ class PathLengthHeuristic(Heuristic):
             expanded_node_limit: Threshold to prevent long execution times
         """
         self.n_steps = n_steps
-        self.expanded_node_limit = expanded_node_limit
 
-    def score(self, cells, player, opponents, rounds):
+    def score(self, cells, player, opponents, rounds, deadline):
         """Perform a DFS to seach the longest path reachable."""
         expanded = 0
 
@@ -29,7 +29,7 @@ class PathLengthHeuristic(Heuristic):
             nonlocal expanded
 
             path_length = sim.rounds - rounds
-            if path_length >= self.n_steps or expanded > self.expanded_node_limit:  # Maximum search depth reached
+            if path_length >= self.n_steps or time.time() > deadline:  # Maximum search depth reached
                 return path_length  # Early out
 
             for action in ordered_actions:
@@ -57,5 +57,4 @@ class PathLengthHeuristic(Heuristic):
         """Get readable representation."""
         return "PathLenghtHeuristic(" + \
             f"n_steps={self.n_steps}," + \
-            f"expanded_node_limit={self.expanded_node_limit}," + \
             ")"

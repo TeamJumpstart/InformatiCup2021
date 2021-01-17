@@ -1,3 +1,4 @@
+import time
 from heuristics.heuristic import Heuristic
 import numpy as np
 
@@ -19,12 +20,16 @@ class CompositeHeuristic(Heuristic):
         else:
             self.weights = weights / np.sum(weights)
 
-    def score(self, cells, player, opponents, rounds):
+    def score(self, cells, player, opponents, rounds, deadline):
         """Compute the combined heuristic score."""
-        return sum(
-            weight * heuristic.score(cells, player, opponents, rounds)
-            for weight, heuristic in zip(self.weights, self.heuristics)
-        )
+        score = 0
+        for weight, heuristic in zip(self.weights, self.heuristics):
+            score += weight * heuristic.score(cells, player, opponents, rounds, deadline)
+
+            if time.time() >= deadline:  # Check deadline
+                break
+
+        return score
 
     def __str__(self):
         """Get readable representation."""

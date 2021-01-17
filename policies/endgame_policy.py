@@ -1,3 +1,4 @@
+import time
 import numpy as np
 from policies.policy import Policy
 from environments.simulator import Spe_edSimulator
@@ -73,7 +74,7 @@ def computeOccupiedCells(cells, players):
 def computePathLength(cells, players):
     """Evaluates the 'PathLengthHeuristic' with constant parameters."""
     path_length_heuristic = PathLengthHeuristic(n_steps=200)
-    return path_length_heuristic.score(cells, players[0], [], 0)
+    return path_length_heuristic.score(cells, players[0], [], 0, deadline=time.time + 0.1)  # TODO Magic number
 
 
 def tiebreakerFunc(env, remaining_actions, score_func=computeRegionSize, eval_func=max, morph_kwargs={}):

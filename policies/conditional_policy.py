@@ -40,7 +40,7 @@ class ConditionalPolicy(Policy):
         for policy, condition, threshold in zip(self.policies, self.conditions, self.thresholds):
             if time.time() >= deadline:  # Run fallback policy
                 break
-            if condition.score(cells, player, opponents, rounds) >= threshold:
+            if condition.score(cells, player, opponents, rounds, deadline) >= threshold:
                 return policy.act(cells, player, opponents, rounds, deadline)
         return self.policies[-1].act(cells, player, opponents, rounds, deadline)
 

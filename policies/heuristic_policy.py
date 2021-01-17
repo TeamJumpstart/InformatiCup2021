@@ -1,3 +1,4 @@
+import time
 from math import prod
 import numpy as np
 from policies.policy import Policy
@@ -35,7 +36,10 @@ class HeuristicPolicy(Policy):
             next_state = cur_state.step([action])
             # evaluate the heuristic, if the player is active
             if next_state.player.active:
-                scores[a] = self.heuristic.score(next_state.cells, next_state.player, opponents, next_state.rounds)
+                sub_deadline = time.time() + (deadline - time.time()) / len(self.actions)
+                scores[a] = self.heuristic.score(
+                    next_state.cells, next_state.player, opponents, next_state.rounds, sub_deadline
+                )
                 if self.occupancy_map_depth > 0:  # Factor in occupancy of newly occupied cells
                     scores[a] *= prod(1 - occ_map[y, x] for x, y in next_state.changed)
 

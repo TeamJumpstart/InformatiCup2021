@@ -1,3 +1,4 @@
+import time
 import unittest
 from numpy.testing import assert_array_equal
 import heuristics
@@ -17,7 +18,7 @@ def empty_board_1player():
     player = spe_ed.Player(player_id=1, x=2, y=2, direction=spe_ed.directions[0], speed=1, active=True)
     opponents = []
     rounds = 0
-    return (cells, player, opponents, rounds)
+    return (cells, player, opponents, rounds, time.time() + 10)
 
 
 def empty_board_2players():
@@ -32,7 +33,7 @@ def empty_board_2players():
     player = spe_ed.Player(player_id=1, x=4, y=4, direction=spe_ed.directions[3], speed=1, active=True)
     opponents = [spe_ed.Player(player_id=2, x=0, y=0, direction=spe_ed.directions[1], speed=1, active=True)]
     rounds = 0
-    return (cells, player, opponents, rounds)
+    return (cells, player, opponents, rounds, time.time() + 10)
 
 
 def empty_board_3players():
@@ -50,7 +51,7 @@ def empty_board_3players():
         spe_ed.Player(player_id=3, x=0, y=4, direction=spe_ed.directions[1], speed=1, active=True)
     ]
     rounds = 0
-    return (cells, player, opponents, rounds)
+    return (cells, player, opponents, rounds, time.time() + 10)
 
 
 def default_round1_board():
@@ -71,7 +72,7 @@ def default_round1_board():
         spe_ed.Player(player_id=2, x=0, y=1, direction=spe_ed.directions[1], speed=1, active=True)
     ]  # pos: 0/1 direction: down
     rounds = 1
-    return (cells, player, opponents, rounds)
+    return (cells, player, opponents, rounds, time.time() + 10)
 
 
 def default_almost_full_board():
@@ -92,13 +93,13 @@ def default_almost_full_board():
         spe_ed.Player(player_id=2, x=0, y=2, direction=spe_ed.directions[3], speed=1, active=True)
     ]  # pos:0/2, direction: up
     rounds = 30
-    return (cells, player, opponents, rounds)
+    return (cells, player, opponents, rounds, time.time() + 10)
 
 
 class TestRandomHeuristic(unittest.TestCase):
     def test_random_output(self):
         """The heuristic should return a value between 0 and 1, independently of the input."""
-        score = heuristics.RandomHeuristic().score(None, None, None, None)
+        score = heuristics.RandomHeuristic().score(None, None, None, None, None)
         self.assertGreaterEqual(score, 0)
         self.assertLessEqual(score, 1)
 
@@ -215,13 +216,13 @@ class TestPathLengthHeuristic(unittest.TestCase):
         opponents = []
         rounds = 0
 
-        score = heuristics.PathLengthHeuristic(n_steps=1).score(cells, player, opponents, rounds)
+        score = heuristics.PathLengthHeuristic(n_steps=1).score(cells, player, opponents, rounds, time.time() + 10)
         self.assertEqual(score, 1.0)
 
-        score = heuristics.PathLengthHeuristic(n_steps=2).score(cells, player, opponents, rounds)
+        score = heuristics.PathLengthHeuristic(n_steps=2).score(cells, player, opponents, rounds, time.time() + 10)
         self.assertEqual(score, 1.0)
 
-        score = heuristics.PathLengthHeuristic(n_steps=3).score(cells, player, opponents, rounds)
+        score = heuristics.PathLengthHeuristic(n_steps=3).score(cells, player, opponents, rounds, time.time() + 10)
         self.assertEqual(score, 2 / 3)
 
     def test_small_board2(self):
@@ -234,13 +235,13 @@ class TestPathLengthHeuristic(unittest.TestCase):
         opponents = []
         rounds = 0
 
-        score = heuristics.PathLengthHeuristic(n_steps=5).score(cells, player, opponents, rounds)
+        score = heuristics.PathLengthHeuristic(n_steps=5).score(cells, player, opponents, rounds, time.time() + 10)
         self.assertEqual(score, 1.0)
 
-        score = heuristics.PathLengthHeuristic(n_steps=6).score(cells, player, opponents, rounds)
+        score = heuristics.PathLengthHeuristic(n_steps=6).score(cells, player, opponents, rounds, time.time() + 10)
         self.assertEqual(score, 1.0)
 
-        score = heuristics.PathLengthHeuristic(n_steps=7).score(cells, player, opponents, rounds)
+        score = heuristics.PathLengthHeuristic(n_steps=7).score(cells, player, opponents, rounds, time.time() + 10)
         self.assertEqual(score, 6 / 7)
 
     def test_empty_board(self):

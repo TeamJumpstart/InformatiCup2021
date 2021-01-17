@@ -17,7 +17,7 @@ class RegionHeuristic(Heuristic):
         self.closing_iterations = closing_iterations
         self.include_opponent_regions = include_opponent_regions
 
-    def score(self, cells, player, opponents, rounds):
+    def score(self, cells, player, opponents, rounds, deadline):
         """Compute the relative size of the region we're in."""
         # close all 1 cell wide openings aka "articulating points"
         if self.closing_iterations:

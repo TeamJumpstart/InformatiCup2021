@@ -38,7 +38,7 @@ class ActionSearchPolicy(Policy):
                 actions = prev_actions + [action]
 
                 # Evaluate heuristic
-                score = self.heuristic.score(state.cells, state.player, opponents, state.rounds)
+                score = self.heuristic.score(state.cells, state.player, opponents, state.rounds, deadline)
                 data.append((actions, score))
 
                 actions_scores.append((actions, score))

@@ -1,3 +1,4 @@
+import time
 from heuristics.heuristic import Heuristic
 import numpy as np
 from scipy.ndimage import morphology
@@ -18,7 +19,7 @@ class VoronoiHeuristic(Heuristic):
         self.opening_iterations = opening_iterations
         self.minimize_opponents = minimize_opponents
 
-    def score(self, cells, player, opponents, rounds):
+    def score(self, cells, player, opponents, rounds, deadline):
         """Computes an approximation of the geodesic voronoi diagram using binary dilation."""
         unmodified_cells = cells
         # open all {self.opening_iterations} wide walls aka "articulating points" to account for jumps
@@ -42,6 +43,9 @@ class VoronoiHeuristic(Heuristic):
             xor = np.sum(voronoi, axis=0) > 1  # compute overlaps for every cell
             mask[xor] = 0  # mask out all overlaps
             voronoi[:, xor] = 0  # reset all overlapping cell borders
+
+            if time.time() >= deadline:  # Check deadline
+                break
 
         if self.opening_iterations:
             voronoi[:, unmodified_cells > 0] = 0  # reset all occupied cells

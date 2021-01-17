@@ -8,7 +8,7 @@ class OpponentDistanceHeuristic(Heuristic):
         """Initialize OpponentDistanceHeuristic."""
         self.dist_threshold = dist_threshold
 
-    def score(self, cells, player, opponents, rounds):
+    def score(self, cells, player, opponents, rounds, deadline):
         """Computes the distance to all players."""
         min_opponent_dist = min(
             min(np.sum(np.abs((player.position - o.position))) for o in opponents if o.active), self.dist_threshold

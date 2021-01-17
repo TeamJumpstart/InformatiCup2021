@@ -55,7 +55,7 @@ class EndgameConditionHeuristic(Heuristic):
     def __init__(self):
         """Initialize EndgameConditionHeuristic."""
 
-    def score(self, cells, player, opponents, rounds):
+    def score(self, cells, player, opponents, rounds, deadline):
         """Evaluates the given state to decide if we are in the endgame.
 
         Computes the number of opponents in the current cell, as well as once with closing and opening operations.
