@@ -11,7 +11,7 @@ ordered_actions = ("change_nothing", "turn_left", "turn_right", "slow_down", "sp
 
 class PathLengthHeuristic(Heuristic):
     """Performs a random probe run and evaluates length of the path."""
-    def __init__(self, n_steps):
+    def __init__(self, n_steps, time_limit=None):
         """Initialize PathLengthHeuristic.
 
         Args:
@@ -19,10 +19,14 @@ class PathLengthHeuristic(Heuristic):
             expanded_node_limit: Threshold to prevent long execution times
         """
         self.n_steps = n_steps
+        self.time_limit = time_limit
 
     def score(self, cells, player, opponents, rounds, deadline):
         """Perform a DFS to seach the longest path reachable."""
         expanded = 0
+
+        if self.time_limit is not None:
+            deadline = min(time.time() + self.time_limit, deadline)
 
         def _dfs(sim):
             """Depth-first search"""
@@ -57,4 +61,5 @@ class PathLengthHeuristic(Heuristic):
         """Get readable representation."""
         return "PathLenghtHeuristic(" + \
             f"n_steps={self.n_steps}," + \
+            f"time_limit={self.time_limit}," + \
             ")"
