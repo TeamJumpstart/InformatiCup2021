@@ -256,6 +256,8 @@ class SavedGame:
     def move_controlled_player_to_front(self):
         """Changes cell and player states, as if controlled player was at first position."""
         you = self.you
+        if you is None:
+            raise ValueError("The is no controlled player in this game.")
         if you != 1:
             for t in range(len(self.data)):
                 # Swap cells

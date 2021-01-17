@@ -87,7 +87,8 @@ def show_logfile(log_file, window_size=default_window_size):
         return s
 
     game = SavedGame.load(log_file)
-    game.move_controlled_player_to_front()
+    if game.you is not None:
+        game.move_controlled_player_to_front()
 
     fig = plt.figure(figsize=(window_size[0] / 100, window_size[1] / 100), dpi=100)
     ax1 = plt.subplot(1, 1, 1)
