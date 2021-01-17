@@ -56,7 +56,7 @@ def play(env, pol, show=False, render_file=None, fps=10, logger=None, silent=Tru
                 )
             if logger is not None:
                 states.append(env.game_state())
-                if hasattr(env, "time_limit"):
+                if isinstance(env, WebsocketEnv):
                     time_limits.append(env.time_limit)
             pbar.update()
 

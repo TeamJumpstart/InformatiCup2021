@@ -24,8 +24,8 @@ class Spe_edLogger():
             json.dump(states, f, separators=(',', ':'))
 
         if len(time_limits) > 0:
-            time_file = self.log_file.parent / {self.log_file.name[:-5] + ".csv"}
-            pd.DataFrame([time_limits], columns=["time_limit"]).to_csv(time_file, index=False)
+            time_file = log_file.parent / (log_file.name[:-5] + ".csv")
+            pd.DataFrame({"time_limit": time_limits}).to_csv(time_file, index=False)
 
         # Handle callbacks
         for callback in self.callbacks:
