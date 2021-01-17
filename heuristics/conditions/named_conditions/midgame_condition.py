@@ -15,12 +15,14 @@ class MidgameCondition(Condition):
         occupied_cells_percent = OccupiedCellsCondition()
 
         self.in_biggest_region_and_some_cells_occupied = CompositeCondition(
-            [in_biggest_region_opening, occupied_cells_percent], thresholds=[True, 0.25], compare_op=np.greater_equal
+            [in_biggest_region_opening, occupied_cells_percent],
+            thresholds=[True, 0.20],
+            compare_op=[np.greater_equal, np.greater_equal],
         )
 
-    def score(self, cells, player, opponents, rounds):
+    def score(self, cells, player, opponents, rounds, deadline):
         """Return if the player is in the endgame phase."""
-        return self.in_biggest_region_and_some_cells_occupied.score(cells, player, opponents, rounds)
+        return self.in_biggest_region_and_some_cells_occupied.score(cells, player, opponents, rounds, deadline)
 
     def __str__(self):
         """Get readable representation."""

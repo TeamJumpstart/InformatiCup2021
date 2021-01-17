@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 class Condition(ABC):
     """Abstract class to represent a board state condition."""
     @abstractmethod
-    def score(self, cells, player, opponents, rounds):
+    def score(self, cells, player, opponents, rounds, deadline):
         """Compute a score value for a given game state.
 
         Args:

@@ -15,20 +15,24 @@ class CompositeCondition(Condition):
         """
         self.conditions = conditions
         if thresholds is not None and len(thresholds) != len(conditions):
-            raise ValueError(f"Number of weights {thresholds} does mot match number of heuristics {conditions}")
+            raise ValueError(f"Number of thresholds {thresholds} does mot match number of conditions {conditions}")
         if thresholds is None:
             self.thresholds = np.ones(len(conditions))
         else:
             self.thresholds = thresholds
         self.logical_op = logical_op
         self.compare_op = compare_op
+        if len(thresholds) != len(compare_op):
+            raise ValueError(
+                f"Number of thresholds {thresholds} does mot match number of compare operations {compare_op}"
+            )
 
-    def score(self, cells, player, opponents, rounds):
+    def score(self, cells, player, opponents, rounds, deadline):
         """Compute the combined condition score."""
         score = True
-        for condition, threshold in zip(self.conditions, self.thresholds):
+        for condition, threshold, comp_op in zip(self.conditions, self.thresholds, self.compare_op):
             score = self.logical_op(
-                score, self.compare_op(condition.score(cells, player, opponents, rounds), threshold)
+                score, comp_op(condition.score(cells, player, opponents, rounds, deadline), threshold)
             )
         return score
 

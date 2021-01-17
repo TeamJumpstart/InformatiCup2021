@@ -4,6 +4,7 @@ from heuristics.conditions.rounds_condition import RoundsCondition
 from heuristics.conditions.opponentsinplayerregion_condition import OpponentsInPlayerRegionCondition
 from heuristics.conditions.playerinbiggestregion_condition import PlayerInBiggestRegionCondition
 from heuristics.conditions.occupiedcells_condition import OccupiedCellsCondition
+from heuristics.conditions.nearestopponentdistance_condition import NearestOpponentDistanceCondition
 
 __all__ = [
     "Condition",
@@ -12,4 +13,5 @@ __all__ = [
     "OpponentsInPlayerRegionCondition",
     "PlayerInBiggestRegionCondition",
     "OccupiedCellsCondition",
+    "NearestOpponentDistanceCondition",
 ]

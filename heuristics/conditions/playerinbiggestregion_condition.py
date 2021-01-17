@@ -15,7 +15,7 @@ class PlayerInBiggestRegionCondition(Condition):
         """
         self.opening_iterations = opening_iterations
 
-    def score(self, cells, player, opponents, rounds):
+    def score(self, cells, player, opponents, rounds, deadline):
         """Compute the size of all players regions and check if we are in the biggest one. """
         # close all 1 cell wide openings aka "articulating points"
         if self.opening_iterations:

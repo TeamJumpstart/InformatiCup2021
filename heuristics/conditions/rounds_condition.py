@@ -6,7 +6,7 @@ class RoundsCondition(Condition):
     def __init__(self):
         """Initialize RoundsCondition. """
 
-    def score(self, cells, player, opponents, rounds):
+    def score(self, cells, player, opponents, rounds, deadline):
         """Return number of rounds."""
         return rounds
 

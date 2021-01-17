@@ -10,7 +10,7 @@ class OpponentsInPlayerRegionCondition(Condition):
         """Initialize OpponentsInPlayerRegionCondition. """
         self.closing_iterations = closing
 
-    def score(self, cells, player, opponents, rounds):
+    def score(self, cells, player, opponents, rounds, deadline):
         """Return number of opponents in own region."""
 
         if self.closing_iterations:

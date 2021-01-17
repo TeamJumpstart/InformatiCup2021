@@ -7,7 +7,7 @@ class OccupiedCellsCondition(Condition):
     def __init__(self):
         """Initialize OccupiedCellsCondition. """
 
-    def score(self, cells, player, opponents, rounds):
+    def score(self, cells, player, opponents, rounds, deadline):
         """Return number of rounds."""
         return np.sum(cells) / np.prod(cells.shape)
 
