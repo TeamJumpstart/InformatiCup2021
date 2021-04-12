@@ -23,7 +23,7 @@ _cmap = ListedColormap(
 
 class Spe_edAx():
     """Matplotlib cells plot with update functionality."""
-    def __init__(self, fig, ax, cells, players):
+    def __init__(self, fig, ax, cells, players, cmap=_cmap):
         self.img = ax.imshow((cells + 1) / 7, cmap=_cmap, vmin=0, vmax=1)
         self.heads = ax.scatter([p.x for p in players], [p.y for p in players], c='white', marker='.')
 
