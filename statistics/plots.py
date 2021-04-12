@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 from pathlib import Path
 from visualization import WinRateAx
 from statistics.stats import fetch_statistics, get_win_rate, normalize_winrate
@@ -82,6 +83,37 @@ def plot_grid_size_correlation(output_file, stats, include_n_players=False):
     plt.close()
 
 
+def plot_competition(output_file, stats_dir, stats, sampling="1H", sort_types=False):
+    you_aliases = stats["you"].unique()
+    known_bots = set(pd.read_csv(stats_dir / "known_bots.csv")["known_bots"])
+
+    # Explode names
+    stats = stats[["date", "winner", "names"]].explode("names")
+
+    # Player type
+    stats["type"] = "opponent"
+    stats.loc[stats["names"].isin(known_bots), "type"] = "bot"
+    stats.loc[stats["names"].isin(you_aliases), "type"] = "we"
+
+    # Winning
+    stats["won"] = stats["winner"] == stats["names"]
+
+    plt.figure(figsize=(10, 5))
+
+    ax = sns.scatterplot(data=stats, x="date", y="names", style="type", hue="won", markers="^s", zorder=1000)  #o
+    plt.grid(zorder=-1000)
+
+    ax.get_yaxis().set_ticks([])
+    ax.set_ylabel("player name")
+    ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=6))
+    plt.tight_layout()
+
+    plt.tight_layout()
+
+    plt.savefig(output_file)
+    plt.close()
+
+
 def create_plots(log_dir, stats_file):
     # Load statistics
     stats = fetch_statistics(log_dir, stats_file)
@@ -92,6 +124,7 @@ def create_plots(log_dir, stats_file):
 
     # Create plots
     for ext in ("png", "pdf"):
+        plot_competition(plot_dir / f"competition.{ext}", stats_file.parent, stats[stats['date'] >= '2021-01-02'])
         plot_win_rate_over_time(plot_dir / f"win_rate.{ext}", stats)
         plot_n_players(plot_dir / f"n_players.{ext}", stats)
         plot_n_players(plot_dir / f"n_players_2021.{ext}", stats, cutoff_date='2021-01-01')
