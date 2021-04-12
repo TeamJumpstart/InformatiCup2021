@@ -63,6 +63,6 @@ class WinRateAx():
         line, = ax.plot(date, mean, label="win rate", c=player_colors[0])
         c = line.get_color()
         ax.fill_between(date, low, high, facecolor=c, alpha=0.25, interpolate=True, label="confidence interval")
-        ax.xaxis.set_major_locator(AutoDateLocator(maxticks=5))
+        #ax.xaxis.set_major_locator(AutoDateLocator(maxticks=6))
         ax.set_xlim(date[0], date[-1] + pd.offsets.Day(1))
         ax.set_ylim(0, 1)
