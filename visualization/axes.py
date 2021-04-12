@@ -44,7 +44,7 @@ class Spe_edAx():
 
         # Update player heads
         # Dead players don't get a head
-        self.heads.set_offsets([(p.x, p.y) if p.active else (np.nan, np.nan) for p in players])
+        self.heads.set_offsets([(p.x, p.y - .1) if p.active else (np.nan, np.nan) for p in players])
 
 
 class WinRateAx():
