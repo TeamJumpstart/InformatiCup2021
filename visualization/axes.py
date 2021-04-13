@@ -24,8 +24,9 @@ _cmap = ListedColormap(
 class Spe_edAx():
     """Matplotlib cells plot with update functionality."""
     def __init__(self, fig, ax, cells, players, cmap=_cmap):
-        self.img = ax.imshow((cells + 1) / 7, cmap=_cmap, vmin=0, vmax=1)
-        self.heads = ax.scatter([p.x for p in players], [p.y for p in players], c='white', marker='.')
+        self.img = ax.imshow((cells + 1) / 7, cmap=cmap, vmin=0, vmax=1)
+        marker_size = (0.5 * fig.get_size_inches()[1] * fig.dpi / cells.shape[0])**2
+        self.heads = ax.scatter([p.x for p in players], [p.y for p in players], c='white', marker='.', s=marker_size)
 
         # Disables ticks and tick labels
         ax.xaxis.set_visible(False)
@@ -44,7 +45,7 @@ class Spe_edAx():
 
         # Update player heads
         # Dead players don't get a head
-        self.heads.set_offsets([(p.x, p.y - .1) if p.active else (np.nan, np.nan) for p in players])
+        self.heads.set_offsets([(p.x, p.y) if p.active else (np.nan, np.nan) for p in players])
 
 
 class WinRateAx():

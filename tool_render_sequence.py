@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from tqdm import tqdm
 
-window_height = 720
+cell_size = 16
 
 cmap = ListedColormap(
     [
@@ -37,13 +37,12 @@ def render_logfile(log_file, render_dir):
     game = SavedGame.load(log_file)
     game.move_controlled_player_to_front()
 
-    fig = plt.figure(
-        figsize=(window_height * game.width / game.height / 100, window_height / 100),
-        dpi=100,
-        tight_layout=True,
-    )
+    fig = plt.figure(figsize=(game.width * cell_size / 100, game.height * cell_size / 100), dpi=100)
+
     ax = plt.subplot(1, 1, 1)
+    ax.axis('off')
     viewer = Spe_edAx(fig, ax, game.cell_states[0], game.player_states[0], cmap=cmap)
+    plt.tight_layout(pad=0)
 
     for i in tqdm(range(len(game.cell_states)), desc=f"Rendering {log_file.name}"):
         viewer.update(game.cell_states[i], game.player_states[i])
