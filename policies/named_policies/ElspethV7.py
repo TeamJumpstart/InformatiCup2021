@@ -1,13 +1,7 @@
-from policies import (
-    HeuristicPolicy,
-)
+from policies import HeuristicPolicy
 from heuristics import (
-    CompositeHeuristic,
-    PathLengthHeuristic,
-    RegionHeuristic,
-    RandomProbingHeuristic,
-    VoronoiHeuristic,
-    OpponentDistanceHeuristic,
+    CompositeHeuristic, PathLengthHeuristic, RegionHeuristic, RandomProbingHeuristic, VoronoiHeuristic,
+    OpponentDistanceHeuristic
 )
 
 pol = HeuristicPolicy(

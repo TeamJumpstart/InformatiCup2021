@@ -11,7 +11,7 @@ class MazeWalkerPolicy(Policy):
         self.hit_wall = False
 
     def act(self, cells, player, opponents, round, deadline):
-        """TODO."""
+        """Choose action."""
         def is_free(pos):
             """is_free, but relative to player position."""
             return cells.is_free(player.position + pos)

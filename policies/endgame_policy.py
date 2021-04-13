@@ -119,20 +119,17 @@ class EndgamePolicy(Policy):
     In the case we are stuck in one region and cannot interact with other players,
     it tries to maximize the number of rounds that the policy survives until filling all available space.
     An optimal or even satisfiable behavior is not guaranteed for any other circumstances.
-
-    Args:
-        actions: specifies which actions are considered at all. Default: uses all actions except 'speed_up'.
     """
     def __init__(self, actions=None):
         """Initialize endgame policy.
 
         Args:
-            actions: TODO    
+            actions: specifies which actions are considered at all. Default: uses all actions except 'speed_up'.
         """
         self.actions = [a for a in spe_ed.actions if a != "speed_up"] if actions is None else actions
 
     def act(self, cells, player, opponents, rounds, deadline):
-        """TODO."""
+        """Choose action."""
         env = Spe_edSimulator(cells, [player], rounds)
         remaining_actions = self.actions
 

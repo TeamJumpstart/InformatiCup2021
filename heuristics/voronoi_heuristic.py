@@ -13,7 +13,7 @@ class VoronoiHeuristic(Heuristic):
             max_steps: The maximal number of steps from the cell center to cell border
             opening_iterations: number of performed opening operations on the cell state before the computation
                 of the voronoi diagram to account for jumps. default: 0
-            minimize_opponents: TODO
+            minimize_opponents: Incentives reducing regions of opponents
         """
         self.max_steps = max_steps
         self.opening_iterations = opening_iterations

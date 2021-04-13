@@ -11,7 +11,7 @@ from environments.spe_ed_env import Spe_edEnv
 
 
 class WebsocketEnv(Spe_edEnv):
-    """TODO."""
+    """Environment for playing on the online server against other teams."""
     def __init__(self, url, key, time_url):
         """Initialize WebsocketEnv.
 

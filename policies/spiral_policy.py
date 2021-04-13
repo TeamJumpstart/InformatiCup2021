@@ -11,7 +11,7 @@ class SpiralPolicy(Policy):
         self.clockwise = True
 
     def act(self, cells, player, opponents, round, deadline):
-        """TODO."""
+        """Choose action."""
         # directions - relative to player direction
         forward = player.direction
         left = player.direction.turn_left()

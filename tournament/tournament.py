@@ -67,21 +67,20 @@ class TournamentLogger():
 
 
 class TournamentEnv(SimulatedSpe_edEnv):
-    """TODO."""
-    def __init__(self, width, height, policies, seed=None, time_limit=5):
+    """Environment for performing tournaments."""
+    def __init__(self, width, height, policies, time_limit=5):
         """Initialize TournamentEnv.
 
         Args:
-            width, height: TODO
-            policies: TODO
-            seed: TODO
+            width, height: Ranges for the board size
+            policies: policies for each player
         """
         SimulatedSpe_edEnv.__init__(self, width, height, policies[1:], time_limit=time_limit)
         self.policies = policies
         self.execution_times = {str(pol): [] for pol in policies}
 
     def step(self):
-        """TODO."""
+        """Perform one game step."""
         actions = []
         for player in self.players:  # Compute actions of players
             if player.active:

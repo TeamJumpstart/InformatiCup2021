@@ -45,7 +45,7 @@ class RandomProbingHeuristic(Heuristic):
         for _ in range(self.n_probes):
             # perform a single probe run
             env = perform_probe_run(Spe_edSimulator(cells, [player], rounds))
-            probe_score = self.heuristic.score(env.cells, env.players[0], opponents, env.rounds, deadline)  # TODO
+            probe_score = self.heuristic.score(env.cells, env.players[0], opponents, env.rounds, deadline)
             # remember only the score of the best probe run
             score = max(probe_score, score)
 

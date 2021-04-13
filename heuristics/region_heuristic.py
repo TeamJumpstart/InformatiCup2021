@@ -5,7 +5,14 @@ import numpy as np
 
 
 class RegionHeuristic(Heuristic):
-    """TODO."""
+    """Heuristic evaluation the the of the region the player is in.
+
+    Larger reagion -> higher score
+
+    More opponents in same region -> lower score
+
+    Morphological operations can be applied.
+    """
     def __init__(self, closing_iterations=0, opening_iterations=0, include_opponent_regions=True):
         """Initialize RegionHeuristic.
 

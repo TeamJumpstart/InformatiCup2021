@@ -108,8 +108,6 @@ def plot_competition(output_file, stats_dir, stats, sampling="1H", sort_types=Fa
     ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=6))
     plt.tight_layout()
 
-    plt.tight_layout()
-
     plt.savefig(output_file)
     plt.close()
 
