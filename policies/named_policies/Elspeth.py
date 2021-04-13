@@ -6,15 +6,9 @@ pol = HeuristicPolicy(
         [
             PathLengthHeuristic(20),
             RandomProbingHeuristic(
-                CompositeHeuristic(
-                    [
-                        RegionHeuristic(),
-                        RegionHeuristic(closing_iterations=1),
-                        RegionHeuristic(include_opponent_regions=True)
-                    ]
-                ),
+                RegionHeuristic(),
                 n_steps=6,
-                n_probes=20
+                n_probes=20,
             ),
             RegionHeuristic(),
             RandomHeuristic(),

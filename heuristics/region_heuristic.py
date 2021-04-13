@@ -28,9 +28,10 @@ class RegionHeuristic(Heuristic):
     def score(self, cells, player, opponents, rounds, deadline):
         """Compute the relative size of the region we're in."""
         # close all 1 cell wide openings aka "articulating points"
-        if self.closing_iterations or self.opening_iterations:
-            cells = morphology.binary_closing(cells, iterations=self.closing_iterations)
-            cells = morphology.binary_closing(cells, iterations=self.opening_iterations)
+        if self.closing_iterations > 0:
+            cells = morphology.binary_closing(cells, iterations=self.closing_iterations, border_value=1)
+        if self.opening_iterations > 0:
+            cells = morphology.binary_opening(cells, iterations=self.opening_iterations)
 
         players = [player] + opponents
 
