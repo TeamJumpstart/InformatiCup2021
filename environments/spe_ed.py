@@ -30,12 +30,10 @@ class Direction(np.lib.mixins.NDArrayOperatorsMixin):
 
 
 directions = np.empty(4, dtype=object)
-directions[:] = (
-    Direction(0, "right", 0, np.array([1, 0])),
-    Direction(1, "down", np.pi / 2, np.array([0, 1])),
-    Direction(2, "left", np.pi, np.array([-1, 0])),
-    Direction(3, "up", np.pi * 3 / 2, np.array([0, -1])),
-)
+directions[0] = Direction(0, "right", 0, np.array([1, 0]))
+directions[1] = Direction(1, "down", np.pi / 2, np.array([0, 1]))
+directions[2] = Direction(2, "left", np.pi, np.array([-1, 0]))
+directions[3] = Direction(3, "up", np.pi * 3 / 2, np.array([0, -1]))
 directions.setflags(write=False)  # Prevent accidentally writing
 directions_by_name = {d.name: d for d in directions}
 
