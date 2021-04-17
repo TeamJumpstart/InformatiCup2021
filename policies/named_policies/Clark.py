@@ -1,8 +1,8 @@
 from policies import ConditionalPolicy, EndgamePolicy, load_named_policy
-from heuristics import EndgameConditionHeuristic
+from heuristics.conditions.named_conditions.endgame_condition import EndgameCondition
 
 ConditionalPolicy(
     [EndgamePolicy(), load_named_policy("AdamV2")],
-    conditions=[EndgameConditionHeuristic()],
+    conditions=[EndgameCondition()],
     thresholds=[0.9],
 )
