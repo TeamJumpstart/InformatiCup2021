@@ -31,7 +31,7 @@ class VoronoiHeuristic(Heuristic):
 
         # initialize arrays, one binary map for each player
         mask = cells == 0
-        voronoi = np.zeros((len(opponents) + 1, *cells.shape), dtype=np.bool)
+        voronoi = np.zeros((len(opponents) + 1, *cells.shape), dtype=bool)
         for idx, p in enumerate((player, *opponents)):
             mask[p.y, p.x] = True  # reset player position to allow dilation
             voronoi[idx, p.y, p.x] = True
