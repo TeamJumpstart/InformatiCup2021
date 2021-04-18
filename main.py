@@ -131,7 +131,8 @@ def render_logfile(log_file, fps=10, silent=False, window_size=default_window_si
         return Path(tempfile.gettempdir()) / (next(tempfile._get_candidate_names()) + suffix)
 
     game = SavedGame.load(log_file)
-    game.move_controlled_player_to_front()
+    if game.you:
+        game.move_controlled_player_to_front()
 
     fig = plt.figure(
         figsize=(window_size[0] / 100, window_size[1] / 100),
