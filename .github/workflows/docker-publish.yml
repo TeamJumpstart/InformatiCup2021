@@ -15,5 +15,5 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
-          repository: TeamJumpstart/InformatiCup2021/spe_ed
+          repository: teamjumpstart/informaticup2021/spe_ed
           tag_with_ref: true
