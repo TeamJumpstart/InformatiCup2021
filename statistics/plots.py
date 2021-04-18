@@ -83,7 +83,7 @@ def plot_grid_size_correlation(output_file, stats, include_n_players=False):
     plt.close()
 
 
-def plot_competition(output_file, stats_dir, stats, sampling="1H", sort_types=False):
+def plot_competition(output_file, stats_dir, stats):
     you_aliases = stats["you"].unique()
     known_bots = set(pd.read_csv(stats_dir / "known_bots.csv")["known_bots"])
 
