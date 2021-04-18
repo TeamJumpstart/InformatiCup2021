@@ -49,8 +49,8 @@ class Spe_edAx():
 
 
 class WinRateAx():
-    def __init__(self, fig, ax, date, won):
-        won = pd.concat([date, won], axis=1).groupby(date.dt.floor("D")).agg(['mean', 'count', 'std']).loc[:, 0]
+    def __init__(self, fig, ax, date, won, groupby="D"):
+        won = pd.concat([date, won], axis=1).groupby(date.dt.floor(groupby)).agg(['mean', 'count', 'std']).loc[:, 0]
 
         date = won.index
         mean, count, std = won["mean"], won["count"], won["std"]
