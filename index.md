@@ -2,6 +2,9 @@
   <img src="images/TeamJumpstart.png" alt="Team Jumpstart" width="50%"/>
 </div>
 
+* TOC
+{:toc}
+
 This project is the contribution of [Team Jumpstart](https://teamjumpstart.github.io/) to the [InformatiCup2021 challenge](https://raw.githubusercontent.com/informatiCup/InformatiCup2021/master/call_for_participation_a4.pdf) provided by the [German Informatics Society (GI)](https://gi.de/).
 We offer our own AI agent that is able to competitively play the game [**spe_ed**](https://github.com/InformatiCup/InformatiCup2021/blob/master/spe_ed.pdf).
 
