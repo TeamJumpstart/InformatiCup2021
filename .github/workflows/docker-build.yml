@@ -1,4 +1,4 @@
-name: Docker
+name: Tests
 
 on:
   push:
@@ -12,5 +12,5 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Build the Docker image
+      - name: Build the Docker image and run tests
         run: docker build .
