@@ -24,7 +24,7 @@ The accompanying [paper](https://github.com/TeamJumpstart/InformatiCup2021/relea
   <img src="images/path_length_heuristic.gif" alt="Path Length Heuristic" style="max-width: 100%; max-height: 400px;"/>
 </div>
 
-The [path length heuristic](heuristics/pathlength_heuristic.py) performs a random walk up to a certain number of steps (e.g. 5).
+The [path length heuristic](https://github.com/TeamJumpstart/InformatiCup2021/blob/main/heuristics/pathlength_heuristic.py) performs a random walk up to a certain number of steps (e.g. 5).
 The action leading to the longest path is selected, as longer paths imply a strong possibility of surviving longer.
 Performing only one walk in each direction might lead to a strong variation.
 Therefore, we perform multiple walks for each available action and select the longest path available.
@@ -52,7 +52,11 @@ If we reach the maximal number of allowed steps, we can opt out for the specifie
 
 # Analysis
 
-## Win-Rate
+## Win Rate
+
+<div align="center">
+  <img src="images/win_rate.gif" alt="Win Rate Plot" style="max-width: 100%; max-height: 400px;"/>
+</div>
 
 This diagram visualizes the win rate of our dummy policy (Adam) during the tournament.
 Our agent was able to achive a win rate of over 50%, despite using a simple strategy.
@@ -67,7 +71,7 @@ Thus, we could deduce, that our opponents neglected the online server in favor o
 ## Opponents Scatter Plot
 
 <div align="center">
-  <img src="images/opponents_scatter.gif" alt="Opponents Scatter Plot" style="max-width: 100%; max-height: 400px;"/>
+  <img src="images/opponents_scatter.png" alt="Opponents Scatter Plot" style="max-width: 100%; max-height: 400px;"/>
 </div>
 
 An in depth analysis of our online opponents showed, that initially most of our encountered enemies were server bots.
