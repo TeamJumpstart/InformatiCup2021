@@ -2,8 +2,6 @@
   <img src="images/TeamJumpstart.png" alt="Team Jumpstart" width="50%"/>
 </div>
 
-* TOC {:toc}
-
 This project is the contribution of [Team Jumpstart](https://teamjumpstart.github.io/) to the [InformatiCup2021 challenge](https://raw.githubusercontent.com/informatiCup/InformatiCup2021/master/call_for_participation_a4.pdf) provided by the [German Informatics Society (GI)](https://gi.de/).
 We offer our own AI agent that is able to competitively play the game [**spe_ed**](https://github.com/InformatiCup/InformatiCup2021/blob/master/spe_ed.pdf).
 
@@ -33,6 +31,28 @@ If we reach the maximal number of allowed steps, we can opt out for the specifie
 ---
 
 ## Region Heuristik
+
+<div align="center">
+  <img src="images/region_heuristic.gif" alt="Region Heuristik" style="max-width: 100%; max-height: 400px;"/>
+</div>
+
+The [region heuristic](https://github.com/TeamJumpstart/InformatiCup2021/blob/main/heuristics/region_heuristic.py) computes a score for each region.
+A high score indicates a large region with few opponents, whereas a low score represents a small, unattractive region.
+To obtain region score, it divides the number of available cells by the number of opponents plus one.
+Big regions allow us to perform more actions and thus survive for a longer period of time.
+However, opponents are a non-negligable factor to consider as well, since having to share a region with another player makes the region less desirable.
+Furthermore, encountering opponents might result in unnecessary fights, that will additionally divide the region.
+
+### Region Heuristik with Jumps
+
+<div align="center">
+  <img src="images/region_heuristic_steps_and_jumps.gif" alt="Region Heuristik with Jumps" style="max-width: 100%; max-height: 400px;"/>
+</div>
+
+The value of the region heuristic does not change a lot from one step to another. However, simulating multiple future steps might lead to a drastic change in value, since jumps become more likely. This can motivate the agent to speed up and perform a jump into a different region with a better score.
+Ultimately, one could even assign the region value to each single cell and smooth it out as a gradient to reach the position with the biggest available space around it.
+
+---
 
 ### Morphological Operations
 
