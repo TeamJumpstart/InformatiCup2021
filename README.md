@@ -11,8 +11,14 @@ We offer our own AI agent that is able to competitively play the game [**spe_ed*
 
 The accompanying [paper](https://github.com/TeamJumpstart/InformatiCup2021/releases/download/v1.0.0-submission/Informaticup2021.Theoretische.Ausarbeitung.pdf) documents our approach.
 
+The challenge lies in both finding a strategy that ensures the own agent's survival, and at the same time anticipating the other player's future movements. With up to six players concurrently playing, there is a multitude of variables to consider, as well as added complexity with varying speed and the ability to jump. To address these issues, we propose [depth-limited heuristic search](policies/action_search.py) and [Monte-Carlo based heuristic search](heuristics/randomprobing_heuristic.py) algorithms. We approximate the board state via heuristics to choose actions within a limited search horizon and incorporate an early-out mechanism to meet critical deadlines. The agent will explore potential future actions based on different heuristics, while simultaneously predicting the probability of opponent movements to choose the best immediate action.
+
+Animations of several heuristics are shown on the [project website](https://teamjumpstart.github.io/InformatiCup2021/).
+
 <div align="center">
-  <img src="images\Jumpstart_teaser.gif" alt="Team Jumpstart"/>
+  <a href="https://teamjumpstart.github.io/InformatiCup2021/">
+    <img src="images\Jumpstart_teaser.gif" alt="Team Jumpstart"/>
+  </a>
 </div>
 
 ## Usage
