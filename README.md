@@ -101,4 +101,6 @@ docker run -d --name=spe_ed spe_ed tournament --log-dir .\tournament\logs\
 docker run -d --name=spe_ed spe_ed tournament-plot --log-dir .\tournament\logs\
 ```
 
-![Matchup Results](/images/matchups.png)
+<div align="center">
+  <img src="/images/matchups.png" alt="Matchup Results" style="max-width: 100%;"/>
+</div>
