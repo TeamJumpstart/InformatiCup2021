@@ -2,14 +2,20 @@
 
 ![Tests Passes](https://github.com/TeamJumpstart/InformatiCup2021/actions/workflows/docker-build.yml/badge.svg)
 
-This project is the contribution of Team Jumpstart to the InformatiCup2021 challenge provided by the GI.
-We offer our own AI agent that is able to independently play the game [**spe_ed**](https://github.com/InformatiCup/InformatiCup2021/blob/master/spe_ed.pdf).
+<center>
+  <img src="images\TeamJumpstart.png" alt="Team Jumpstart" width="50%"/>
+</center>
+
+This project is the contribution of Team Jumpstart to the [InformatiCup2021 challenge](https://raw.githubusercontent.com/informatiCup/InformatiCup2021/master/call_for_participation_a4.pdf) provided by the [German Informatics Society (GI)](https://gi.de/).
+We offer our own AI agent that is able to competitively play the game [**spe_ed**](https://github.com/InformatiCup/InformatiCup2021/blob/master/spe_ed.pdf).
+
+The accompanying [paper](https://github.com/TeamJumpstart/InformatiCup2021/releases/download/v1.0.0-submission/Informaticup2021.Theoretische.Ausarbeitung.pdf) documents our approach.
 
 ![Games](/images/maps_round35.png)
 
 ## Usage
 
-Build the docker image:
+Clone the repo and build the docker image:
 
 ```sh
 docker build -t spe_ed .
