@@ -75,7 +75,7 @@ Ultimately, one could even assign the region value to each single cell and smoot
 ## Win Rate
 
 <div align="center">
-  <img src="images/win_rate.gif" alt="Win Rate Plot" style="max-width: 100%; max-height: 400px;"/>
+  <img src="images/win_rate.png" alt="Win Rate Plot" style="max-width: 100%; max-height: 400px;"/>
 </div>
 
 This diagram visualizes the win rate of our dummy policy (Adam) during the tournament.
@@ -91,7 +91,7 @@ Thus, we could deduce, that our opponents neglected the online server in favor o
 ## Opponents Scatter Plot
 
 <div align="center">
-  <img src="images/opponents_scatter.png" alt="Opponents Scatter Plot" style="max-width: 100%; max-height: 400px;"/>
+  <img src="images/opponents_scatter.gif" alt="Opponents Scatter Plot" style="max-width: 100%; max-height: 400px;"/>
 </div>
 
 An in depth analysis of our online opponents showed, that initially most of our encountered enemies were server bots.
