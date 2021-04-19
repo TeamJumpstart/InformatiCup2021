@@ -17,14 +17,20 @@ The accompanying [paper](https://github.com/TeamJumpstart/InformatiCup2021/relea
 
 # Methods
 
+## Path Length Heuristic
+
+<div align="center">
+  <img src="images/path_length_heuristic.gif" alt="Path Length Heuristic" style="max-width: 100%;"/>
+</div>
+
 ## Morphological Operations
 
 <div align="center">
-  <img src="images/morph_operations.gif" alt="Occupancy_Map" width="100%"/>
+  <img src="images/morph_operations.gif" alt="Morphological Operations" style="max-width: 100%;"/>
 </div>
 
 ## Occupancy Map
 
 <div align="center">
-  <img src="images/occupancy_map.gif" alt="Occupancy_Map" width="100%"/>
+  <img src="images/occupancy_map.gif" alt="Occupancy_Map" style="max-width: 100%;"/>
 </div>
