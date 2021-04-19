@@ -10,6 +10,7 @@ The accompanying [paper](https://github.com/TeamJumpstart/InformatiCup2021/relea
 
 <figure class="video_container">
   <video src="images/Jumpstart_teaser.mp4" width="100%" controls></video>
+  <div style="text-align: center;"><span style="font-size: small;">(Music credit: <a href="https://soundcloud.com/user-146897228/heartful-of-kerosene">Heartfül of Kerøsene by Jeff II (CC BY)</a>)</span></div>
 </figure>
 
 ## Usage
