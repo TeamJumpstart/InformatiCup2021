@@ -43,7 +43,7 @@ Big regions allow us to perform more actions and thus survive for a longer perio
 However, opponents are a non-negligable factor to consider as well, since having to share a region with another player makes the region less desirable.
 Furthermore, encountering opponents might result in unnecessary fights, that will additionally divide the region.
 
-### Region Heuristik with Jumps
+## Region Heuristik with Jumps
 
 <div align="center">
   <img src="images/region_heuristic_steps_and_jumps.gif" alt="Region Heuristik with Jumps" style="max-width: 100%; max-height: 400px;"/>
@@ -54,7 +54,7 @@ Ultimately, one could even assign the region value to each single cell and smoot
 
 ---
 
-### Morphological Operations
+## Morphological Operations
 
 <div align="center">
   <img src="images/morph_operations.gif" alt="Morphological Operations" style="max-width: 100%; max-height: 400px;"/>
