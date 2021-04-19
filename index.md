@@ -56,6 +56,15 @@ Ultimately, one could even assign the region value to each single cell and smoot
 
 ## Region Heuristik Monte-Carlo
 
+<div align="center">
+  <img src="images/region_heuristic_steps_mc.gif" alt="Region Heuristik Monte-Carlo" style="max-width: 100%; max-height: 400px;"/>
+</div>
+
+Simulating only one random path often leads to unsatisfactory results.
+To mitigate the risk of performing one wrong action and thus missing the perfect move, we perform a Monte-Carlo simulation.
+More precisely, we simulate multiple paths for each available action and select the best possible result.
+In this way, we are able to neglect the negative impact of the stochastic approach of randomized walks and reduce the variance of our obtained results.
+
 ---
 
 ## Morphological Operations
