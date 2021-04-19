@@ -9,7 +9,7 @@ The accompanying [paper](https://github.com/TeamJumpstart/InformatiCup2021/relea
 
 
 <figure class="video_container">
-  <video src="images\Jumpstart_teaser.mp4"></video>
+  <video src="images/Jumpstart_teaser.mp4"></video>
 </figure>
 
 ## Usage
