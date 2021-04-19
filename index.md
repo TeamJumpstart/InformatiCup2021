@@ -54,11 +54,22 @@ Ultimately, one could even assign the region value to each single cell and smoot
 
 ---
 
+## Region Heuristik Monte-Carlo
+
+---
+
 ## Morphological Operations
 
 <div align="center">
   <img src="images/morph_operations.gif" alt="Morphological Operations" style="max-width: 100%; max-height: 400px;"/>
 </div>
+
+Morphological operations allow us to virtually manipulate the board state to account for different scenarios, such as jumps or opponents closing small chocking points.
+An opening operation opens all one and two cell wide walls, to acknowledge the possibility of simple jumps, that can easily cross neighbouring regions.
+In this way, we are able to connect divided regions and approximate the upper limit of safely reachable cells.
+On the contrary, the closing operation closes all one and two cell wide openings.
+Thus, it is a extremly conservative approximation of the available cell space, accounting for enemies closing small gaps and connections between two connected regions.
+It allows us to avoid entering corridors, which might be a trap for our agent and result in a not immidiate, but certain death.
 
 ---
 
@@ -100,3 +111,7 @@ Those also played permanently on the server, but did not show any reasonable str
 We had to assume they were only collecting data, similar to us. Other teams with more advanced policies were rare.
 This situation changed two weeks before the end of the tournament.
 We encountered more interessting enemies with stronger strategies.
+
+---
+
+## Tournament Statistics
