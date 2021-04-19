@@ -129,4 +129,14 @@ We encountered more interessting enemies with stronger strategies.
   <img src="images/torunament_matchup.png" alt="Tournament Statistics" style="max-width: 100%; max-height: 400px;"/>
 </div>
 
-Our local tournament environment allows us to simulate hundreds of games in a short period of time. With this tool we were able to optimize our final combination of heuristics by playing against other iterations. With variations in the number of players, the board size and the number of players, we can create the perfect enviroment to filter out the best policy among the competitors. Each match-up is evaluated individually against each other policy, as well as aggregated as an overall win rate. Thus, we can fine tune our policies in an evolutionary fashion.
+Our local tournament environment allows us to simulate hundreds of games in a short period of time. With this tool we were able to optimize our final combination of heuristics by playing against other iterations. With variations in the number of players, the board size and the number of players, we can create the perfect enviroment to filter out the best policy among the competitors. Each matchup is evaluated individually against each other policy, as well as aggregated as an overall win rate. Thus, we can fine tune our policies in an evolutionary fashion.
+
+The policy shown above are:
+* [GarrukV4](https://github.com/TeamJumpstart/InformatiCup2021/blob/main/policies/named_policies/GarrukV4.py)
+* [GarrukV3](https://github.com/TeamJumpstart/InformatiCup2021/blob/main/policies/named_policies/GarrukV3.py)
+* [Adam](https://github.com/TeamJumpstart/InformatiCup2021/blob/main/policies/named_policies/Adam.py)
+* [Region](https://github.com/TeamJumpstart/InformatiCup2021/blob/main/policies/named_policies/Region.py)
+* [Clark](https://github.com/TeamJumpstart/InformatiCup2021/blob/main/policies/named_policies/Clark.py)
+* [Spiral](https://github.com/TeamJumpstart/InformatiCup2021/blob/main/policies/spiral_policy.py)
+
+GarrukV3 was the policy submitted to the InformatiCup2021 challenge.
