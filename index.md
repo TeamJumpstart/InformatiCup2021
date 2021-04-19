@@ -15,22 +15,66 @@ The accompanying [paper](https://github.com/TeamJumpstart/InformatiCup2021/relea
   <div style="text-align: center;"><span style="font-size: small;">(Music credit: <a href="https://soundcloud.com/user-146897228/heartful-of-kerosene">Heartfül of Kerøsene by Jeff II (CC BY)</a>)</span></div>
 </figure>
 
+---
+
 # Methods
 
 ## Path Length Heuristic
 
 <div align="center">
-  <img src="images/path_length_heuristic.gif" alt="Path Length Heuristic" style="max-width: 100%;"/>
+  <img src="images/path_length_heuristic.gif" alt="Path Length Heuristic" style="max-width: 100%; max-height: 400px;"/>
 </div>
 
-## Morphological Operations
+The path length heuristic performs a random walk up to a certain number of steps (e.g. 5).
+The action leading to the longest path is selected, as longer paths imply a strong possibility of surviving longer.
+Performing only one walk in each direction might lead to a strong variation.
+Therefore, we perform multiple walks for each available action and select the longest path available.
+If we reach the maximal number of allowed steps, we can opt out for the specified initial direction, as our value already reached the maximum.
+
+---
+
+## Region Heuristik
+
+### Morphological Operations
 
 <div align="center">
-  <img src="images/morph_operations.gif" alt="Morphological Operations" style="max-width: 100%;"/>
+  <img src="images/morph_operations.gif" alt="Morphological Operations" style="max-width: 100%; max-height: 400px;"/>
 </div>
+
+---
 
 ## Occupancy Map
 
 <div align="center">
-  <img src="images/occupancy_map.gif" alt="Occupancy_Map" style="max-width: 100%;"/>
+  <img src="images/occupancy_map.gif" alt="Occupancy_Map" style="max-width: 100%; max-height: 400px;"/>
 </div>
+
+---
+
+# Analysis
+
+## Win-Rate
+
+This diagram visualizes the win rate of our dummy policy (Adam) during the tournament.
+Our agent was able to achive a win rate of over 50\%, despite using a simple strategy.
+It performs a limited depth-first search for the longest path and performs its first action, after a fixed amount of searched paths.
+This straigthforward strategy was able to consistently win against server bots, which do not show complex behaviors, but was not supposed to beat high-level strategies.
+This way, we were able to coarsly filter interessting games, by finding those policies that could consistently beat ours.
+To our surprise, the online competition was not very fierce, as it won most of its played games.
+Thus, we could deduce, that our opponents neglected the online server in favor of offline play or intentionally held back their sophisticated strategies.
+
+---
+
+## Opponents Scatter Plot
+<div align="center">
+  <img src="images/opponents_scatter.gif" alt="Opponents Scatter Plot" style="max-width: 100%; max-height: 400px;"/>
+</div>
+
+An in depth analysis of our online opponents showed, that initially most of our encountered enemies were server bots.
+Later on, logging bots of other teams appeared.
+Those also played permanently on the server, but did not show any reasonable strategies.
+We had to assume they were only collecting data, similar to us. Other teams with more advanced policies were rare.
+This situation changed two weeks before the end of the tournament.
+We encountered more interessting enemies with stronger strategies.
+
+
