@@ -57,7 +57,7 @@ Ultimately, one could even assign the region value to each single cell and smoot
 ## Region Heuristik Monte-Carlo
 
 <div align="center">
-  <img src="images/region_heuristic_steps_mc.gif" alt="Region Heuristik Monte-Carlo" style="max-width: 100%; max-height: 400px;"/>
+  <img src="images/region_heuristic_mc.gif" alt="Region Heuristik Monte-Carlo" style="max-width: 100%; max-height: 400px;"/>
 </div>
 
 Simulating only one random path often leads to unsatisfactory results.
