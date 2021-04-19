@@ -1,0 +1,15 @@
+<svg id="Ebene_5" data-name="Ebene 5"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 89.65 153.11">
+    <defs>
+        <style>.cls-1{fill:none;stroke-linecap:round;stroke-miterlimit:10;stroke-width:7px;stroke:url(#Unbenannter_Verlauf_31);}</style>
+        <linearGradient id="Unbenannter_Verlauf_31" x1="393.98" y1="69.38" x2="393.98" y2="222.49" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#312783"/>
+            <stop offset="0.13" stop-color="#402980"/>
+            <stop offset="0.85" stop-color="#e24c25"/>
+            <stop offset="1" stop-color="#f39200"/>
+        </linearGradient>
+    </defs>
+    <title>J-Logo</title>
+    <path class="cls-1" d="M411,172.44V72.88h11.88V177.67a28.87,28.87,0,0,1-57.74,0H352.66a41.32,41.32,0,1,0,82.64,0V72.88" transform="translate(-349.16 -69.38)"/>
+</svg>
