@@ -71,7 +71,9 @@ Other modes than the default "play on websocket server" can be selected.
 docker run -d --name=spe_ed spe_ed --sim --show
 ```
 
-![Simulator](/images/simulator.png)
+<div align="center">
+  <img src="/images/simulator.png" alt="Simulator" style="max-width: 100%;"/>
+</div>
 
 **Renderer**: render games from log files to video format.
 
@@ -79,7 +81,9 @@ docker run -d --name=spe_ed spe_ed --sim --show
 docker run -d --name=spe_ed spe_ed --sim --show
 ```
 
-![Renderer](/images/renderer.png)
+<div align="center">
+  <img src="/images/renderer.png" alt="Renderer" style="max-width: 100%;"/>
+</div>
 
 **Plot mode**: create plots for logged games from the webserver. This is intended to observe player behavior as it gives an overview over all tracked games.
 
@@ -87,7 +91,9 @@ docker run -d --name=spe_ed spe_ed --sim --show
 docker run -d --name=spe_ed spe_ed plot --log-dir .\logs\
 ```
 
-![Opponents Scatterplot](/images/game-history2.png)
+<div align="center">
+  <img src="/images/game-history2.png" alt="Opponents Scatterplot" style="max-width: 100%;"/>
+</div>
 
 **Tournament mode**: run a tournament of multiple policies, where each game has different policy and parameter combinations. The chosen policies and parameter options like grid size can be configured in a separate tournament config file (`tournament\tournament_config.py`).
 
