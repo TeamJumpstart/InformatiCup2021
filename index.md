@@ -2,8 +2,7 @@
   <img src="images/TeamJumpstart.png" alt="Team Jumpstart" width="50%"/>
 </div>
 
-- TOC
-  {:toc}
+* TOC {:toc}
 
 This project is the contribution of [Team Jumpstart](https://teamjumpstart.github.io/) to the [InformatiCup2021 challenge](https://raw.githubusercontent.com/informatiCup/InformatiCup2021/master/call_for_participation_a4.pdf) provided by the [German Informatics Society (GI)](https://gi.de/).
 We offer our own AI agent that is able to competitively play the game [**spe_ed**](https://github.com/InformatiCup/InformatiCup2021/blob/master/spe_ed.pdf).
@@ -25,7 +24,7 @@ The accompanying [paper](https://github.com/TeamJumpstart/InformatiCup2021/relea
   <img src="images/path_length_heuristic.gif" alt="Path Length Heuristic" style="max-width: 100%; max-height: 400px;"/>
 </div>
 
-The path length heuristic performs a random walk up to a certain number of steps (e.g. 5).
+The [path length heuristic](heuristics/pathlength_heuristic.py) performs a random walk up to a certain number of steps (e.g. 5).
 The action leading to the longest path is selected, as longer paths imply a strong possibility of surviving longer.
 Performing only one walk in each direction might lead to a strong variation.
 Therefore, we perform multiple walks for each available action and select the longest path available.
@@ -56,7 +55,7 @@ If we reach the maximal number of allowed steps, we can opt out for the specifie
 ## Win-Rate
 
 This diagram visualizes the win rate of our dummy policy (Adam) during the tournament.
-Our agent was able to achive a win rate of over 50\%, despite using a simple strategy.
+Our agent was able to achive a win rate of over 50%, despite using a simple strategy.
 It performs a limited depth-first search for the longest path and performs its first action, after a fixed amount of searched paths.
 This straigthforward strategy was able to consistently win against server bots, which do not show complex behaviors, but was not supposed to beat high-level strategies.
 This way, we were able to coarsly filter interessting games, by finding those policies that could consistently beat ours.
@@ -66,6 +65,7 @@ Thus, we could deduce, that our opponents neglected the online server in favor o
 ---
 
 ## Opponents Scatter Plot
+
 <div align="center">
   <img src="images/opponents_scatter.gif" alt="Opponents Scatter Plot" style="max-width: 100%; max-height: 400px;"/>
 </div>
@@ -76,5 +76,3 @@ Those also played permanently on the server, but did not show any reasonable str
 We had to assume they were only collecting data, similar to us. Other teams with more advanced policies were rare.
 This situation changed two weeks before the end of the tournament.
 We encountered more interessting enemies with stronger strategies.
-
-
