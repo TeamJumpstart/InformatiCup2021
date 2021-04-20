@@ -33,7 +33,7 @@ class Policy(ABC):
         return self.name if hasattr(self, 'name') else repr(self)
 
 
-def load_named_policy(name):
+def load_named_policy(name) -> Policy:
     """Load a named policy by it's given name.
 
     A named policy is contained in a python source file in `policies/named_policies` as `pol` variable.
