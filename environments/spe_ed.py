@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import json
+import time
 import numpy as np
 
 actions = ("turn_left", "turn_right", "slow_down", "speed_up", "change_nothing")
@@ -269,7 +270,7 @@ class SavedGame:
                 players = self.player_states[t]
                 players[0], players[you - 1] = players[you - 1], players[0]
 
-    def get_obs(self, t, player_id):
+    def get_obs(self, t, player_id, time_limit=5):
         """Get obersation from the perspective of a specific player.
 
         Returned values can be used as input for a policy.
@@ -282,4 +283,5 @@ class SavedGame:
         occupancy.setflags(write=False)  # Prevent accidentally writing
         you = self.player_states[t][player_id - 1]
         opponents = [p for p in self.player_states[t] if p.active and p.player_id != player_id]
-        return Cells(occupancy), you, opponents, t + 1
+        deadline = time.time() + time_limit
+        return Cells(occupancy), you, opponents, t + 1, deadline
