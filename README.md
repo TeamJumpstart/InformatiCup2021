@@ -78,7 +78,7 @@ docker run -d --name=spe_ed spe_ed --sim --show
 **Renderer**: render games from log files to video format.
 
 ```sh
-docker run -d --name=spe_ed spe_ed --sim --show
+docker run -d --name=spe_ed spe_ed render_logdir --log-dir.\logs\
 ```
 
 <div align="center">
