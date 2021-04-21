@@ -1,9 +1,3 @@
-<link rel="icon" type="image/svg+xml" href="favicon.svg" sizes="any" />
-
-<div align="center">
-  <img src="images/TeamJumpstart.png" alt="Team Jumpstart" width="50%"/>
-</div>
-
 This project is the contribution of [Team Jumpstart](https://teamjumpstart.github.io/) to the [InformatiCup2021 challenge](https://raw.githubusercontent.com/informatiCup/InformatiCup2021/master/call_for_participation_a4.pdf) provided by the [German Informatics Society (GI)](https://gi.de/).
 We offer our own AI agent that is able to competitively play the game [**spe_ed**](https://github.com/InformatiCup/InformatiCup2021/blob/master/spe_ed.pdf).
 
@@ -90,8 +84,8 @@ It allows us to avoid entering corridors, which might be a trap for our agent an
   <img src="images/occupancy_map.gif" alt="Occupancy_Map" style="max-width: 100%; max-height: 400px;"/>
 </div>
 
-The [occupancy map](https://github.com/TeamJumpstart/InformatiCup2021/blob/main/state_representation/occupancy.py) computes the probability for each cell, that it will be occupied in the near future. 
-To obtain the value, we simulate each possible move of each player and aggregate the probabilities of valid moves on the map. 
+The [occupancy map](https://github.com/TeamJumpstart/InformatiCup2021/blob/main/state_representation/occupancy.py) computes the probability for each cell, that it will be occupied in the near future.
+To obtain the value, we simulate each possible move of each player and aggregate the probabilities of valid moves on the map.
 That means, we encode the risk attributed to entering a cell in the occupancy map.
 As a result, our agent is able to dodge opponents more easily.
 Consequently, we are able to conceptionally abstract the multi-player game into a single-player game with additional uncertainity.
