@@ -10,6 +10,9 @@ The accompanying [paper](https://github.com/TeamJumpstart/InformatiCup2021/relea
 
 ---
 
+* Table of Contents
+{:toc}
+
 # Methods
 
 ## Path Length Heuristic
