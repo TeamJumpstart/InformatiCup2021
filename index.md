@@ -131,7 +131,7 @@ For the considered Reinforcemnet Learning approaches, a game state representaion
 </div>
 
 This state representation only consists of a square image and thus is well suited as input for a convolutional neural network.
-With a radius of 10, the reduced state space has a dimension of ℝ<sup>21×21</sup>.
+With a radius of 10, the reduced state space has a dimension of ℝ<span style="vertical-align: super; font-size: smaller;">21×21</span>.
 
 ---
 
