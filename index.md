@@ -13,6 +13,8 @@ The accompanying [paper](https://github.com/TeamJumpstart/InformatiCup2021/relea
 * Table of Contents
 {:toc}
 
+---
+
 # Methods
 
 ## Path Length Heuristic
@@ -92,6 +94,39 @@ To obtain the value, we simulate each possible move of each player and aggregate
 That means, we encode the risk attributed to entering a cell in the occupancy map.
 As a result, our agent is able to dodge opponents more easily.
 Consequently, we are able to conceptionally abstract the multi-player game into a single-player game with additional uncertainity.
+
+---
+
+## State Abstraction
+
+For the considered Reinforcemnet Learning approaches, a game state representaion with constant size is desirable. For the following RL applicatins we considered this state representation:
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap:20px; column-gap: 20px;">
+  <figure>
+    <img src="images/state_abstraction/00-json.png" style="max-width: 100%" />
+    <figcaption>1) The game state in JSON format as received from the server.</figcaption>
+  </figure>
+  <figure>
+    <img src="images/state_abstraction/01-game_state.png" style="max-width: 100%" />
+    <figcaption>2) Full game state.</figcaption>
+  </figure>
+  <figure>
+    <img src="images/state_abstraction/02-window.png" style="max-width: 100%" />
+    <figcaption>3) By cropping to a window with a fixed radius centered around the controlled player, we obtain a local view on the game state. In this, the controlled player is always at the coordiantes (0, 0).</figcaption>
+  </figure>
+  <figure>
+    <img src="images/state_abstraction/03-occ.png" style="max-width: 100%" />
+    <figcaption>4) The occupancy map abstracts the opponents away.</figcaption>
+  </figure>
+  <figure>
+    <img src="images/state_abstraction/04-rotated.png" style="max-width: 100%" />
+    <figcaption>5) The direction of the controlled player is made redundant by rotatiing the view accordingly. Thus, the player always faces right.</figcaption>
+  </figure>
+  <figure>
+    <img src="images/state_abstraction/05-speed.png" style="max-width: 100%" />
+    <figcaption>6) Lastly, the position of the player's head is always occupied. Therefore, this pixel is used to store the speed of the player instead.</figcaption>
+  </figure>
+</div>
 
 ---
 
