@@ -97,9 +97,11 @@ Consequently, we are able to conceptionally abstract the multi-player game into 
 
 ---
 
+# Policy Clustering
+
 ## State Abstraction
 
-For the considered Reinforcemnet Learning approaches, a game state representaion with constant size is desirable. For the following RL applicatins we considered this state representation:
+For the considered Reinforcemnet Learning approaches, a game state representaion with constant size is desirable. Therefore we propose this state abstraction:
 
 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap:20px; column-gap: 20px;">
   <figure>
@@ -124,9 +126,29 @@ For the considered Reinforcemnet Learning approaches, a game state representaion
   </figure>
   <figure>
     <img src="images/state_abstraction/05-speed.png" style="max-width: 100%" />
-    <figcaption>6) Lastly, the position of the player's head is always occupied. Therefore, this pixel is used to store the speed of the player instead.</figcaption>
+    <figcaption>6) Lastly, the position of the player's head is always occupied. Therefore, this cell is used to store the speed of the player instead.</figcaption>
   </figure>
 </div>
+
+This state representation only consists of a square image and thus is well suited as input for a convolutional neural network.
+With a radius of 10, the reduced state space has a dimension of ℝ<sup>21×21</sup>.
+
+---
+
+## State Clustering
+
+<div align="center">
+  <img src="images/state_clusters.png" alt="State Clusters" style="max-width: 100%; max-height: 400px;"/>
+</div>
+
+As similar states are likely to result in similar actions. Experimental clustering with K-means lead to state clusters as shown above.
+However, K-means is not necessarily well suited for this task as not all cells have equal impact on the policy.
+
+---
+
+## Policy Clustering
+
+Different policies differ in that they choose different actions for the same state.
 
 ---
 
