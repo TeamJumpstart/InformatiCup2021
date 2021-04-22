@@ -148,7 +148,16 @@ However, K-means is not necessarily well suited for this task as not all cells h
 
 ## Policy Clustering
 
-Different policies differ in that they choose different actions for the same state.
+<div align="center">
+  <img src="images/policy_clusters.png" alt="Policy Clusters" style="max-width: 100%; max-height: 400px;"/>
+</div>
+
+Different policies differ in that they choose different actions for the same state. This leads to the idea for our policy abstraction. For each state cluster, we compute the action distribution of the policy. This leads to a compact, fixed size approximation of the policy.
+
+These approximations again can be clustered, resulting in a policy clustering.
+Then, while playing we can compute the action distributions for each opponent and match them against the known policy clusters. From the corresponding cluster, we can infer action probabilities and thus can predict future actions of opponents.
+
+However, the algorithm for policy clustering is critical. The employed expectation–maximization algorithm suffered from overfitting/being stuck in local optima and converged immediately. Thus, the policy clustering road is still to be explored.
 
 ---
 
