@@ -95,16 +95,16 @@ docker run -d --name=spe_ed spe_ed plot --log-dir .\logs\
   <img src="/images/game-history2.png" alt="Opponents Scatterplot" style="max-width: 100%;"/>
 </div>
 
-**Tournament mode**: run a tournament of multiple policies, where each game has different policy and parameter combinations. The chosen policies and parameter options like grid size can be configured in a separate tournament config file (`tournament\tournament_config.py`).
+**Tournament mode**: run a tournament of multiple policies, where each game has different policy and parameter combinations. The chosen policies and parameter options like grid size can be configured in a separate tournament config file (`tournament/tournament_config.py`).
 
 ```sh
-docker run -d --name=spe_ed spe_ed tournament --log-dir .\tournament\logs\
+docker run -d --name=spe_ed spe_ed tournament --log-dir tournament/logs
 ```
 
 **Tournament plot mode**: create plots and matchup statistics for a played tournament given by its logs.
 
 ```sh
-docker run -d --name=spe_ed spe_ed tournament-plot --log-dir .\tournament\logs\
+docker run -d --name=spe_ed spe_ed tournament-plot --log-dir tournament/logs
 ```
 
 <div align="center">
