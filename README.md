@@ -78,7 +78,7 @@ docker run -d --name=spe_ed spe_ed --sim --show
 **Renderer**: render games from log files to video format.
 
 ```sh
-docker run -d --name=spe_ed spe_ed --sim --show
+docker run -d --name=spe_ed spe_ed render_logdir --log-dir=logs/
 ```
 
 <div align="center">
@@ -88,7 +88,7 @@ docker run -d --name=spe_ed spe_ed --sim --show
 **Plot mode**: create plots for logged games from the webserver. This is intended to observe player behavior as it gives an overview over all tracked games.
 
 ```sh
-docker run -d --name=spe_ed spe_ed plot --log-dir .\logs\
+docker run -d --name=spe_ed spe_ed plot --log-dir=logs/
 ```
 
 <div align="center">
