@@ -78,7 +78,7 @@ docker run -d --name=spe_ed spe_ed --sim --show
 **Renderer**: render games from log files to video format.
 
 ```sh
-docker run -d --name=spe_ed spe_ed render_logdir --log-dir.\logs\
+docker run -d --name=spe_ed spe_ed render_logdir --log-dir=logs/
 ```
 
 <div align="center">
@@ -88,7 +88,7 @@ docker run -d --name=spe_ed spe_ed render_logdir --log-dir.\logs\
 **Plot mode**: create plots for logged games from the webserver. This is intended to observe player behavior as it gives an overview over all tracked games.
 
 ```sh
-docker run -d --name=spe_ed spe_ed plot --log-dir .\logs\
+docker run -d --name=spe_ed spe_ed plot --log-dir=logs/
 ```
 
 <div align="center">
@@ -98,13 +98,13 @@ docker run -d --name=spe_ed spe_ed plot --log-dir .\logs\
 **Tournament mode**: run a tournament of multiple policies, where each game has different policy and parameter combinations. The chosen policies and parameter options like grid size can be configured in a separate tournament config file (`tournament\tournament_config.py`).
 
 ```sh
-docker run -d --name=spe_ed spe_ed tournament --log-dir .\tournament\logs\
+docker run -d --name=spe_ed spe_ed tournament --log-dir tournament/logs
 ```
 
 **Tournament plot mode**: create plots and matchup statistics for a played tournament given by its logs.
 
 ```sh
-docker run -d --name=spe_ed spe_ed tournament-plot --log-dir .\tournament\logs\
+docker run -d --name=spe_ed spe_ed tournament-plot --log-dir tournament/logs
 ```
 
 <div align="center">
