@@ -19,8 +19,8 @@ The accompanying [paper](https://github.com/TeamJumpstart/InformatiCup2021/relea
 
 ## Path Length Heuristic
 
-<div align="center">
-  <img src="images/path_length_heuristic.gif" alt="Path Length Heuristic" style="max-width: 100%; max-height: 400px;"/>
+<div style="text-align: center;">
+  <video autoplay loop muted playsinline src="images/path_length_heuristic.webm" style="max-width: 100%; max-height: 400px;"></video>
 </div>
 
 The [path length heuristic](https://github.com/TeamJumpstart/InformatiCup2021/blob/main/heuristics/pathlength_heuristic.py) performs a random walk up to a certain number of steps (e.g. 5).
@@ -33,8 +33,8 @@ If we reach the maximal number of allowed steps, we can opt out for the specifie
 
 ## Region Heuristik
 
-<div align="center">
-  <img src="images/region_heuristic.gif" alt="Region Heuristik" style="max-width: 100%; max-height: 400px;"/>
+<div style="text-align: center;">
+  <video autoplay loop muted playsinline src="images/region_heuristic.webm" style="max-width: 100%; max-height: 400px;"></video>
 </div>
 
 The [region heuristic](https://github.com/TeamJumpstart/InformatiCup2021/blob/main/heuristics/region_heuristic.py) computes a score for each region.
@@ -46,8 +46,8 @@ Furthermore, encountering opponents might result in unnecessary fights, that wil
 
 ## Region Heuristik with Jumps
 
-<div align="center">
-  <img src="images/region_heuristic_steps_and_jumps.gif" alt="Region Heuristik with Jumps" style="max-width: 100%; max-height: 400px;"/>
+<div style="text-align: center;">
+  <video autoplay loop muted playsinline src="images/region_heuristic_steps_and_jumps.webm" style="max-width: 100%; max-height: 400px;"></video>
 </div>
 
 The value of the region heuristic does not change a lot from one step to another. However, simulating multiple future steps might lead to a drastic change in value, since jumps become more likely. This can motivate the agent to speed up and perform a jump into a different region with a better score.
@@ -57,8 +57,8 @@ Ultimately, one could even assign the region value to each single cell and smoot
 
 ## Region Heuristik Monte-Carlo
 
-<div align="center">
-  <img src="images/region_heuristic_mc.gif" alt="Region Heuristik Monte-Carlo" style="max-width: 100%; max-height: 400px;"/>
+<div style="text-align: center;">
+  <video autoplay loop muted playsinline src="images/region_heuristic_mc.webm" style="max-width: 100%; max-height: 400px;"></video>
 </div>
 
 Simulating only one random path often leads to unsatisfactory results.
@@ -70,8 +70,8 @@ In this way, we are able to neglect the negative impact of the stochastic approa
 
 ## Morphological Operations
 
-<div align="center">
-  <img src="images/morph_operations.gif" alt="Morphological Operations" style="max-width: 100%; max-height: 400px;"/>
+<div style="text-align: center;">
+  <video autoplay loop muted playsinline src="images/morph_operations.webm" style="max-width: 100%; max-height: 400px;"></video>
 </div>
 
 Morphological operations allow us to virtually manipulate the board state to account for different scenarios, such as jumps or opponents closing small chocking points.
@@ -85,8 +85,8 @@ It allows us to avoid entering corridors, which might be a trap for our agent an
 
 ## Occupancy Map
 
-<div align="center">
-  <img src="images/occupancy_map.gif" alt="Occupancy_Map" style="max-width: 100%; max-height: 400px;"/>
+<div style="text-align: center;">
+  <video autoplay loop muted playsinline src="images/occupancy_map.webm" style="max-width: 100%; max-height: 400px;"></video>
 </div>
 
 The [occupancy map](https://github.com/TeamJumpstart/InformatiCup2021/blob/main/state_representation/occupancy.py) computes the probability for each cell, that it will be occupied in the near future.
@@ -137,7 +137,7 @@ With a radius of 10, the reduced state space has a dimension of ℝ<span style="
 
 ## State Clustering
 
-<div align="center">
+<div style="text-align: center;">
   <img src="images/state_clusters.png" alt="State Clusters" style="max-width: 100%; max-height: 400px;"/>
 </div>
 
@@ -148,7 +148,7 @@ However, K-means is not necessarily well suited for this task as not all cells h
 
 ## Policy Clustering
 
-<div align="center">
+<div style="text-align: center;">
   <img src="images/policy_clusters.png" alt="Policy Clusters" style="max-width: 100%; max-height: 400px;"/>
 </div>
 
@@ -165,7 +165,7 @@ However, the algorithm for policy clustering is critical. The employed expectati
 
 ## Win Rate
 
-<div align="center">
+<div style="text-align: center;">
   <img src="images/win_rate.png" alt="Win Rate Plot" style="max-width: 100%; max-height: 400px;"/>
 </div>
 
@@ -181,8 +181,8 @@ Thus, we could deduce, that our opponents neglected the online server in favor o
 
 ## Opponents Scatter Plot
 
-<div align="center">
-  <img src="images/opponents_scatter.gif" alt="Opponents Scatter Plot" style="max-width: 100%; max-height: 400px;"/>
+<div style="text-align: center;">
+  <video autoplay loop muted playsinline src="images/opponents_scatter.webm" style="max-width: 100%; max-height: 400px;"></video>
 </div>
 
 An in depth analysis of our online opponents showed, that initially most of our encountered enemies were server bots.
@@ -196,7 +196,7 @@ We encountered more interessting enemies with stronger strategies.
 
 ## Tournament Statistics
 
-<div align="center">
+<div style="text-align: center;">
   <img src="images/tournament_matchup.png" alt="Tournament Statistics" style="max-width: 100%; max-height: 400px;"/>
 </div>
 
