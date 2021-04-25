@@ -4,7 +4,7 @@ We offer our own AI agent that is able to competitively play the game [**spe_ed*
 The accompanying [paper](https://github.com/TeamJumpstart/InformatiCup2021/releases/download/v1.0.0-submission/Informaticup2021.Theoretische.Ausarbeitung.pdf) documents our approach.
 
 <figure class="video_container">
-  <video src="images/Jumpstart_teaser.mp4" width="100%" controls></video>
+  <video src="images/Jumpstart_teaser.mp4" controls style="width: 100%;"></video>
   <div style="text-align: center;"><span style="font-size: small;">(Music credit: <a href="https://soundcloud.com/user-146897228/heartful-of-kerosene">Heartfül of Kerøsene by Jeff II (CC BY)</a>)</span></div>
 </figure>
 
