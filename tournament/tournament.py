@@ -1,16 +1,18 @@
-import matplotlib.pyplot as plt
+import json
 import logging
+import multiprocessing as mp
 import time
-import numpy as np
-from tqdm.auto import tqdm
+from importlib.machinery import SourceFileLoader
 from pathlib import Path
 from uuid import uuid4
-import json
-import multiprocessing as mp
+
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+from tqdm.auto import tqdm
+
+from environments.simulator import SimulatedSpe_edEnv, simulate
 from environments.spe_ed import SavedGame
-from environments.simulator import simulate, SimulatedSpe_edEnv
-from importlib.machinery import SourceFileLoader
 
 
 def init_stats_lock(l):

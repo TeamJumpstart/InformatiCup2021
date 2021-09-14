@@ -1,8 +1,10 @@
 import time
-from heuristics.heuristic import Heuristic
+
 import numpy as np
-from environments.simulator import Spe_edSimulator
+
 from environments import spe_ed
+from environments.simulator import Spe_edSimulator
+from heuristics.heuristic import Heuristic
 
 
 class RandomProbingHeuristic(Heuristic):

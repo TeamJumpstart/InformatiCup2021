@@ -1,7 +1,8 @@
-from heuristics.conditions import Condition
-from scipy.ndimage import morphology
-from scipy import ndimage
 import numpy as np
+from scipy import ndimage
+from scipy.ndimage import morphology
+
+from heuristics.conditions import Condition
 
 
 class PlayerInBiggestRegionCondition(Condition):

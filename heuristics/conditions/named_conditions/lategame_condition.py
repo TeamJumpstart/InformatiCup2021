@@ -1,11 +1,9 @@
-from heuristics.conditions import (
-    Condition,
-    CompositeCondition,
-    PlayerInBiggestRegionCondition,
-    NearestOpponentDistanceCondition,
-    OccupiedCellsCondition,
-)
 import numpy as np
+
+from heuristics.conditions import (
+    CompositeCondition, Condition, NearestOpponentDistanceCondition, OccupiedCellsCondition,
+    PlayerInBiggestRegionCondition
+)
 
 
 class LategameCondition(Condition):

@@ -1,5 +1,5 @@
+from heuristics.conditions.named_conditions import EndgameCondition, LategameCondition, MidgameCondition
 from policies import ConditionalPolicy, load_named_policy
-from heuristics.conditions.named_conditions import EndgameCondition, MidgameCondition, LategameCondition
 
 pol = ConditionalPolicy(
     policies=[

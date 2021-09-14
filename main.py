@@ -1,18 +1,20 @@
 import argparse
-import time
-import multiprocessing as mp
-import numpy as np
-import matplotlib.pyplot as plt
-from tqdm import tqdm
-from environments import SimulatedSpe_edEnv, WebsocketEnv
-from environments.logging import Spe_edLogger, CloudUploader
-from environments.spe_ed import SavedGame
-from policies import HeuristicPolicy, load_named_policy
-from heuristics import PathLengthHeuristic
-from tournament.tournament import run_tournament
-import os
 import logging
+import multiprocessing as mp
+import os
+import time
 from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
+from tqdm import tqdm
+
+from environments import SimulatedSpe_edEnv, WebsocketEnv
+from environments.logging import CloudUploader, Spe_edLogger
+from environments.spe_ed import SavedGame
+from heuristics import PathLengthHeuristic
+from policies import HeuristicPolicy, load_named_policy
+from tournament.tournament import run_tournament
 
 # Set up logging
 logging.basicConfig(
@@ -74,8 +76,9 @@ def play(env, pol, show=False, render_file=None, fps=10, logger=None, silent=Tru
 
 def show_logfile(log_file, window_size=default_window_size):
     """Render logfile to mp4"""
-    from visualization import Spe_edAx
     from matplotlib.widgets import Slider
+
+    from visualization import Spe_edAx
 
     def format_state(t):
         s = "Players:\n"
@@ -121,10 +124,12 @@ def render_logfile(log_file, fps=10, silent=False, window_size=default_window_si
         fps: FPS of generated video.
         silent: Show no progress bar.
     """
-    from visualization import Spe_edAx, render_video
-    from imageio_ffmpeg import get_ffmpeg_exe
     import subprocess
     import tempfile
+
+    from imageio_ffmpeg import get_ffmpeg_exe
+
+    from visualization import Spe_edAx, render_video
 
     def temp_file_name(suffix):
         """Create the name of a temp file with given suffix without opening it."""
@@ -187,11 +192,18 @@ if __name__ == "__main__":
     )
     parser.add_argument('--show', action='store_true', help='Display games using an updating matplotlib plot.')
     parser.add_argument('--render-file', type=str, default=None, help='File to render to. Should end with .mp4')
-    parser.add_argument('--sim', action='store_true', help='The simulator environment runs a local simulation of Spe_ed instead of using the webserver.')
+    parser.add_argument(
+        '--sim',
+        action='store_true',
+        help='The simulator environment runs a local simulation of Spe_ed instead of using the webserver.'
+    )
     parser.add_argument('--log-file', type=str, default=None, help='Path to a log file, used to load and replay games.')
     parser.add_argument('--log-dir', type=str, default=None, help='Directory for storing or retrieving logs.')
     parser.add_argument(
-        '--t-config', type=str, default='./tournament/tournament_config.py', help='Path of the tournament config file containing which settings to run.'
+        '--t-config',
+        type=str,
+        default='./tournament/tournament_config.py',
+        help='Path of the tournament config file containing which settings to run.'
     )
     parser.add_argument('--upload', action='store_true', help='Upload generated log to cloud server.')
     parser.add_argument('--fps', type=int, default=10, help='FPS for rendering.')

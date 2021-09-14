@@ -1,5 +1,5 @@
-from policies import HeuristicPolicy
 from heuristics import CompositeHeuristic, PathLengthHeuristic, RegionHeuristic
+from policies import HeuristicPolicy
 
 pol = HeuristicPolicy(
     CompositeHeuristic([

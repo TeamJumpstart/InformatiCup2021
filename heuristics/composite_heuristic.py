@@ -1,6 +1,8 @@
 import time
-from heuristics.heuristic import Heuristic
+
 import numpy as np
+
+from heuristics.heuristic import Heuristic
 
 
 class CompositeHeuristic(Heuristic):

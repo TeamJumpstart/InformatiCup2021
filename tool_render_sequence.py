@@ -1,8 +1,10 @@
 from pathlib import Path
-from environments.spe_ed import SavedGame
+
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from tqdm import tqdm
+
+from environments.spe_ed import SavedGame
 
 cell_size = 16
 

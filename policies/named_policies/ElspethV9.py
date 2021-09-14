@@ -1,8 +1,8 @@
-from policies import HeuristicPolicy
 from heuristics import (
-    CompositeHeuristic, PathLengthHeuristic, RegionHeuristic, RandomProbingHeuristic, VoronoiHeuristic,
-    OpponentDistanceHeuristic
+    CompositeHeuristic, OpponentDistanceHeuristic, PathLengthHeuristic, RandomProbingHeuristic, RegionHeuristic,
+    VoronoiHeuristic
 )
+from policies import HeuristicPolicy
 
 # Variant of ElspethV7 with closing_iterations working
 pol = HeuristicPolicy(

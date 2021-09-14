@@ -1,5 +1,6 @@
-from heuristics.heuristic import Heuristic
 import numpy as np
+
+from heuristics.heuristic import Heuristic
 
 
 class RandomHeuristic(Heuristic):

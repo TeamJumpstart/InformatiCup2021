@@ -1,5 +1,6 @@
-from dataclasses import dataclass
 import json
+from dataclasses import dataclass
+
 import numpy as np
 
 actions = ("turn_left", "turn_right", "slow_down", "speed_up", "change_nothing")

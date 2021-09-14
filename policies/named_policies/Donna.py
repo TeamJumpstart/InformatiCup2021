@@ -1,5 +1,5 @@
-from policies import ActionSearchPolicy
 from heuristics import CompositeHeuristic, PathLengthHeuristic, RegionHeuristic
+from policies import ActionSearchPolicy
 
 pol = ActionSearchPolicy(
     CompositeHeuristic(

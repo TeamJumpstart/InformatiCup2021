@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from pathlib import Path
 from importlib.machinery import SourceFileLoader
+from pathlib import Path
 
 
 class Policy(ABC):

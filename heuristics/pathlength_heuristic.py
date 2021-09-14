@@ -1,6 +1,7 @@
 import time
-from heuristics.heuristic import Heuristic
+
 from environments.simulator import Spe_edSimulator
+from heuristics.heuristic import Heuristic
 
 # Reorder actions to hit early out condition as fast as possible
 # change_nothing first, as it's the most common action

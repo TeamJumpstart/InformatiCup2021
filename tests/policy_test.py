@@ -1,7 +1,8 @@
 import unittest
-from environments import SimulatedSpe_edEnv
+
 import policies
-from heuristics import RandomHeuristic, CompositeHeuristic
+from environments import SimulatedSpe_edEnv
+from heuristics import CompositeHeuristic, RandomHeuristic
 
 
 def run_policy(env, pol):

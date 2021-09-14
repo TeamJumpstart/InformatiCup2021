@@ -1,7 +1,8 @@
-from heuristics.conditions.condition import Condition
 import numpy as np
 from scipy import ndimage
 from scipy.ndimage import morphology
+
+from heuristics.conditions.condition import Condition
 
 
 class OpponentsInPlayerRegionCondition(Condition):

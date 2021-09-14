@@ -1,10 +1,6 @@
-from heuristics.conditions import (
-    Condition,
-    CompositeCondition,
-    PlayerInBiggestRegionCondition,
-    OccupiedCellsCondition,
-)
 import numpy as np
+
+from heuristics.conditions import CompositeCondition, Condition, OccupiedCellsCondition, PlayerInBiggestRegionCondition
 
 
 class MidgameCondition(Condition):

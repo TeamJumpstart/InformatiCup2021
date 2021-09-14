@@ -1,11 +1,13 @@
 import asyncio
-from datetime import datetime, timedelta
 import json
 import logging
-import requests
 import time
-import websockets
+from datetime import datetime, timedelta
+
 import numpy as np
+import requests
+import websockets
+
 from environments.spe_ed import Player
 from environments.spe_ed_env import Spe_edEnv
 

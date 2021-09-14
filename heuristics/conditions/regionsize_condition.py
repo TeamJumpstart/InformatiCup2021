@@ -1,7 +1,8 @@
-from heuristics.conditions import Condition
-from scipy.ndimage import morphology
-from scipy import ndimage
 from numpy import np
+from scipy import ndimage
+from scipy.ndimage import morphology
+
+from heuristics.conditions import Condition
 
 
 class RegionCondition(Condition):

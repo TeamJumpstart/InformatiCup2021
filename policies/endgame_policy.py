@@ -1,11 +1,13 @@
 import time
+
 import numpy as np
-from policies.policy import Policy
-from environments.simulator import Spe_edSimulator
-from environments import spe_ed
 from scipy import ndimage
 from scipy.ndimage import morphology
+
+from environments import spe_ed
+from environments.simulator import Spe_edSimulator
 from heuristics import PathLengthHeuristic
+from policies.policy import Policy
 
 
 def applyMorphology(cells, closing=0, opening=0, erosion=0, dilation=0):

@@ -1,7 +1,9 @@
 import unittest
+
 import numpy as np
-from numpy.testing import assert_array_equal, assert_array_almost_equal
-from environments.spe_ed import Player, directions_by_name, SavedGame
+from numpy.testing import assert_array_almost_equal, assert_array_equal
+
+from environments.spe_ed import Player, SavedGame, directions_by_name
 from state_representation import occupancy_map, padded_window
 
 

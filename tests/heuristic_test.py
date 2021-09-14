@@ -1,8 +1,10 @@
 import time
 import unittest
-from numpy.testing import assert_array_equal
-import heuristics
+
 import numpy as np
+from numpy.testing import assert_array_equal
+
+import heuristics
 from environments import spe_ed
 
 

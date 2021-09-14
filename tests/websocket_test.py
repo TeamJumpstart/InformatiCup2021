@@ -1,9 +1,11 @@
-import unittest
-from environments import WebsocketEnv
-import websockets
 import asyncio
 import json
 import threading
+import unittest
+
+import websockets
+
+from environments import WebsocketEnv
 
 
 class DummyServer:

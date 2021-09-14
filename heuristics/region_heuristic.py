@@ -1,7 +1,8 @@
-from heuristics.heuristic import Heuristic
-from scipy.ndimage import morphology
-from scipy import ndimage
 import numpy as np
+from scipy import ndimage
+from scipy.ndimage import morphology
+
+from heuristics.heuristic import Heuristic
 
 
 class RegionHeuristic(Heuristic):

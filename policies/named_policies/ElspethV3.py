@@ -1,5 +1,5 @@
+from heuristics import CompositeHeuristic, PathLengthHeuristic, RandomHeuristic, RandomProbingHeuristic, RegionHeuristic
 from policies import HeuristicPolicy
-from heuristics import CompositeHeuristic, PathLengthHeuristic, RegionHeuristic, RandomHeuristic, RandomProbingHeuristic
 
 # Variant of Elspeth with closing_iterations working
 pol = HeuristicPolicy(

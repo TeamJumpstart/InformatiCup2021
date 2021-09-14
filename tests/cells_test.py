@@ -1,4 +1,5 @@
 import unittest
+
 from environments.spe_ed import Cells, SavedGame
 from tests.heuristic_test import default_round1_board
 

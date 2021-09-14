@@ -1,9 +1,11 @@
 import time
 from math import prod
+
 import numpy as np
-from policies.policy import Policy
-from environments.simulator import Spe_edSimulator
+
 from environments import spe_ed
+from environments.simulator import Spe_edSimulator
+from policies.policy import Policy
 from state_representation import occupancy_map
 
 

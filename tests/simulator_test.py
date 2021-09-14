@@ -1,9 +1,11 @@
 import unittest
+from pathlib import Path
+
 import numpy as np
 from numpy.testing import assert_array_equal
+
 from environments import SimulatedSpe_edEnv, Spe_edSimulator
-from environments.spe_ed import Player, directions, SavedGame
-from pathlib import Path
+from environments.spe_ed import Player, SavedGame, directions
 
 
 class TestSimulatorEnv(unittest.TestCase):

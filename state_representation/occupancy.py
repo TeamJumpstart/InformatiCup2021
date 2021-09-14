@@ -1,5 +1,6 @@
 import numpy as np
-from environments import spe_ed, Spe_edSimulator
+
+from environments import Spe_edSimulator, spe_ed
 
 
 def occupancy_map(cells, opponents, rounds, depth=3, death_discount=1):

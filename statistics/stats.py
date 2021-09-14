@@ -1,10 +1,12 @@
 import logging
 from pathlib import Path
+from statistics.log_files import get_log_files
+
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+
 from environments.spe_ed import SavedGame
-from statistics.log_files import get_log_files
 
 
 def fetch_statistics(log_dir, csv_file, key_column='date'):

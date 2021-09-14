@@ -1,9 +1,11 @@
-import numpy as np
 from pathlib import Path
+from statistics import get_log_files
+
+import numpy as np
 from tqdm import tqdm
+
 from environments import spe_ed
 from environments.spe_ed import SavedGame
-from statistics import get_log_files
 from state_representation import windowed_abstraction
 
 

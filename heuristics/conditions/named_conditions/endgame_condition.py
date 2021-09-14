@@ -1,10 +1,8 @@
-from heuristics.conditions import (
-    Condition,
-    OpponentsInPlayerRegionCondition,
-    CompositeCondition,
-    PlayerInBiggestRegionCondition,
-)
 import numpy as np
+
+from heuristics.conditions import (
+    CompositeCondition, Condition, OpponentsInPlayerRegionCondition, PlayerInBiggestRegionCondition
+)
 
 
 class EndgameCondition(Condition):

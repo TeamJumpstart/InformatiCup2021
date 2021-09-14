@@ -1,6 +1,8 @@
 """This tool script can be used to create custom log files."""
 import json
+
 import numpy as np
+
 from environments import Spe_edSimulator
 from environments.spe_ed import Player, directions_by_name
 

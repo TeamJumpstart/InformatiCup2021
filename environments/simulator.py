@@ -1,5 +1,7 @@
 import time
+
 import numpy as np
+
 from environments.spe_ed import Player, directions
 from environments.spe_ed_env import Spe_edEnv
 

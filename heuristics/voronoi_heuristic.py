@@ -1,7 +1,9 @@
 import time
-from heuristics.heuristic import Heuristic
+
 import numpy as np
 from scipy.ndimage import morphology
+
+from heuristics.heuristic import Heuristic
 
 
 class VoronoiHeuristic(Heuristic):

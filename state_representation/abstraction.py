@@ -1,4 +1,5 @@
 import numpy as np
+
 from state_representation.occupancy import occupancy_map
 from state_representation.window import padded_window
 

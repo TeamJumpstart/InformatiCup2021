@@ -1,11 +1,13 @@
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
 from pathlib import Path
-from visualization import WinRateAx
 from statistics.stats import fetch_statistics, get_win_rate, normalize_winrate
+
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sns
 import pandas as pd
+import seaborn as sns
+
+from visualization import WinRateAx
 
 
 def plot_win_rate_over_time(output_file, stats):

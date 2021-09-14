@@ -1,5 +1,6 @@
-import numpy as np
 import gym
+import numpy as np
+
 from environments.spe_ed import Cells
 
 
@@ -21,8 +22,9 @@ class Spe_edEnv(gym.Env):
         self.viewer = None
 
     def render(self, mode='human', screen_width=720, screen_height=720):
-        from visualization import Spe_edAx
         import matplotlib.pyplot as plt
+
+        from visualization import Spe_edAx
 
         if self.viewer is None:
             fig = plt.figure(

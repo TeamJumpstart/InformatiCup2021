@@ -1,5 +1,6 @@
-from heuristics.conditions.condition import Condition
 import numpy as np
+
+from heuristics.conditions.condition import Condition
 
 
 class OccupiedCellsCondition(Condition):

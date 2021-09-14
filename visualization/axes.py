@@ -1,8 +1,8 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 from matplotlib.colors import ListedColormap
 from matplotlib.dates import AutoDateLocator
-import pandas as pd
 
 player_colors = [
     (204.0 / 255, 7.0 / 255, 30.0 / 255, 1.0),  # Player 1 - red

@@ -1,5 +1,5 @@
-from policies import Maximin_SearchPolicy
 from heuristics import RegionHeuristic
+from policies import Maximin_SearchPolicy
 
 # Endgame policy, for composites
 pol = Maximin_SearchPolicy(
