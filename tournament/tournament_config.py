@@ -1,4 +1,4 @@
-from policies import RandomPolicy, SpiralPolicy, load_named_policy
+from policies import SpiralPolicy, load_named_policy
 
 # participating policies with short nick names
 policies = [

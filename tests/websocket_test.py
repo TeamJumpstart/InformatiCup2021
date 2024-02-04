@@ -1,11 +1,8 @@
 import asyncio
 import json
-import threading
 import unittest
 
 import websockets
-
-from environments import WebsocketEnv
 
 
 class DummyServer:
@@ -13,9 +10,8 @@ class DummyServer:
         self.url = url
         self.port = port
         self.step_counter = 0
-        file = open("tests/spe_ed-1603124417603.json", "r")
-        self.states = json.load(file)
-        file.close()
+        with open("tests/spe_ed-1603124417603.json") as file:
+            self.states = json.load(file)
         # Start new thread from current loop
         self.__serving = asyncio.get_event_loop().run_in_executor(None, self.run)
         self.__starting = asyncio.get_event_loop().create_future()
@@ -54,7 +50,6 @@ class DummyServer:
         self.__starting.get_loop().call_soon_threadsafe(self.__starting.set_result, None)
 
         loop.run_until_complete(self.serve())  # Run serve in loop until stopped
-        # threading.Thread(target=loop.run_forever).start()
         loop.close()
         print("Server stopped")
 
@@ -76,12 +71,3 @@ class TestWebsocketEnvironment(unittest.TestCase):
     def tearDown(self):
         print("Stop")
         self.server.stop()
-
-    # def test_connection(self):
-    #     env = WebsocketEnv(f"ws://{self.url}:{self.port}", self.key)
-    #     obs = env.reset()
-    #     done = False
-    #     while not done:
-    #         action = "change_nothing"
-    #         obs, reward, done, _ = env.step(action)
-    #         print(done)

@@ -2,7 +2,6 @@ import logging
 from pathlib import Path
 from statistics.log_files import get_log_files
 
-import numpy as np
 import pandas as pd
 from tqdm import tqdm
 

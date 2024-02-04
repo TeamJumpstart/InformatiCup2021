@@ -1,3 +1,4 @@
+import contextlib
 import json
 import logging
 from datetime import datetime
@@ -47,10 +48,8 @@ class CloudUploader:
         oc = owncloud.Client(self.url)
         oc.login(self.user, self.password)
 
-        try:  # Create folder
+        with contextlib.suppress(owncloud.HTTPResponseError):
             oc.mkdir(self.remote_dir)
-        except owncloud.HTTPResponseError:
-            pass
 
         oc.put_file(self.remote_dir + log_file.name, str(log_file))
 

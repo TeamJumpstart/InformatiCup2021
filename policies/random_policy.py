@@ -30,9 +30,7 @@ class RandomPolicy(Policy):
         action = self.rng.choice(actions, p=self.p)
 
         # Check for illegal actions
-        if player.speed >= 10 and action == "speed_up":
-            action = "change_nothing"
-        elif player.speed <= 1 and action == "slow_down":
+        if (player.speed >= 10 and action == "speed_up") or (player.speed <= 1 and action == "slow_down"):
             action = "change_nothing"
 
         return action

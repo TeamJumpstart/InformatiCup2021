@@ -54,9 +54,9 @@ class Spe_edEnv(gym.Env):
     def _validate_action(self, action):
         """Change illegal actions to do nothing"""
         controlled_player = self.players[0]
-        if controlled_player.speed >= 10 and action == "speed_up":
-            action = "change_nothing"
-        elif controlled_player.speed <= 1 and action == "slow_down":
+        if (controlled_player.speed >= 10 and action == "speed_up") or (
+            controlled_player.speed <= 1 and action == "slow_down"
+        ):
             action = "change_nothing"
         return action
 

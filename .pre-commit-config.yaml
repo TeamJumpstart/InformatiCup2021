@@ -9,7 +9,34 @@ repos:
       - id: check-executables-have-shebangs
       - id: check-shebang-scripts-are-executable
       - id: end-of-file-fixer
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.15.0
+    hooks:
+      - id: pyupgrade
+        args:
+          - "--py38-plus"
   - repo: https://github.com/psf/black-pre-commit-mirror
     rev: 23.12.1
     hooks:
       - id: black
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+  - repo: https://github.com/PyCQA/flake8
+    rev: 6.1.0
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          - flake8-absolute-import
+          # - flake8-annotations
+          - flake8-builtins
+          - flake8-comprehensions
+          # - flake8-docstrings
+          - flake8-future-annotations
+          - flake8-no-implicit-concat
+          # - flake8-print
+          # - flake8-requirements
+          - flake8-simplify
+          - flake8-use-fstring
+          - flake8-use-pathlib

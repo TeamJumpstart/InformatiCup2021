@@ -20,13 +20,13 @@ def easeOutCubic(t):
 
 def names_to_codes(names):
     code_map = {}
-    id = 0
+    name_id = 0
 
     codes = []
     for name in names:
         if name not in code_map:
-            code_map[name] = id
-            id += 1
+            code_map[name] = name_id
+            name_id += 1
 
         codes.append(code_map[name])
 

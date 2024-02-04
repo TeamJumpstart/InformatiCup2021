@@ -91,7 +91,7 @@ class WebsocketEnv(Spe_edEnv):
         """Wait for send action."""
         await self.websocket.send(json.dumps({"action": action}))
         elapsed_time = time.time() + self.time_limit - self.deadline
-        logging.info(f"Client sent action {action}, took {elapsed_time:.02f}s ({elapsed_time/self.time_limit:.02%})")
+        logging.info(f"Client sent action {action}, took {elapsed_time:.02f}s ({elapsed_time / self.time_limit:.02%})")
 
     def game_state(self):
         """Get current game state as dict."""
@@ -119,7 +119,7 @@ def measure_server_time(time_url="https://msoll.de/spe_ed_time", n_probes=10):
             datetime.strptime(data["time"], "%Y-%m-%dT%H:%M:%S%z") + timedelta(milliseconds=int(data["milliseconds"]))
         ).timestamp()
         if last_server_time is not None:
-            time_deltas.append((server_time - last_server_time))
+            time_deltas.append(server_time - last_server_time)
 
         time_offsets.append(now - server_time)
         last_server_time = server_time

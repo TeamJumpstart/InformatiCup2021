@@ -1,8 +1,6 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib.colors import ListedColormap
-from matplotlib.dates import AutoDateLocator
 
 player_colors = [
     (204.0 / 255, 7.0 / 255, 30.0 / 255, 1.0),  # Player 1 - red
@@ -66,6 +64,5 @@ class WinRateAx:
         (line,) = ax.plot(date, mean, label="win rate", c=player_colors[0])
         c = line.get_color()
         ax.fill_between(date, low, high, facecolor=c, alpha=0.25, interpolate=True, label="confidence interval")
-        # ax.xaxis.set_major_locator(AutoDateLocator(maxticks=6))
         ax.set_xlim(date[0], date[-1] + pd.offsets.Day(1))
         ax.set_ylim(0, 1)

@@ -11,7 +11,7 @@ class MazeWalkerPolicy(Policy):
         """Initialize MazeWalkerPolicy."""
         self.hit_wall = False
 
-    def act(self, cells, player, opponents, round, deadline):
+    def act(self, cells, player, opponents, rounds, deadline):
         """Choose action."""
 
         def is_free(pos):
