@@ -36,7 +36,7 @@ repos:
           - flake8-future-annotations
           - flake8-no-implicit-concat
           # - flake8-print
-          # - flake8-requirements
+          - flake8-requirements
           - flake8-simplify
           - flake8-use-fstring
           - flake8-use-pathlib
