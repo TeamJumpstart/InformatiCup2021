@@ -7,17 +7,19 @@ pol = HeuristicPolicy(
         [
             PathLengthHeuristic(20),
             RandomProbingHeuristic(
-                CompositeHeuristic([
-                    RegionHeuristic(),
-                    RegionHeuristic(closing_iterations=1),
-                ]),
+                CompositeHeuristic(
+                    [
+                        RegionHeuristic(),
+                        RegionHeuristic(closing_iterations=1),
+                    ]
+                ),
                 n_steps=6,
-                n_probes=20
+                n_probes=20,
             ),
             RegionHeuristic(),
             RandomHeuristic(),
         ],
-        weights=[20, 10, 1, 1e-4]
+        weights=[20, 10, 1, 1e-4],
     ),
-    occupancy_map_depth=3
+    occupancy_map_depth=3,
 )

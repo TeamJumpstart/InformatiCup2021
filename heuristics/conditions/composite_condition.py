@@ -5,6 +5,7 @@ from heuristics.conditions.condition import Condition
 
 class CompositeCondition(Condition):
     """Allows to combine multiple conditions into a single score evaluating the same board state."""
+
     def __init__(self, conditions, thresholds=None, logical_op=np.logical_and, compare_op=np.greater_equal):
         """Initialize CompositeCondition.
 
@@ -39,8 +40,10 @@ class CompositeCondition(Condition):
 
     def __str__(self):
         """Get readable representation."""
-        return "CompositeCondition(" + \
-            f"[{','.join([str(condition) for condition in self.conditions])}], " + \
-            f"weights={self.thresholds}, " + \
-            f"logical_op={self.logical_op}, " + \
-            ")"
+        return (
+            "CompositeCondition("
+            + f"[{','.join([str(condition) for condition in self.conditions])}], "
+            + f"weights={self.thresholds}, "
+            + f"logical_op={self.logical_op}, "
+            + ")"
+        )

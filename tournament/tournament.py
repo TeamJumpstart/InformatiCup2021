@@ -21,7 +21,7 @@ def init_stats_lock(l):
     stats_lock = l
 
 
-class TournamentLogger():
+class TournamentLogger:
     def __init__(self, log_dir, write_logs):
         self.log_dir = Path(log_dir)
         self.csv_file = self.log_dir.parent / "statistics.csv"
@@ -40,7 +40,7 @@ class TournamentLogger():
         # Write log files
         if self.write_logs:
             with open(log_file, "w") as f:
-                json.dump(states, f, separators=(',', ':'))
+                json.dump(states, f, separators=(",", ":"))
 
         # Append new statisics
         game = SavedGame(states)
@@ -48,15 +48,15 @@ class TournamentLogger():
             [
                 (
                     log_file.name[:-5],  # name of game
-                    game.rounds,  # rounds
-                    game.winner.name if game.winner is not None else None,  # winner
-                    game.names[game.you - 1] if game.you is not None else None,  # you
+                    game.rounds,
+                    game.winner.name if game.winner is not None else None,
+                    game.names[game.you - 1] if game.you is not None else None,  # rounds  # winner  # you
                     game.names,  # names
                     game.width,
                     game.height,
                 )
             ],
-            columns=["uuid", "rounds", "winner", "you", "names", "width", "height"]
+            columns=["uuid", "rounds", "winner", "you", "names", "width", "height"],
         )
         times_file = self.csv_file.parent / "times.csv"
         df_times = pd.DataFrame(
@@ -64,12 +64,13 @@ class TournamentLogger():
         )
 
         with stats_lock:  # Ensure only one process is writing
-            df_stats.to_csv(self.csv_file, mode='a', header=not self.csv_file.exists(), index=False)
-            df_times.to_csv(times_file, mode='a', header=not times_file.exists(), index=False)
+            df_stats.to_csv(self.csv_file, mode="a", header=not self.csv_file.exists(), index=False)
+            df_times.to_csv(times_file, mode="a", header=not times_file.exists(), index=False)
 
 
 class TournamentEnv(SimulatedSpe_edEnv):
     """Environment for performing tournaments."""
+
     def __init__(self, width, height, policies, time_limit=5):
         """Initialize TournamentEnv.
 
@@ -108,12 +109,12 @@ class TournamentEnv(SimulatedSpe_edEnv):
     def game_state(self):
         """Get current game state as dict."""
         return {
-            'width': self.width,
-            'height': self.height,
-            'cells': self.cells.tolist(),
-            'players': dict(p.to_dict() for p in self.players),
-            'you': None,
-            'running': sum(1 for p in self.players if p.active) > 1,
+            "width": self.width,
+            "height": self.height,
+            "cells": self.cells.tolist(),
+            "players": dict(p.to_dict() for p in self.players),
+            "you": None,
+            "running": sum(1 for p in self.players if p.active) > 1,
         }
 
 
@@ -151,7 +152,7 @@ def play_game(width, height, policies, show=False, logger=None):
 def run_tournament(show, log_dir, tournament_config_file, cores=None):
     """Run a sequence of games in different combinations of given policies and log their results."""
     # load config file
-    config = SourceFileLoader('tournament_config', tournament_config_file).load_module()
+    config = SourceFileLoader("tournament_config", tournament_config_file).load_module()
     if len(config.policies) < 6:
         raise ValueError("Must provide at least 6 policies")
 
@@ -164,11 +165,8 @@ def run_tournament(show, log_dir, tournament_config_file, cores=None):
         logger = None
 
     with mp.Pool(
-        cores,
-        initializer=init_stats_lock,  # Pass the stats lock to all spawned subprocesses
-        initargs=(mp.Lock(), )
+        cores, initializer=init_stats_lock, initargs=(mp.Lock(),)  # Pass the stats lock to all spawned subprocesses
     ) as pool, tqdm(desc="Simulating games", total=config.n_games) as pbar:
-
         for _ in range(config.n_games):
             n_players = np.random.choice(5, p=config.n_players_distribution) + 2
             width = np.random.randint(config.min_size, config.max_size + 1)

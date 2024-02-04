@@ -9,6 +9,7 @@ actions = ("turn_left", "turn_right", "slow_down", "speed_up", "change_nothing")
 @dataclass(frozen=True)
 class Direction(np.lib.mixins.NDArrayOperatorsMixin):
     """Common operations for directions."""
+
     index: int
     name: str
     angle: float
@@ -42,6 +43,7 @@ directions_by_name = {d.name: d for d in directions}
 @dataclass
 class Player:
     """Player object."""
+
     player_id: int
     x: int
     y: int
@@ -67,19 +69,19 @@ class Player:
         if not self.active:
             return
 
-        if action == 'turn_left':
+        if action == "turn_left":
             self.direction = self.direction.turn_left()
-        elif action == 'turn_right':
+        elif action == "turn_right":
             self.direction = self.direction.turn_right()
-        elif action == 'slow_down':
+        elif action == "slow_down":
             self.speed -= 1
             if self.speed < 1:  # Check minimum speed
                 self.active = False
-        elif action == 'speed_up':
+        elif action == "speed_up":
             self.speed += 1
             if self.speed > 10:  # Check maximum speed
                 self.active = False
-        elif action == 'change_nothing':
+        elif action == "change_nothing":
             pass
         else:  # Invalid
             self.active = False
@@ -87,8 +89,12 @@ class Player:
     def __eq__(self, other):
         if self.__class__ == other.__class__:
             return (
-                self.player_id == other.player_id and self.x == other.x and self.y == other.y and
-                self.direction == other.direction and self.speed == other.speed and self.active == other.active
+                self.player_id == other.player_id
+                and self.x == other.x
+                and self.y == other.y
+                and self.direction == other.direction
+                and self.speed == other.speed
+                and self.active == other.active
             )
         return False
 
@@ -100,31 +106,32 @@ class Player:
         """Create Player object from json data."""
         return cls(
             player_id=int(player_id),
-            x=data['x'],
-            y=data['y'],
-            direction=directions_by_name[data['direction']],
-            speed=data['speed'],
-            active=data['active'],
-            name=data.get('name'),
+            x=data["x"],
+            y=data["y"],
+            direction=directions_by_name[data["direction"]],
+            speed=data["speed"],
+            active=data["active"],
+            name=data.get("name"),
         )
 
     def to_dict(self):
         """Serialize Player object for JSON storage."""
         d = {
-            'x': int(self.x),  # Cast to python int
-            'y': int(self.y),
-            'direction': self.direction.name,
-            'speed': self.speed,
-            'active': self.active,
+            "x": int(self.x),  # Cast to python int
+            "y": int(self.y),
+            "direction": self.direction.name,
+            "speed": self.speed,
+            "active": self.active,
         }
         if self.name is not None:  # Add name if present
-            d['name'] = self.name
+            d["name"] = self.name
 
         return str(self.player_id), d
 
 
 class Cells(np.ndarray):
     """Cell state wrapper for common methods."""
+
     def __new__(cls, cells):
         return cells.view(cls)
 
@@ -178,6 +185,7 @@ class SavedGame:
     * running: Redundant, last state has running=False
     * deadline: irrelevant
     """
+
     def __init__(self, data):
         """Initialize SavedGame.
 
@@ -185,9 +193,9 @@ class SavedGame:
             data: JSON object
         """
         self.data = data
-        self.cell_states = [np.array(state['cells'], dtype=np.int8) for state in data]
+        self.cell_states = [np.array(state["cells"], dtype=np.int8) for state in data]
         self.player_states = [
-            [Player.from_json(player_id, player_data) for player_id, player_data in state['players'].items()]
+            [Player.from_json(player_id, player_data) for player_id, player_data in state["players"].items()]
             for state in data
         ]
         self.height, self.width = self.cell_states[0].shape

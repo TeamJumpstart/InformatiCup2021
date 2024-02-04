@@ -9,7 +9,7 @@ from environments import spe_ed
 
 
 def empty_board_1player():
-    """ board state visualised: board size = 5x5
+    """board state visualised: board size = 5x5
     - - - - -
     - - - - -
     - - 1 - -
@@ -24,7 +24,7 @@ def empty_board_1player():
 
 
 def empty_board_2players():
-    """ board state visualised: board size = 5x5
+    """board state visualised: board size = 5x5
     2 - - - -
     - - - - -
     - - - - -
@@ -39,7 +39,7 @@ def empty_board_2players():
 
 
 def empty_board_3players():
-    """ board state visualised: board size = 5x5
+    """board state visualised: board size = 5x5
     2 - - - 3
     - - - - -
     - - - - -
@@ -50,14 +50,14 @@ def empty_board_3players():
     player = spe_ed.Player(player_id=1, x=4, y=4, direction=spe_ed.directions[3], speed=1, active=True)
     opponents = [
         spe_ed.Player(player_id=2, x=0, y=0, direction=spe_ed.directions[1], speed=1, active=True),
-        spe_ed.Player(player_id=3, x=0, y=4, direction=spe_ed.directions[1], speed=1, active=True)
+        spe_ed.Player(player_id=3, x=0, y=4, direction=spe_ed.directions[1], speed=1, active=True),
     ]
     rounds = 0
     return (cells, player, opponents, rounds, time.time() + 10)
 
 
 def default_round1_board():
-    """ board state visualised: board size = 5x5
+    """board state visualised: board size = 5x5
     # - - - -
     2 - - - -
     - - # 1 -
@@ -78,7 +78,7 @@ def default_round1_board():
 
 
 def default_almost_full_board():
-    """ board state visualised: board size = 5x5
+    """board state visualised: board size = 5x5
     - # # # #
     - # # # #
     2 # - - 1
@@ -186,32 +186,36 @@ class TestVoronoiHeuristic(unittest.TestCase):
 class TestRandomProbingHeuristic(unittest.TestCase):
     def test_empty_board(self):
         """Evaluating the policy should not throw any error."""
-        heuristics.RandomProbingHeuristic(heuristics.RegionHeuristic(), n_steps=5,
-                                          n_probes=100).score(*empty_board_1player())
+        heuristics.RandomProbingHeuristic(heuristics.RegionHeuristic(), n_steps=5, n_probes=100).score(
+            *empty_board_1player()
+        )
 
     def test_default_round1_board(self):
         """Evaluating the policy should not throw any error."""
-        heuristics.RandomProbingHeuristic(heuristics.RegionHeuristic(), n_steps=5,
-                                          n_probes=100).score(*default_round1_board())
+        heuristics.RandomProbingHeuristic(heuristics.RegionHeuristic(), n_steps=5, n_probes=100).score(
+            *default_round1_board()
+        )
 
     def test_default_almost_full_board(self):
         """Evaluating the policy should not throw any error."""
-        heuristics.RandomProbingHeuristic(heuristics.RegionHeuristic(), n_steps=5,
-                                          n_probes=100).score(*default_almost_full_board())
+        heuristics.RandomProbingHeuristic(heuristics.RegionHeuristic(), n_steps=5, n_probes=100).score(
+            *default_almost_full_board()
+        )
 
     def test_immutable_input(self):
         """Check if the heuristic modifies the input data itself."""
         board_state = default_round1_board()
-        heuristics.RandomProbingHeuristic(heuristic=heuristics.RandomHeuristic(), n_steps=5,
-                                          n_probes=10).score(*board_state)
+        heuristics.RandomProbingHeuristic(heuristic=heuristics.RandomHeuristic(), n_steps=5, n_probes=10).score(
+            *board_state
+        )
 
         assert_array_equal(board_state[0], default_round1_board()[0])
 
 
 class TestPathLengthHeuristic(unittest.TestCase):
     def test_small_board(self):
-        """ board state visualised: board size = 1x3
-        1 - - 
+        """board state visualised: board size = 1x3
+        1 - -
         """
         cells = np.zeros((1, 3), dtype=bool)
         player = spe_ed.Player(player_id=1, x=0, y=0, direction=spe_ed.directions[0], speed=1, active=True)
@@ -228,8 +232,8 @@ class TestPathLengthHeuristic(unittest.TestCase):
         self.assertEqual(score, 2 / 3)
 
     def test_small_board2(self):
-        """ board state visualised: board size = 1x3
-        1 - - 
+        """board state visualised: board size = 1x3
+        1 - -
         - - -
         """
         cells = np.zeros((2, 3), dtype=bool)
@@ -284,13 +288,13 @@ class TestCompositeHeuristic(unittest.TestCase):
                 heuristics.RandomHeuristic(),
                 heuristics.RandomHeuristic(),
             ],
-            weights=[1, 20000, 1000]
+            weights=[1, 20000, 1000],
         ).score(*empty_board_1player())
         self.assertGreaterEqual(score, 0.0)
         self.assertLessEqual(score, 1.0)
 
     def test_default_weights(self):
-        """ Composite heuristic should be callable within other composite heuristic.
+        """Composite heuristic should be callable within other composite heuristic.
         Should return always a normalized result.
         """
         score = heuristics.CompositeHeuristic(
@@ -303,7 +307,7 @@ class TestCompositeHeuristic(unittest.TestCase):
         self.assertLessEqual(score, 1.0)
 
     def test_double_stacked_composites(self):
-        """ Composite heuristic should be callable within other composite heuristic.
+        """Composite heuristic should be callable within other composite heuristic.
         Should return always a normalized result.
         """
         score = heuristics.CompositeHeuristic(
@@ -315,7 +319,7 @@ class TestCompositeHeuristic(unittest.TestCase):
                         heuristics.RandomHeuristic(),
                         heuristics.PathLengthHeuristic(n_steps=2),
                     ],
-                    weights=[1, 2000]
+                    weights=[1, 2000],
                 ),
             ]
         ).score(*default_round1_board())

@@ -9,6 +9,7 @@ class Spe_edEnv(gym.Env):
 
     Handles common operations like rendering.
     """
+
     def __init__(self, width, height):
         self.width = width
         self.height = height
@@ -21,7 +22,7 @@ class Spe_edEnv(gym.Env):
 
         self.viewer = None
 
-    def render(self, mode='human', screen_width=720, screen_height=720):
+    def render(self, mode="human", screen_width=720, screen_height=720):
         import matplotlib.pyplot as plt
 
         from visualization import Spe_edAx
@@ -35,15 +36,15 @@ class Spe_edEnv(gym.Env):
             ax = plt.subplot(1, 1, 1)
             self.viewer = Spe_edAx(fig, ax, self.cells, self.players)
 
-            if mode == 'human':
+            if mode == "human":
                 plt.show(block=False)
         else:
             self.viewer.update(self.cells, self.players)
 
-        if mode == 'human':
+        if mode == "human":
             plt.pause(1e-6)  # Let plot handlers resolve and update window
             return not self.viewer.closed
-        elif mode == 'rgb_array':
+        elif mode == "rgb_array":
             # Redraw and fetch rgb-array from plot
             fig = plt.gcf()
             fig.canvas.draw()

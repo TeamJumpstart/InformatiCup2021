@@ -11,6 +11,7 @@ class RandomPolicy(Policy):
 
     Baseline strategy, each smarter policy should be able to outperform this.
     """
+
     def __init__(self, seed=None, p=None):
         """Initialize RandomPolicy.
 

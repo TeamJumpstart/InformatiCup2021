@@ -16,13 +16,13 @@ def padded_window(cells, x, y, radius, padding_value=0):
 
     if radius <= x < width - radius and radius <= y < height - radius:
         # No padding neccessary, return direct slice
-        window = cells[y - radius:y + radius + 1, x - radius:x + radius + 1]
+        window = cells[y - radius : y + radius + 1, x - radius : x + radius + 1]
     else:  # Padding required
         # Initialize window with padding and copy the visible cells
         window = np.empty((radius * 2 + 1, radius * 2 + 1), dtype=cells.dtype)
         window[:] = padding_value
-        window[max(0, radius - y):min(radius * 2 + 1, height + radius - y),
-               max(0, radius - x):min(radius * 2 + 1, width + radius - x)] = \
-            cells[max(0, y - radius):min(height, y + radius + 1),
-                  max(0, x - radius):min(width, x + radius + 1)]
+        window[
+            max(0, radius - y) : min(radius * 2 + 1, height + radius - y),
+            max(0, radius - x) : min(radius * 2 + 1, width + radius - x),
+        ] = cells[max(0, y - radius) : min(height, y + radius + 1), max(0, x - radius) : min(width, x + radius + 1)]
     return window

@@ -6,6 +6,7 @@ class SpiralPolicy(Policy):
 
     Baseline strategy, smarter policies should be able to outperform this.
     """
+
     def __init__(self):
         """Initialize MazeWalkerPolicy."""
         self.clockwise = True

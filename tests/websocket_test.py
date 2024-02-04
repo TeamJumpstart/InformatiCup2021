@@ -29,7 +29,7 @@ class DummyServer:
             print("Server: send state", flush=True)
             message = await websocket.recv()
             print("Server: received command")
-            assert (json.loads(message)['action'] == "change_nothing")
+            assert json.loads(message)["action"] == "change_nothing"
             self.step_counter += 1
             if self.step_counter >= len(self.states):
                 print("counter exceeded")

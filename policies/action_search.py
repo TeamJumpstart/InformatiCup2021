@@ -10,6 +10,7 @@ from state_representation import occupancy_map
 
 class ActionSearchPolicy(Policy):
     """Policy that performs a greedy search for that action that will maximize the heuristic."""
+
     def __init__(self, heuristic, depth_limit=6, expanded_node_limit=100, occupancy_map_depth=0):
         """Initialize ActionSearchPolicy.
 
@@ -69,7 +70,9 @@ class ActionSearchPolicy(Policy):
 
     def __repr__(self):
         """Get exact representation."""
-        return f"ActionSearchPolicy(heuristic={str(self.heuristic)}, " + \
-            f"depth_limit={self.depth_limit}, " + \
-            f"expanded_node_limit={self.expanded_node_limit}, " + \
-            f"occupancy_map_depth={self.occupancy_map_depth})"
+        return (
+            f"ActionSearchPolicy(heuristic={self.heuristic}, "
+            + f"depth_limit={self.depth_limit}, "
+            + f"expanded_node_limit={self.expanded_node_limit}, "
+            + f"occupancy_map_depth={self.occupancy_map_depth})"
+        )

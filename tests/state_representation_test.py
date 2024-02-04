@@ -39,13 +39,14 @@ class TestOccupancyMap(unittest.TestCase):
         )
 
         assert_array_almost_equal(
-            occ, [
+            occ,
+            [
                 [0, 0, 0, 0, 0],
                 [0, 0, 1 / 5, 0, 0],
                 [0, 0, 1, 2 / 5, 1 / 5],
                 [0, 0, 1 / 5, 0, 0],
                 [0, 0, 0, 0, 0],
-            ]
+            ],
         )
 
     def test_depth_2(self):
@@ -84,13 +85,14 @@ class TestOccupancyMap(unittest.TestCase):
         )
 
         assert_array_almost_equal(
-            occ, [
+            occ,
+            [
                 [0, 0, 0, 0, 0],
                 [1 / 5, 0, 0, 0, 0],
                 [1, 3 / 5, 1 / 5, 1 / 5, 1 / 5],
                 [1 / 5, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
-            ]
+            ],
         )
 
 
@@ -101,34 +103,37 @@ class TestPaddedWindow(unittest.TestCase):
         t = 0
         window = padded_window(game.cell_states[t], game.player_states[t][0].x, game.player_states[t][0].y, 2, -1)
         assert_array_equal(
-            window, [
+            window,
+            [
                 [0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
                 [0, 0, 1, 0, 0],
                 [0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
-            ]
+            ],
         )
 
         t = 4
         window = padded_window(game.cell_states[t], game.player_states[t][0].x, game.player_states[t][0].y, 2, -1)
         assert_array_equal(
-            window, [
+            window,
+            [
                 [0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
                 [0, 0, 1, 0, 0],
                 [0, 0, 1, 0, 0],
                 [0, 0, 1, 1, 1],
-            ]
+            ],
         )
         t = 23
         window = padded_window(game.cell_states[t], game.player_states[t][0].x, game.player_states[t][0].y, 2, -1)
         assert_array_equal(
-            window, [
+            window,
+            [
                 [0, 0, 1, 0, 0],
                 [0, 0, 1, 0, 0],
                 [0, 0, 1, 0, 0],
                 [0, 0, 0, 0, 0],
                 [-1, -1, -1, -1, -1],
-            ]
+            ],
         )

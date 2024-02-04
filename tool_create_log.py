@@ -1,4 +1,5 @@
 """This tool script can be used to create custom log files."""
+
 import json
 
 import numpy as np
@@ -14,12 +15,12 @@ def write_history(log_file, sim):
     while sim is not None:
         states = [
             {
-                'width': sim.cells.shape[1],
-                'height': sim.cells.shape[0],
-                'cells': sim.cells.tolist(),
-                'players': dict(p.to_dict() for p in sim.players),
-                'you': sim.players[0].player_id,
-                'running': running,
+                "width": sim.cells.shape[1],
+                "height": sim.cells.shape[0],
+                "cells": sim.cells.tolist(),
+                "players": dict(p.to_dict() for p in sim.players),
+                "you": sim.players[0].player_id,
+                "running": running,
             }
         ] + states
         sim = sim.parent

@@ -1,6 +1,10 @@
 from heuristics import (
-    CompositeHeuristic, OpponentDistanceHeuristic, PathLengthHeuristic, RandomProbingHeuristic, RegionHeuristic,
-    VoronoiHeuristic
+    CompositeHeuristic,
+    OpponentDistanceHeuristic,
+    PathLengthHeuristic,
+    RandomProbingHeuristic,
+    RegionHeuristic,
+    VoronoiHeuristic,
 )
 from policies import HeuristicPolicy
 
@@ -20,7 +24,7 @@ pol = HeuristicPolicy(
                     [
                         VoronoiHeuristic(max_steps=12, minimize_opponents=True),
                         RegionHeuristic(),
-                        OpponentDistanceHeuristic(dist_threshold=6)
+                        OpponentDistanceHeuristic(dist_threshold=6),
                     ]
                 ),
                 n_steps=2,
@@ -34,8 +38,8 @@ pol = HeuristicPolicy(
                 n_probes=1,
             ),
         ],
-        weights=[20, 5, 4, 1, 1]
+        weights=[20, 5, 4, 1, 1],
     ),
     # defines how aggresive our policy is (bigger value - avoids enemys more)
-    occupancy_map_depth=3
+    occupancy_map_depth=3,
 )

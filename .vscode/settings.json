@@ -1,9 +1,15 @@
 {
-  "python.linting.pylintEnabled": false,
-  "python.linting.flake8Enabled": true,
-  "python.linting.enabled": true,
   "editor.formatOnSave": true,
-  "python.formatting.provider": "yapf",
   "python.testing.unittestArgs": ["-v", "-s", "./tests", "-p", "*_test.py"],
-  "python.testing.unittestEnabled": true
+  "python.testing.unittestEnabled": true,
+  "git.rebaseWhenSync": true,
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  }
 }

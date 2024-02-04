@@ -3,6 +3,7 @@ from heuristics.heuristic import Heuristic
 
 class ConstantHeuristic(Heuristic):
     """Returns a constant number."""
+
     def __init__(self, value=1):
         """Initialize ConstantHeuristic.
 

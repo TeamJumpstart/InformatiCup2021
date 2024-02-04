@@ -5,8 +5,9 @@ from heuristics.conditions.condition import Condition
 
 class OccupiedCellsCondition(Condition):
     """Returns number of rounds."""
+
     def __init__(self):
-        """Initialize OccupiedCellsCondition. """
+        """Initialize OccupiedCellsCondition."""
 
     def score(self, cells, player, opponents, rounds, deadline):
         """Return number of rounds."""

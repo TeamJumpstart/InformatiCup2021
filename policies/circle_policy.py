@@ -6,6 +6,7 @@ class CirclePolicy(Policy):
 
     Baseline strategy, smarter policies should be able to outperform this.
     """
+
     def act(self, cells, player, opponents, round, deadline):
         """Choose action."""
         # directions - relative to player direction

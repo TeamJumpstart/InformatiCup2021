@@ -19,8 +19,8 @@ from tournament.tournament import run_tournament
 # Set up logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s %(levelname)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
+    format="%(asctime)s %(levelname)s: %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 
 default_window_size = (720, 720)
@@ -37,7 +37,7 @@ def play(env, pol, show=False, render_file=None, fps=10, logger=None, silent=Tru
         writer = write_frames(render_file, window_size, fps=fps, codec="libx264", quality=8)
         writer.send(None)  # seed the generator
         writer.send(
-            env.render(mode="rgb_array", screen_width=window_size[0], screen_height=window_size[1]).copy(order='C')
+            env.render(mode="rgb_array", screen_width=window_size[0], screen_height=window_size[1]).copy(order="C")
         )
     if logger is not None:  # Log initial state
         states = [env.game_state()]
@@ -53,8 +53,9 @@ def play(env, pol, show=False, render_file=None, fps=10, logger=None, silent=Tru
                 return
             if render_file is not None:
                 writer.send(
-                    env.render(mode="rgb_array", screen_width=window_size[0],
-                               screen_height=window_size[1]).copy(order='C')
+                    env.render(mode="rgb_array", screen_width=window_size[0], screen_height=window_size[1]).copy(
+                        order="C"
+                    )
                 )
             if logger is not None:
                 states.append(env.game_state())
@@ -102,8 +103,8 @@ def show_logfile(log_file, window_size=default_window_size):
 
     plt.tight_layout()
     plt.subplots_adjust(bottom=0.1, right=0.6)
-    slider = Slider(plt.axes([0.1, 0.025, 0.8, 0.03]), 't', 0, len(game.data) - 1, valinit=0, valstep=1, valfmt="%d")
-    text_box = fig.text(0.61, 0.975, format_state(0), ha='left', va='top')
+    slider = Slider(plt.axes([0.1, 0.025, 0.8, 0.03]), "t", 0, len(game.data) - 1, valinit=0, valstep=1, valfmt="%d")
+    text_box = fig.text(0.61, 0.975, format_state(0), ha="left", va="top")
 
     def change_t(val):
         t = int(slider.val)
@@ -168,11 +169,23 @@ def render_logfile(log_file, fps=10, silent=False, window_size=default_window_si
     # Join both in log dir
     subprocess.run(
         [
-            get_ffmpeg_exe(), "-i",
-            str(tmp_video), "-i",
-            str(tmp_thumbnail), "-y", "-map", "0", "-map", "1", "-c", "copy", "-disposition:v:1", "attached_pic", "-v",
+            get_ffmpeg_exe(),
+            "-i",
+            str(tmp_video),
+            "-i",
+            str(tmp_thumbnail),
+            "-y",
+            "-map",
+            "0",
+            "-map",
+            "1",
+            "-c",
+            "copy",
+            "-disposition:v:1",
+            "attached_pic",
+            "-v",
             "warning",
-            str(log_file.parent / (log_file.name[:-5] + ".mp4"))
+            str(log_file.parent / (log_file.name[:-5] + ".mp4")),
         ]
     )
 
@@ -183,37 +196,37 @@ def render_logfile(log_file, fps=10, silent=False, window_size=default_window_si
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='spe_ed')
+    parser = argparse.ArgumentParser(description="spe_ed")
     parser.add_argument(
-        'mode',
-        nargs='?',
-        choices=['play', 'replay', 'render_logdir', 'plot', 'tournament', 'tournament-plot'],
-        default="play"
+        "mode",
+        nargs="?",
+        choices=["play", "replay", "render_logdir", "plot", "tournament", "tournament-plot"],
+        default="play",
     )
-    parser.add_argument('--show', action='store_true', help='Display games using an updating matplotlib plot.')
-    parser.add_argument('--render-file', type=str, default=None, help='File to render to. Should end with .mp4')
+    parser.add_argument("--show", action="store_true", help="Display games using an updating matplotlib plot.")
+    parser.add_argument("--render-file", type=str, default=None, help="File to render to. Should end with .mp4")
     parser.add_argument(
-        '--sim',
-        action='store_true',
-        help='The simulator environment runs a local simulation of Spe_ed instead of using the webserver.'
+        "--sim",
+        action="store_true",
+        help="The simulator environment runs a local simulation of Spe_ed instead of using the webserver.",
     )
-    parser.add_argument('--log-file', type=str, default=None, help='Path to a log file, used to load and replay games.')
-    parser.add_argument('--log-dir', type=str, default=None, help='Directory for storing or retrieving logs.')
+    parser.add_argument("--log-file", type=str, default=None, help="Path to a log file, used to load and replay games.")
+    parser.add_argument("--log-dir", type=str, default=None, help="Directory for storing or retrieving logs.")
     parser.add_argument(
-        '--t-config',
+        "--t-config",
         type=str,
-        default='./tournament/tournament_config.py',
-        help='Path of the tournament config file containing which settings to run.'
+        default="./tournament/tournament_config.py",
+        help="Path of the tournament config file containing which settings to run.",
     )
-    parser.add_argument('--upload', action='store_true', help='Upload generated log to cloud server.')
-    parser.add_argument('--fps', type=int, default=10, help='FPS for rendering.')
+    parser.add_argument("--upload", action="store_true", help="Upload generated log to cloud server.")
+    parser.add_argument("--fps", type=int, default=10, help="FPS for rendering.")
     parser.add_argument(
-        '--cores', type=int, default=None, help='Number of cores for multiprocessing, default uses all.'
+        "--cores", type=int, default=None, help="Number of cores for multiprocessing, default uses all."
     )
-    parser.add_argument('--repeat', type=bool, default=False, help='Play endlessly.')
+    parser.add_argument("--repeat", type=bool, default=False, help="Play endlessly.")
     args = parser.parse_args()
 
-    if args.mode == 'render_logdir':
+    if args.mode == "render_logdir":
         log_dir = Path(args.log_dir)
         if not log_dir.is_dir():
             logging.error(f"{log_dir} is not a directory")
@@ -233,15 +246,15 @@ if __name__ == "__main__":
             pool.close()
             pool.join()
 
-    elif args.mode == 'replay':
+    elif args.mode == "replay":
         show_logfile(args.log_file)
-    elif args.mode == 'tournament':
+    elif args.mode == "tournament":
         from statistics import create_tournament_plots
 
         log_dir = Path(args.log_dir)
         run_tournament(args.show, log_dir, args.t_config, args.cores)
         create_tournament_plots(log_dir, log_dir.parent)
-    elif args.mode == 'tournament-plot':
+    elif args.mode == "tournament-plot":
         from statistics import create_tournament_plots
 
         log_dir = Path(args.log_dir)
@@ -250,7 +263,7 @@ if __name__ == "__main__":
             quit(1)
 
         create_tournament_plots(log_dir, log_dir.parent)
-    elif args.mode == 'plot':
+    elif args.mode == "plot":
         from statistics import create_plots
 
         log_dir = Path(args.log_dir)
@@ -269,7 +282,7 @@ if __name__ == "__main__":
                         os.environ["CLOUD_URL"],
                         os.environ["CLOUD_USER"],
                         os.environ["CLOUD_PASSWORD"],
-                        remote_dir="logs/"
+                        remote_dir="logs/",
                     ).upload
                 )
             logger = Spe_edLogger(args.log_dir, logger_callbacks)
@@ -294,7 +307,7 @@ if __name__ == "__main__":
                     render_file=args.render_file,
                     fps=args.fps,
                     logger=logger,
-                    silent=args.repeat
+                    silent=args.repeat,
                 )
             except Exception:
                 logging.exception("Exception during play")

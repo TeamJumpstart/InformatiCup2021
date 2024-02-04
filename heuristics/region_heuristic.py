@@ -14,6 +14,7 @@ class RegionHeuristic(Heuristic):
 
     Morphological operations can be applied.
     """
+
     def __init__(self, closing_iterations=0, opening_iterations=0, include_opponent_regions=True):
         """Initialize RegionHeuristic.
 
@@ -59,13 +60,15 @@ class RegionHeuristic(Heuristic):
             # Use product of own region size times the inverse of the average of opponent regions sizes
             # Note: Using the average prevents reckless speeding up, as otherwise this would be strongly
             # preferred as it may reduce the regions of multiple players at once.
-            score *= (1 - np.mean(region_sizes[1:]))
+            score *= 1 - np.mean(region_sizes[1:])
 
         return score
 
     def __str__(self):
         """Get readable representation."""
-        return "RegionHeuristic(" + \
-            f"closing_iterations={self.closing_iterations}, " + \
-            f"include_opponent_regions={self.include_opponent_regions}, " + \
-            ")"
+        return (
+            "RegionHeuristic("
+            + f"closing_iterations={self.closing_iterations}, "
+            + f"include_opponent_regions={self.include_opponent_regions}, "
+            + ")"
+        )

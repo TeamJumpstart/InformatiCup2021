@@ -3,6 +3,7 @@ from heuristics.heuristic import Heuristic
 
 class WallhugHeuristic(Heuristic):
     """Returns a constant number."""
+
     def score(self, cells, player, opponents, rounds, deadline):
         """Return the constant number."""
         # directions - relative to player direction

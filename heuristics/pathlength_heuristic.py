@@ -12,6 +12,7 @@ ordered_actions = ("change_nothing", "turn_left", "turn_right", "slow_down", "sp
 
 class PathLengthHeuristic(Heuristic):
     """Performs a random probe run and evaluates length of the path."""
+
     def __init__(self, n_steps, time_limit=None):
         """Initialize PathLengthHeuristic.
 
@@ -60,7 +61,4 @@ class PathLengthHeuristic(Heuristic):
 
     def __str__(self):
         """Get readable representation."""
-        return "PathLenghtHeuristic(" + \
-            f"n_steps={self.n_steps}," + \
-            f"time_limit={self.time_limit}," + \
-            ")"
+        return f"PathLenghtHeuristic(n_steps={self.n_steps}, time_limit={self.time_limit})"

@@ -7,6 +7,7 @@ from heuristics.heuristic import Heuristic
 
 class CompositeHeuristic(Heuristic):
     """Allows to combine multiple heuristics into a single score evaluating the same board state."""
+
     def __init__(self, heuristics, weights=None):
         """Initialize OpponentDistanceHeuristic.
 
@@ -35,7 +36,9 @@ class CompositeHeuristic(Heuristic):
 
     def __str__(self):
         """Get readable representation."""
-        return "CompositeHeuristic(" + \
-            f"[{','.join([str(heuristic) for heuristic in self.heuristics])}], " + \
-            f"weights={self.weights}, " + \
-            ")"
+        return (
+            "CompositeHeuristic("
+            + f"[{','.join([str(heuristic) for heuristic in self.heuristics])}], "
+            + f"weights={self.weights}, "
+            + ")"
+        )

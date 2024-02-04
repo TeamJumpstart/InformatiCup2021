@@ -13,7 +13,7 @@ pol = HeuristicPolicy(
             RegionHeuristic(),
             RandomHeuristic(),
         ],
-        weights=[20, 10, 1, 1e-4]
+        weights=[20, 10, 1, 1e-4],
     ),
-    occupancy_map_depth=3
+    occupancy_map_depth=3,
 )

@@ -5,6 +5,7 @@ from heuristics.heuristic import Heuristic
 
 class OpponentDistanceHeuristic(Heuristic):
     """Computes the distance sum to all players up to a threshold."""
+
     def __init__(self, dist_threshold=16):
         """Initialize OpponentDistanceHeuristic."""
         self.dist_threshold = dist_threshold
@@ -18,6 +19,4 @@ class OpponentDistanceHeuristic(Heuristic):
 
     def __str__(self):
         """Get readable representation."""
-        return "OpponentDistanceHeuristic(" + \
-            f"dist_threshold={self.dist_threshold}" + \
-            ")"
+        return f"OpponentDistanceHeuristic(dist_threshold={self.dist_threshold})"

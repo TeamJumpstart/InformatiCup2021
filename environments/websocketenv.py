@@ -14,6 +14,7 @@ from environments.spe_ed_env import Spe_edEnv
 
 class WebsocketEnv(Spe_edEnv):
     """Environment for playing on the online server against other teams."""
+
     def __init__(self, url, key, time_url):
         """Initialize WebsocketEnv.
 
@@ -59,7 +60,7 @@ class WebsocketEnv(Spe_edEnv):
         self.done = not state["running"]
 
         if not self.done:
-            self.deadline = datetime.strptime(state['deadline'], "%Y-%m-%dT%H:%M:%S%z").timestamp() + self.time_offset
+            self.deadline = datetime.strptime(state["deadline"], "%Y-%m-%dT%H:%M:%S%z").timestamp() + self.time_offset
             self.time_limit = self.deadline - time.time()
 
         self.players = [Player.from_json(player_id, player_data) for player_id, player_data in state["players"].items()]
@@ -69,8 +70,8 @@ class WebsocketEnv(Spe_edEnv):
         self.controlled_player = [player for player in self.players if int(player.player_id) == state["you"]][0]
 
         logging.info(
-            f"Client received state (active={self.controlled_player.active}, running={not self.done}" +
-            (f", time={self.time_limit:.02f})" if not self.done else ")")
+            f"Client received state (active={self.controlled_player.active}, running={not self.done}"
+            + (f", time={self.time_limit:.02f})" if not self.done else ")")
         )
 
         if self.done:  # Close connection if done
@@ -97,7 +98,7 @@ class WebsocketEnv(Spe_edEnv):
         return self.__game_state
 
 
-def measure_server_time(time_url='https://msoll.de/spe_ed_time', n_probes=10):
+def measure_server_time(time_url="https://msoll.de/spe_ed_time", n_probes=10):
     """Measures roundtriptime time time diffference between local time and server time.
 
     Transform server time to local time by adding `time_offset`.
@@ -115,7 +116,7 @@ def measure_server_time(time_url='https://msoll.de/spe_ed_time', n_probes=10):
 
         # Parse servetime
         server_time = (
-            datetime.strptime(data['time'], "%Y-%m-%dT%H:%M:%S%z") + timedelta(milliseconds=int(data['milliseconds']))
+            datetime.strptime(data["time"], "%Y-%m-%dT%H:%M:%S%z") + timedelta(milliseconds=int(data["milliseconds"]))
         ).timestamp()
         if last_server_time is not None:
             time_deltas.append((server_time - last_server_time))
@@ -123,4 +124,4 @@ def measure_server_time(time_url='https://msoll.de/spe_ed_time', n_probes=10):
         time_offsets.append(now - server_time)
         last_server_time = server_time
 
-    return np.quantile(time_deltas, .9), np.mean(time_offsets)
+    return np.quantile(time_deltas, 0.9), np.mean(time_offsets)

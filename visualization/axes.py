@@ -17,16 +17,18 @@ _cmap = ListedColormap(
     [
         (0.0, 0.0, 0.0, 1.0),  # Collision - black
         (1.0, 1.0, 1.0, 1.0),  # Background - white
-    ] + player_colors
+    ]
+    + player_colors
 )
 
 
-class Spe_edAx():
+class Spe_edAx:
     """Matplotlib cells plot with update functionality."""
+
     def __init__(self, fig, ax, cells, players, cmap=_cmap):
         self.img = ax.imshow((cells + 1) / 7, cmap=cmap, vmin=0, vmax=1)
-        marker_size = (0.5 * fig.get_size_inches()[1] * fig.dpi / cells.shape[0])**2
-        self.heads = ax.scatter([p.x for p in players], [p.y for p in players], c='white', marker='.', s=marker_size)
+        marker_size = (0.5 * fig.get_size_inches()[1] * fig.dpi / cells.shape[0]) ** 2
+        self.heads = ax.scatter([p.x for p in players], [p.y for p in players], c="white", marker=".", s=marker_size)
 
         # Disables ticks and tick labels
         ax.xaxis.set_visible(False)
@@ -36,7 +38,7 @@ class Spe_edAx():
             self.closed = True
 
         self.closed = False
-        fig.canvas.mpl_connect('close_event', handle_close)
+        fig.canvas.mpl_connect("close_event", handle_close)
 
     def update(self, cells, players):
         """Draw a new cells state."""
@@ -48,9 +50,9 @@ class Spe_edAx():
         self.heads.set_offsets([(p.x, p.y) if p.active else (np.nan, np.nan) for p in players])
 
 
-class WinRateAx():
+class WinRateAx:
     def __init__(self, fig, ax, date, won, groupby="D"):
-        won = pd.concat([date, won], axis=1).groupby(date.dt.floor(groupby)).agg(['mean', 'count', 'std']).loc[:, 0]
+        won = pd.concat([date, won], axis=1).groupby(date.dt.floor(groupby)).agg(["mean", "count", "std"]).loc[:, 0]
 
         date = won.index
         mean, count, std = won["mean"], won["count"], won["std"]
@@ -61,9 +63,9 @@ class WinRateAx():
 
         ax.axhline(0.5, color="black", linestyle="dashed")
 
-        line, = ax.plot(date, mean, label="win rate", c=player_colors[0])
+        (line,) = ax.plot(date, mean, label="win rate", c=player_colors[0])
         c = line.get_color()
         ax.fill_between(date, low, high, facecolor=c, alpha=0.25, interpolate=True, label="confidence interval")
-        #ax.xaxis.set_major_locator(AutoDateLocator(maxticks=6))
+        # ax.xaxis.set_major_locator(AutoDateLocator(maxticks=6))
         ax.set_xlim(date[0], date[-1] + pd.offsets.Day(1))
         ax.set_ylim(0, 1)

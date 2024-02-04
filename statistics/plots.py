@@ -15,8 +15,8 @@ def plot_win_rate_over_time(output_file, stats):
     fig = plt.figure()
     ax = plt.subplot(1, 1, 1)
 
-    stats = stats[stats['date'] >= '2020-10-30']  # Truncate early data
-    won = stats['you'] == stats['winner']
+    stats = stats[stats["date"] >= "2020-10-30"]  # Truncate early data
+    won = stats["you"] == stats["winner"]
     WinRateAx(fig, ax, stats["date"], won)
 
     ax.legend(loc="lower right")
@@ -31,11 +31,11 @@ def plot_n_players(output_file, stats, cutoff_date=None):
     ax = plt.subplot(1, 1, 1)
 
     if cutoff_date is not None:
-        stats = stats[stats['date'] >= cutoff_date]
+        stats = stats[stats["date"] >= cutoff_date]
 
-    n_players = stats['names'].apply(len)
+    n_players = stats["names"].apply(len)
 
-    played = np.array([(n_players == n).agg(['mean', 'count', 'std']) for n in range(2, 7)])
+    played = np.array([(n_players == n).agg(["mean", "count", "std"]) for n in range(2, 7)])
     mean, count, std = played[:, 0], played[:, 1], played[:, 2]
 
     # Compute confidence interval
@@ -57,12 +57,12 @@ def plot_grid_size(output_file, stats):
     plt.figure(figsize=(6.4 * 2, 4.8))
 
     plt.subplot(1, 2, 1)
-    plt.hist(stats['width'], density=True)
+    plt.hist(stats["width"], density=True)
     plt.xlabel("width")
     plt.ylabel("density")
 
     plt.subplot(1, 2, 2)
-    plt.hist(stats['height'], density=True)
+    plt.hist(stats["height"], density=True)
     plt.xlabel("height")
     plt.ylabel("density")
 
@@ -73,11 +73,11 @@ def plot_grid_size(output_file, stats):
 
 
 def plot_grid_size_correlation(output_file, stats, include_n_players=False):
-    data = stats[['width', 'height']].copy()
+    data = stats[["width", "height"]].copy()
     if include_n_players:
-        data['n_players'] = stats['names'].apply(len)
+        data["n_players"] = stats["names"].apply(len)
 
-    sns.pairplot(data, kind='hist', diag_kws={'bins': 20}, plot_kws={'bins': 20})
+    sns.pairplot(data, kind="hist", diag_kws={"bins": 20}, plot_kws={"bins": 20})
 
     plt.tight_layout(pad=0)
 
@@ -102,7 +102,7 @@ def plot_competition(output_file, stats_dir, stats):
 
     plt.figure(figsize=(10, 5))
 
-    ax = sns.scatterplot(data=stats, x="date", y="names", style="type", hue="won", markers="^s", zorder=1000)  #o
+    ax = sns.scatterplot(data=stats, x="date", y="names", style="type", hue="won", markers="^s", zorder=1000)  # o
     plt.grid(zorder=-1000)
 
     ax.get_yaxis().set_ticks([])
@@ -124,10 +124,10 @@ def create_plots(log_dir, stats_file):
 
     # Create plots
     for ext in ("png", "pdf"):
-        plot_competition(plot_dir / f"competition.{ext}", stats_file.parent, stats[stats['date'] >= '2021-01-02'])
+        plot_competition(plot_dir / f"competition.{ext}", stats_file.parent, stats[stats["date"] >= "2021-01-02"])
         plot_win_rate_over_time(plot_dir / f"win_rate.{ext}", stats)
         plot_n_players(plot_dir / f"n_players.{ext}", stats)
-        plot_n_players(plot_dir / f"n_players_2021.{ext}", stats, cutoff_date='2021-01-01')
+        plot_n_players(plot_dir / f"n_players_2021.{ext}", stats, cutoff_date="2021-01-01")
         plot_grid_size(plot_dir / f"grid_size.{ext}", stats)
         plot_grid_size_correlation(plot_dir / f"grid_size_corr.{ext}", stats)
         plot_grid_size_correlation(plot_dir / f"grid_size_n_players_corr.{ext}", stats, include_n_players=True)
@@ -190,12 +190,12 @@ def plot_matchups(policy_names, policy_nick_names, stats, output_file):
         yticklabels=policy_nick_names,
         square=True,
         cmap="seismic",
-        cbar_kws={'label': 'normalized win rate'},
+        cbar_kws={"label": "normalized win rate"},
     )
-    ax.set_title('vs.', y=1, x=-0.05)
-    ax.set_facecolor('black')
+    ax.set_title("vs.", y=1, x=-0.05)
+    ax.set_facecolor("black")
     plt.yticks(va="center")
-    plt.tick_params(axis='both', which='major', labelbottom=False, bottom=False, top=False, labeltop=True, left=False)
+    plt.tick_params(axis="both", which="major", labelbottom=False, bottom=False, top=False, labeltop=True, left=False)
     plt.tight_layout(pad=0)
 
     plt.savefig(output_file)
@@ -212,14 +212,14 @@ def plot_policy_times(stats_dir, output_file):
 
 def create_tournament_plots(log_dir, stats_dir):
     # Load statistics
-    stats = fetch_statistics(log_dir, stats_dir / "statistics.csv", key_column='uuid')
+    stats = fetch_statistics(log_dir, stats_dir / "statistics.csv", key_column="uuid")
 
     # Create output folder
     plot_dir = stats_dir / "plots"
     plot_dir.mkdir(exist_ok=True)
 
     # Create plots of matchup stats, overall win rate of each policy
-    policy_names = np.unique(np.concatenate(stats['names'].values).flat)
+    policy_names = np.unique(np.concatenate(stats["names"].values).flat)
     policy_nick_names = [name if len(name) <= 10 else name[:8] + "..." for name in policy_names]
 
     plot_matchups(policy_names, policy_nick_names, stats, plot_dir / "matchups.png")

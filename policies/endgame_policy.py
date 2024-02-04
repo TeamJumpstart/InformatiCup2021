@@ -19,7 +19,7 @@ def applyMorphology(cells, closing=0, opening=0, erosion=0, dilation=0):
     # apply padding
     iterations = max(closing, opening, erosion, dilation)
     if iterations:
-        cells = np.pad(cells, (iterations, ))
+        cells = np.pad(cells, (iterations,))
         # perform morphological operations/iterations
         if closing:
             cells = morphology.binary_closing(cells, iterations=closing)
@@ -61,7 +61,7 @@ def computeRegionSize(cells, players):
 def computeRegionNumber(cells, players):
     """Computes the number of unique regions."""
     # inverse map (mask occupied cells)
-    cells = np.pad(cells, (1, ))
+    cells = np.pad(cells, (1,))
     empty_cells = cells == 0
     # compute distinct regions
     _, num_cells = ndimage.label(empty_cells)
@@ -97,9 +97,9 @@ def tiebreakerFunc(env, remaining_actions, score_func=computeRegionSize, eval_fu
         return remaining_actions, {a: 0 for a in remaining_actions}
 
     if eval_func is max:
-        scores = {action: float('-Inf') for action in remaining_actions}
+        scores = {action: float("-Inf") for action in remaining_actions}
     elif eval_func is min:
-        scores = {action: float('Inf') for action in remaining_actions}
+        scores = {action: float("Inf") for action in remaining_actions}
     else:
         print("ERROR: function not handled")
 
@@ -122,6 +122,7 @@ class EndgamePolicy(Policy):
     it tries to maximize the number of rounds that the policy survives until filling all available space.
     An optimal or even satisfiable behavior is not guaranteed for any other circumstances.
     """
+
     def __init__(self, actions=None):
         """Initialize endgame policy.
 
@@ -142,8 +143,8 @@ class EndgamePolicy(Policy):
 
         # tie breaker: morphological operations
         for i in range(2, 0, -1):
-            remaining_actions, _ = tiebreakerFunc(env, remaining_actions, computeOccupiedCells, min, {'closing': i})
-            remaining_actions, _ = tiebreakerFunc(env, remaining_actions, computeOccupiedCells, min, {'dilation': i})
+            remaining_actions, _ = tiebreakerFunc(env, remaining_actions, computeOccupiedCells, min, {"closing": i})
+            remaining_actions, _ = tiebreakerFunc(env, remaining_actions, computeOccupiedCells, min, {"dilation": i})
 
         # tie breaker: random walk
         remaining_actions, _ = tiebreakerFunc(env, remaining_actions, computePathLength, max)

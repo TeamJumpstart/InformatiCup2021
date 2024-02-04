@@ -1,6 +1,10 @@
 from heuristics import (
-    CompositeHeuristic, OpponentDistanceHeuristic, PathLengthHeuristic, RandomHeuristic, RandomProbingHeuristic,
-    RegionHeuristic
+    CompositeHeuristic,
+    OpponentDistanceHeuristic,
+    PathLengthHeuristic,
+    RandomHeuristic,
+    RandomProbingHeuristic,
+    RegionHeuristic,
 )
 from policies import HeuristicPolicy
 
@@ -13,16 +17,16 @@ pol = HeuristicPolicy(
                     [
                         OpponentDistanceHeuristic(dist_threshold=6),
                         RegionHeuristic(),
-                        RegionHeuristic(include_opponent_regions=True)
+                        RegionHeuristic(include_opponent_regions=True),
                     ]
                 ),
                 n_steps=6,
-                n_probes=20
+                n_probes=20,
             ),
             RegionHeuristic(),
             RandomHeuristic(),
         ],
-        weights=[20, 10, 1, 1e-4]
+        weights=[20, 10, 1, 1e-4],
     ),
-    occupancy_map_depth=3
+    occupancy_map_depth=3,
 )

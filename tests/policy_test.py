@@ -99,12 +99,16 @@ class TestHeuristicPolicy(unittest.TestCase):
         env = SimulatedSpe_edEnv(5, 5, [policies.HeuristicPolicy(heuristic=RandomHeuristic()) for _ in range(5)])
         pol = policies.HeuristicPolicy(
             heuristic=CompositeHeuristic(
-                [RandomHeuristic(),
-                 RandomHeuristic(),
-                 CompositeHeuristic([
-                     RandomHeuristic(),
-                     RandomHeuristic(),
-                 ])],
+                [
+                    RandomHeuristic(),
+                    RandomHeuristic(),
+                    CompositeHeuristic(
+                        [
+                            RandomHeuristic(),
+                            RandomHeuristic(),
+                        ]
+                    ),
+                ],
                 weights=[1, 2, 3],
             )
         )

@@ -14,6 +14,7 @@ class HeuristicPolicy(Policy):
 
     A single action is performed in every valid direction and evaluated by the given metric.
     """
+
     def __init__(self, heuristic, occupancy_map_depth=0, actions=None):
         """Initialize HeuristicPolicy.
 
@@ -50,8 +51,10 @@ class HeuristicPolicy(Policy):
 
     def __repr__(self):
         """Get exact representation."""
-        return "HeuristicPolicy(" + \
-            f"heuristic={str(self.heuristic)}, " + \
-            f"occupancy_map_depth={self.occupancy_map_depth}, " + \
-            f"actions={self.actions}, " + \
-            ")"
+        return (
+            "HeuristicPolicy("
+            + f"heuristic={self.heuristic}, "
+            + f"occupancy_map_depth={self.occupancy_map_depth}, "
+            + f"actions={self.actions}, "
+            + ")"
+        )

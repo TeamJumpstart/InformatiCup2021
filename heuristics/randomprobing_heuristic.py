@@ -9,6 +9,7 @@ from heuristics.heuristic import Heuristic
 
 class RandomProbingHeuristic(Heuristic):
     """Performs a random probe run and evaluates the board state afterwards by the given heuristics."""
+
     def __init__(self, heuristic, n_steps, n_probes, seed=None):
         """Initialize RandomProbingHeuristic.
 
@@ -25,6 +26,7 @@ class RandomProbingHeuristic(Heuristic):
 
     def score(self, cells, player, opponents, rounds, deadline):
         """Perform one recursive probe run with random actions and returns the number of steps survived."""
+
         def perform_probe_run(env):
             """Simulate the given environment for maximum of `n_steps` with valid random steps or
             until the player cannot make a valid move, return the environment.
@@ -59,8 +61,10 @@ class RandomProbingHeuristic(Heuristic):
 
     def __str__(self):
         """Get readable representation."""
-        return "RandomProbingHeuristic(" + \
-            f"heuristic={str(self.heuristic)}, " + \
-            f"n_steps={self.n_steps}, " + \
-            f"n_probes={self.n_probes}, " + \
-            ")"
+        return (
+            "RandomProbingHeuristic("
+            + f"heuristic={self.heuristic}, "
+            + f"n_steps={self.n_steps}, "
+            + f"n_probes={self.n_probes}, "
+            + ")"
+        )

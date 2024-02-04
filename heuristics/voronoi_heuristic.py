@@ -8,6 +8,7 @@ from heuristics.heuristic import Heuristic
 
 class VoronoiHeuristic(Heuristic):
     """Tries to maximize the area that can be reached by the agent before the opponents."""
+
     def __init__(self, max_steps=40, opening_iterations=0, minimize_opponents=False):
         """Initialize VoronoiHeuristic.
 
@@ -26,10 +27,11 @@ class VoronoiHeuristic(Heuristic):
         unmodified_cells = cells
         # open all {self.opening_iterations} wide walls aka "articulating points" to account for jumps
         if self.opening_iterations:
-            cells = np.pad(cells, (self.opening_iterations, ))
+            cells = np.pad(cells, (self.opening_iterations,))
             cells = morphology.binary_opening(cells, iterations=self.opening_iterations)
-            cells = cells[self.opening_iterations:-self.opening_iterations,
-                          self.opening_iterations:-self.opening_iterations]
+            cells = cells[
+                self.opening_iterations : -self.opening_iterations, self.opening_iterations : -self.opening_iterations
+            ]
 
         # initialize arrays, one binary map for each player
         mask = cells == 0
@@ -62,8 +64,10 @@ class VoronoiHeuristic(Heuristic):
 
     def __str__(self):
         """Get readable representation."""
-        return "VoronoiHeuristic(" + \
-            f"max_steps={self.max_steps}, " + \
-            f"opening_iterations={self.opening_iterations}, " + \
-            f"minimize_opponents={self.minimize_opponents}, " + \
-            ")"
+        return (
+            "VoronoiHeuristic("
+            + f"max_steps={self.max_steps}, "
+            + f"opening_iterations={self.opening_iterations}, "
+            + f"minimize_opponents={self.minimize_opponents}, "
+            + ")"
+        )

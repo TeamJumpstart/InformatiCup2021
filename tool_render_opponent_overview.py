@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 
 def easeInOutCubic(t):
-    return 4 * t**3 if t < 0.5 else 1 - (-2 * t + 2)**3 / 2
+    return 4 * t**3 if t < 0.5 else 1 - (-2 * t + 2) ** 3 / 2
 
 
 def easeInOutSine(t):
@@ -15,7 +15,7 @@ def easeInOutSine(t):
 
 
 def easeOutCubic(t):
-    return 1 - (1 - t)**3
+    return 1 - (1 - t) ** 3
 
 
 def names_to_codes(names):
@@ -24,7 +24,6 @@ def names_to_codes(names):
 
     codes = []
     for name in names:
-
         if name not in code_map:
             code_map[name] = id
             id += 1

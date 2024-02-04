@@ -42,7 +42,7 @@ def render_logfile(log_file, render_dir):
     fig = plt.figure(figsize=(game.width * cell_size / 100, game.height * cell_size / 100), dpi=100)
 
     ax = plt.subplot(1, 1, 1)
-    ax.axis('off')
+    ax.axis("off")
     viewer = Spe_edAx(fig, ax, game.cell_states[0], game.player_states[0], cmap=cmap)
     plt.tight_layout(pad=0)
 

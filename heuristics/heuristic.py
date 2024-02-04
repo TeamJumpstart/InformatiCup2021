@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 
 class Heuristic(ABC):
     """Abstract class to represent a board state heuristic."""
+
     @abstractmethod
     def score(self, cells, player, opponents, rounds, deadline):
         """Compute a score value for a given game state.

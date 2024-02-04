@@ -6,7 +6,8 @@ from heuristics.conditions import Condition
 
 
 class RegionCondition(Condition):
-    """ Computes the player region size."""
+    """Computes the player region size."""
+
     def __init__(self, closing_iterations=0):
         """Initialize RegionCondition.
 
@@ -41,6 +42,4 @@ class RegionCondition(Condition):
 
     def __str__(self):
         """Get readable representation."""
-        return "RegionCondition(" + \
-            f"closing_iterations={self.closing_iterations}, " + \
-            ")"
+        return f"RegionCondition(closing_iterations={self.closing_iterations}, )"

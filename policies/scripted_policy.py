@@ -6,6 +6,7 @@ class ScriptedPolicy(Policy):
 
     This policy is intended for replays and unittests.
     """
+
     def __init__(self, actions):
         """Initialize RandomPolicy.
 

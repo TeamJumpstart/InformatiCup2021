@@ -17,13 +17,14 @@ class TestSimulatorEnv(unittest.TestCase):
         env.step("change_nothing")
 
         assert_array_equal(
-            env.cells, [
+            env.cells,
+            [
                 [0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
                 [0, 0, 1, 1, 0],
                 [0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
-            ]
+            ],
         )
         self.assertTrue(env.players[0].active)  # Player lives
         self.assertEqual(env.players[0].speed, 1)  # Speed does not change
@@ -37,13 +38,14 @@ class TestSimulatorEnv(unittest.TestCase):
         env.step("speed_up")
 
         assert_array_equal(
-            env.cells, [
+            env.cells,
+            [
                 [0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
                 [0, 0, 1, 1, 1],
                 [0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
-            ]
+            ],
         )
         self.assertTrue(env.players[0].active)  # Player lives
         self.assertEqual(env.players[0].speed, 2)  # Speed increases
@@ -57,13 +59,14 @@ class TestSimulatorEnv(unittest.TestCase):
         env.step("slow_down")
 
         assert_array_equal(
-            env.cells, [
+            env.cells,
+            [
                 [0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
                 [0, 0, 1, 0, 0],
                 [0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
-            ]
+            ],
         )
         self.assertFalse(env.players[0].active)  # Player dies
         self.assertEqual(env.players[0].speed, 0)  # Speed goes down
@@ -77,13 +80,14 @@ class TestSimulatorEnv(unittest.TestCase):
         env.step("turn_left")
 
         assert_array_equal(
-            env.cells, [
+            env.cells,
+            [
                 [0, 0, 0, 0, 0],
                 [0, 0, 1, 0, 0],
                 [0, 0, 1, 0, 0],
                 [0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
-            ]
+            ],
         )
         self.assertTrue(env.players[0].active)  # Player lives
         self.assertEqual(env.players[0].speed, 1)  # Speed does not change
@@ -97,13 +101,14 @@ class TestSimulatorEnv(unittest.TestCase):
         env.step("turn_right")
 
         assert_array_equal(
-            env.cells, [
+            env.cells,
+            [
                 [0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
                 [0, 0, 1, 0, 0],
                 [0, 0, 1, 0, 0],
                 [0, 0, 0, 0, 0],
-            ]
+            ],
         )
         self.assertTrue(env.players[0].active)  # Player lives
         self.assertEqual(env.players[0].speed, 1)  # Speed does not change
@@ -120,8 +125,8 @@ class TestSimulatorEnv(unittest.TestCase):
                 env.players = game.player_states[t]
                 env.controlled_player = [p for p in game.player_states[t] if p.player_id == game.you][0]
 
-                if 'deadline' in game.data[t]:
-                    del game.data[t]['deadline']  # Simulation doesn't have deadlines
+                if "deadline" in game.data[t]:
+                    del game.data[t]["deadline"]  # Simulation doesn't have deadlines
                 self.assertDictEqual(env.game_state(), game.data[t])
 
 
@@ -136,7 +141,8 @@ class TestSimulator(unittest.TestCase):
                     [0, 0, 1, 0, 0],
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
-                ], dtype=np.int32
+                ],
+                dtype=np.int32,
             ),
             players=[Player(1, 2, 2, directions[0], 1, True)],
             rounds=1,
@@ -146,13 +152,14 @@ class TestSimulator(unittest.TestCase):
         sim = sim.step(["change_nothing"])
 
         assert_array_equal(
-            sim.cells, [
+            sim.cells,
+            [
                 [0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
                 [0, 0, 1, 1, 0],
                 [0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
-            ]
+            ],
         )
         self.assertTrue(sim.players[0].active)  # Player lives
         self.assertEqual(sim.players[0].speed, 1)  # Speed does not change
@@ -162,13 +169,14 @@ class TestSimulator(unittest.TestCase):
         sim = sim.step(["change_nothing"])
 
         assert_array_equal(
-            sim.cells, [
+            sim.cells,
+            [
                 [0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
                 [0, 0, 1, 1, 1],
                 [0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
-            ]
+            ],
         )
         self.assertTrue(sim.players[0].active)  # Player lives
         self.assertEqual(sim.players[0].speed, 1)  # Speed does not change
@@ -178,13 +186,14 @@ class TestSimulator(unittest.TestCase):
         sim = sim.step(["change_nothing"])
 
         assert_array_equal(
-            sim.cells, [
+            sim.cells,
+            [
                 [0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
                 [0, 0, 1, 1, 1],
                 [0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0],
-            ]
+            ],
         )
         self.assertFalse(sim.players[0].active)  # Player died
         self.assertEqual(sim.players[0].speed, 1)  # Speed does not change

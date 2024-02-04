@@ -8,6 +8,7 @@ from policies.policy import Policy
 
 class Maximin_SearchPolicy(Policy):
     """Policy that performs a greedy search for that action that will maximize the heuristic."""
+
     def __init__(self, heuristic, depth_limit=6, actions=None):
         """Initialize ActionSearchPolicy.
 
@@ -72,5 +73,4 @@ class Maximin_SearchPolicy(Policy):
 
     def __repr__(self):
         """Get exact representation."""
-        return f"Maximin_SearchPolicy(heuristic={str(self.heuristic)}, " + \
-            f"depth_limit={self.depth_limit})"
+        return f"Maximin_SearchPolicy(heuristic={self.heuristic}, depth_limit={self.depth_limit})"

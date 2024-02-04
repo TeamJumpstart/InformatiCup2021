@@ -5,6 +5,7 @@ from pathlib import Path
 
 class Policy(ABC):
     """Abstract base class for all policies."""
+
     @abstractmethod
     def act(self, cells, you, opponents, rounds, deadline):
         """Produce an action for a given game state.
@@ -30,7 +31,7 @@ class Policy(ABC):
 
         Uses name if present, __repr__ otherwise
         """
-        return self.name if hasattr(self, 'name') else repr(self)
+        return self.name if hasattr(self, "name") else repr(self)
 
 
 def load_named_policy(name):
@@ -48,6 +49,6 @@ def load_named_policy(name):
     if not policy_file.is_file():
         raise ValueError("There is no named policy '{name}'")
 
-    pol = SourceFileLoader('tournament_config', str(policy_file)).load_module().pol
+    pol = SourceFileLoader("tournament_config", str(policy_file)).load_module().pol
     pol.name = name
     return pol

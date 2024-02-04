@@ -4,9 +4,10 @@ from heuristics.conditions import CompositeCondition, Condition, OccupiedCellsCo
 
 
 class MidgameCondition(Condition):
-    """ Check if we are in the Midgame."""
+    """Check if we are in the Midgame."""
+
     def __init__(self):
-        """Initialize MidgameCondition. """
+        """Initialize MidgameCondition."""
         in_biggest_region_opening = PlayerInBiggestRegionCondition(opening_iterations=1)
         occupied_cells_percent = OccupiedCellsCondition()
 

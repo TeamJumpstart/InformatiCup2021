@@ -7,8 +7,9 @@ from heuristics.conditions.condition import Condition
 
 class OpponentsInPlayerRegionCondition(Condition):
     """Returns number of opponents in the players region."""
+
     def __init__(self, closing=0):
-        """Initialize OpponentsInPlayerRegionCondition. """
+        """Initialize OpponentsInPlayerRegionCondition."""
         self.closing_iterations = closing
 
     def score(self, cells, player, opponents, rounds, deadline):

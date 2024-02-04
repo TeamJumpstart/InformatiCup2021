@@ -21,7 +21,8 @@ def create_sequences(log_dir, date, radius=5):
 
             # Infer actions
             actions = [
-                spe_ed.actions.index(a) if a in spe_ed.actions else None for a in (
+                spe_ed.actions.index(a) if a in spe_ed.actions else None
+                for a in (
                     spe_ed.infer_action(game.player_states[t][player_id - 1], game.player_states[t + 1][player_id - 1])
                     for t in range(len(windows))
                 )

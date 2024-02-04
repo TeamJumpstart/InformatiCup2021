@@ -117,12 +117,12 @@ class SimulatedSpe_edEnv(Spe_edEnv):
     def game_state(self):
         """Get current game state as dict."""
         return {
-            'width': self.width,
-            'height': self.height,
-            'cells': self.cells.tolist(),
-            'players': dict(p.to_dict() for p in self.players),
-            'you': self.controlled_player.player_id,
-            'running': sum(1 for p in self.players if p.active) > 1,
+            "width": self.width,
+            "height": self.height,
+            "cells": self.cells.tolist(),
+            "players": dict(p.to_dict() for p in self.players),
+            "you": self.controlled_player.player_id,
+            "running": sum(1 for p in self.players if p.active) > 1,
         }
 
 
@@ -131,6 +131,7 @@ class Spe_edSimulator:
 
     Keeps a history.
     """
+
     def __init__(self, cells, players, rounds, changed=[], parent=None):
         self.cells = cells
         self.players = players

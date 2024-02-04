@@ -1,14 +1,18 @@
 import numpy as np
 
 from heuristics.conditions import (
-    CompositeCondition, Condition, OpponentsInPlayerRegionCondition, PlayerInBiggestRegionCondition
+    CompositeCondition,
+    Condition,
+    OpponentsInPlayerRegionCondition,
+    PlayerInBiggestRegionCondition,
 )
 
 
 class EndgameCondition(Condition):
-    """ Check if we are in the Endgame."""
+    """Check if we are in the Endgame."""
+
     def __init__(self):
-        """Initialize EndgameCondition. """
+        """Initialize EndgameCondition."""
         in_biggest_region = PlayerInBiggestRegionCondition()
         opp_num_in_region = OpponentsInPlayerRegionCondition()
 

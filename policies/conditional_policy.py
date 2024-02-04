@@ -8,6 +8,7 @@ class ConditionalPolicy(Policy):
 
     The first policy, which whose condition satisfies their corresponding threshold, is executed.
     """
+
     def __init__(self, policies, conditions, thresholds):
         """Initialize ConditionalPolicy. If given only one policy, conditions and thresholds can be 'None'.
 
@@ -18,7 +19,7 @@ class ConditionalPolicy(Policy):
         """
         self.policies = policies
         if policies is None:
-            raise ValueError(f"No policies provided {str(policies)}.")
+            raise ValueError(f"No policies provided {policies}.")
 
         if len(policies) == 1:
             self.conditions = []
@@ -27,14 +28,11 @@ class ConditionalPolicy(Policy):
             self.conditions = conditions
             if conditions is None or len(policies) != len(conditions) + 1:
                 raise ValueError(
-                    f"Number of policies {str(policies)} should be larger by one\
-                     than number of conditions {str(conditions)}."
+                    f"Number of policies {policies} should be larger by one than number of conditions {conditions}."
                 )
             self.thresholds = thresholds
             if thresholds is None or len(conditions) != len(thresholds):
-                raise ValueError(
-                    f"Number of conditions {str(conditions)} does mot match number of thresholds {str(thresholds)}."
-                )
+                raise ValueError(f"Number of conditions {conditions} does mot match number of thresholds {thresholds}.")
 
     def act(self, cells, player, opponents, rounds, deadline):
         """Execute the first policy, whose condition satisfies its threshold."""
@@ -47,8 +45,10 @@ class ConditionalPolicy(Policy):
 
     def __repr__(self):
         """Get exact representation."""
-        return "ConditionalPolicy(" + \
-            f"policies={str(self.policies)}, " + \
-            f"conditions={str(self.conditions)}, " + \
-            f"thresholds={self.thresholds}, " + \
-            ")"
+        return (
+            "ConditionalPolicy("
+            + f"policies={self.policies}, "
+            + f"conditions={self.conditions}, "
+            + f"thresholds={self.thresholds}, "
+            + ")"
+        )
